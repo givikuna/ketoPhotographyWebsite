@@ -1,5 +1,4 @@
 use lazy_static::lazy_static;
-use serde_derive::Serialize;
 use serde_json;
 use std::fs;
 use std::fs::File;

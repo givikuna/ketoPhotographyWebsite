@@ -1,22 +1,18 @@
 import * as url from "url";
 import * as fs from "fs";
 import * as syntax from "./extensions/syntax";
-import { ParsedUrlQuery } from "querystring";
 import * as dynamicLinkGetter from "./modules/dynamicLinkGetter";
 import * as portServer from "./modules/portServer";
 import * as getExtSelect from "./modules/getExtSelect";
 import * as http from "http";
 import * as fp from "./modules/findPath";
+
+import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-
 const { findPath } = fp;
-
-const { len, print, stringify, isBlank } = syntax;
-
+const { stringify } = syntax;
 const { getDynLink } = dynamicLinkGetter;
-
 const { getPort } = portServer;
-
 const { getExt } = getExtSelect;
 
 const filename = "src";
@@ -46,7 +42,7 @@ const server = http.createServer(
         return w(data);
       }
     } catch (e) {
-      print(e);
+      console.log(e);
       res.write("");
       return res.end();
     }
