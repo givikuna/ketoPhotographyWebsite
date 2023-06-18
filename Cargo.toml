@@ -24,3 +24,7 @@ path = "render_file.rs"
 [[bin]]
 name = "img_data"
 path = "img_data.rs"
+
+[[bin]]
+name = "gitcommit"
+path = "gitcommit.rs"
