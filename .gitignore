@@ -1,0 +1,16 @@
+node_modules
+target
+render.json
+img.json
+render_lang
+render_file
+img_data
+build_render
+gitcommit
+cgi/auth.js
+cgi/img.js
+cgi/index.js
+cgi/serve.js
+cgi/src.js
+cgi/extensions/syntax.js
+cgi/constants/constants.js
