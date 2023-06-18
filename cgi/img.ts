@@ -12,7 +12,7 @@ const filename: string = 'img';
 const port: number = getPort(filename);
 const app: any = express();
 
-app.get('/', (req: IncomingMessage, res: ServerResponse) => {
+app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
         res.write(data);
@@ -33,14 +33,14 @@ app.get('/', (req: IncomingMessage, res: ServerResponse) => {
             }
             const fpath: fs.PathLike = findPath(fpath_arr, imgname, filename);
             if (fs.existsSync(fpath)) {
-                w(fs.readFileSync(fpath));
+                return w(fs.readFileSync(fpath));
             } else {
                 throw new Error('image doesn\'t exist');
             }
         }
     } catch (e: any) {
         console.log(e);
-        w('');
+        return w('');
     }
 });
 

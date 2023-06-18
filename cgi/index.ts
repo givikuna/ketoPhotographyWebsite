@@ -18,7 +18,7 @@ const filename: string = 'index';
 const port: number = getPort(filename);
 const app: any = express();
 
-app.get('/', (req: IncomingMessage, res: ServerResponse) => {
+app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
@@ -31,12 +31,12 @@ app.get('/', (req: IncomingMessage, res: ServerResponse) => {
                 if (err) throw err;
                 data = stringify(data);
                 data = replaceData(data, url_info);
-                w(data);
+                return w(data);
             });
-        } else w('');
+        } else return w('');
     } catch (e) {
         console.log(e);
-        w('');
+        return w('');
     }
 }).listen(port, (): void => {
     console.log('Server is running on http://localhost:' + port + '/');

@@ -19,10 +19,8 @@ const filename = "src";
 const port = getPort(filename);
 
 const server = http.createServer(
-  (req: IncomingMessage, res: ServerResponse) => {
-    let written: boolean = false;
+  (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
-      written = true;
       res.write(data);
       return res.end();
     };

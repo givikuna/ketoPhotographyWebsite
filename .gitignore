@@ -9,6 +9,7 @@ build_render
 gitcommit
 cgi/auth.js
 cgi/img.js
+cgi/select.js
 cgi/index.js
 cgi/serve.js
 cgi/src.js
