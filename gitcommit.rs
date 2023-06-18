@@ -47,7 +47,8 @@ fn commit() -> bool {
     input = input.trim().to_string();
     if input == "y" || input == "Y" {
         if add() {
-            let commit_cmd: String = COMMIT.lock().unwrap().clone() + "\"" + commitname().as_str() + "\"";
+            let commit_cmd: String =
+                COMMIT.lock().unwrap().clone() + "\"" + commitname().as_str() + "\"";
             println!("{}", commit_cmd.clone());
             let commit_output: std::process::Output = Command::new("bash")
                 .arg("-c")

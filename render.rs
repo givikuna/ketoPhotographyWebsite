@@ -1,11 +1,8 @@
-use lazy_static::lazy_static;
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
 use serde_json;
 use std::fs;
-use std::io;
 use std::process::Command;
-use std::sync::Mutex;
 
 #[derive(Clone, Serialize, Debug, Deserialize)]
 pub struct Transpileable {
@@ -29,15 +26,10 @@ pub struct FileStruct {
     file: String,
 }
 
-lazy_static! {
-    static ref R: Mutex<Vec<Transpileable>> = Mutex::new(vec![]);
-}
-
 fn main() {
     let json_content: String = fs::read_to_string("render.json").unwrap();
-    let mut render_json: Vec<Transpileable> = serde_json::from_str(&json_content).unwrap();
+    let render_json: Vec<Transpileable> = serde_json::from_str(&json_content).unwrap();
 
-    R.lock().unwrap().append(&mut render_json);
     let mut i: usize = 0;
     while i < render_json.len() {
         let mut j: usize = 0;
@@ -48,7 +40,11 @@ fn main() {
             let cmd: String = el.command.clone() + " " + file_name_fixer(&_file.file);
             run_command(&cmd);
             if el.type_ == "rs" {
-                let mv_cmd: String = "mv ./target/debug".to_owned() + file_name_fixer(&_file.file) + " " + file_path(&_file.dir).as_str();
+                let mv_cmd: String = "mv ./target/debug".to_owned()
+                    + file_name_fixer(&_file.file)
+                    + " "
+                    + file_path(&_file.dir).as_str();
+                run_command(&mv_cmd);
             }
 
             j += 1;
@@ -115,5 +111,5 @@ fn file_path(fp: &str) -> String {
     if fp.is_empty() {
         return " ./".to_string();
     }
-   return  " ".to_owned() + fp;
+    return " ".to_owned() + fp;
 }

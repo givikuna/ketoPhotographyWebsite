@@ -3,4 +3,5 @@ touch img.json
 cargo build
 cargo build --release
 npm install
-python3 render.py
+cargo run --bin render
+./render
