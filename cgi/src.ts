@@ -21,7 +21,7 @@ const port = getPort(filename);
 const server = http.createServer(
   (req: IncomingMessage, res: ServerResponse) => {
     let written: boolean = false;
-    const w: Function = (data): object => {
+    const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
       written = true;
       res.write(data);
       return res.end();
@@ -31,8 +31,8 @@ const server = http.createServer(
       res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
       if (req.url) {
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
-        const fpath = findPath(["public"], "app." + getExt(url_info));
-        const data = fs.existsSync(fpath)
+        const fpath: fs.PathLike = findPath(["public"], "app." + getExt(url_info));
+        const data: string = fs.existsSync(fpath)
           ? stringify(
             fs
               .readFileSync(fpath, "utf-8")
