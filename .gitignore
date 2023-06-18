@@ -14,3 +14,7 @@ cgi/serve.js
 cgi/src.js
 cgi/extensions/syntax.js
 cgi/constants/constants.js
+cgi/modules/dynamicLinkGetter.js
+cgi/modules/findPath.js
+cgi/modules/portServer.js
+cgi/modules/getExtSelect.js
