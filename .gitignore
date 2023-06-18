@@ -23,3 +23,17 @@ cgi/modules/getLang.js
 cgi/modules/getEmail.js
 cgi/modules/replaceData.js
 cgi/modules/getComponentExt.js
+tests/auth.test.js
+tests/constants.test.js
+tests/dynamicLinkGetter.test.js
+tests/findPath.test.js
+tests/getComponentExt.test.js
+tests/getEmail.test.js
+tests/getExtSelect.test.js
+tests/img.test.js
+tests/index.test.js
+tests/portServer.test.js
+tests/select.test.js
+tests/syntax.test.js
+tests/serve.test.js
+tests/replaceData.test.js
