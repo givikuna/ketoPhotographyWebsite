@@ -17,12 +17,12 @@ module.exports = {
             script: 'cgi/src.js',
         },
         {
-            name: 'dyn',
-            script: 'cgi/dyn.js'
+            name: 'server',
+            script: 'cgi/server.js'
         },
         {
-            name: 'idmaker',
-            script: 'cgi/idmaker.js'
+            name: 'auth',
+            script: 'cgi/auth.js'
         }
     ]
 };
