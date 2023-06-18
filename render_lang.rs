@@ -44,7 +44,7 @@ fn main() {
 
     let buildrender_output: std::process::Output = Command::new("bash")
         .arg("-c")
-        .arg("./buildrender")
+        .arg("./build_render")
         .output()
         .expect("Failed to execute command");
 

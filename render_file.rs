@@ -39,7 +39,7 @@ fn main() {
         format!("./{}", input.trim_end())
     };
 
-    let cmd: String = "./buildrender".to_string();
+    let cmd: String = "./build_render".to_string();
     let output = Command::new("bash")
         .arg("-c")
         .arg(cmd.clone())

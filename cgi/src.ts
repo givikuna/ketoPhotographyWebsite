@@ -18,15 +18,15 @@ const { getExt } = getExtSelect;
 const filename = "src";
 const port = getPort(filename);
 
-const server = http.createServer(
+const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(
   (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
       res.write(data);
       return res.end();
     };
     try {
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
       if (req.url) {
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
         const fpath: fs.PathLike = findPath(["public"], "app." + getExt(url_info));

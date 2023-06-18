@@ -22,3 +22,4 @@ cgi/modules/getExtSelect.js
 cgi/modules/getLang.js
 cgi/modules/getEmail.js
 cgi/modules/replaceData.js
+cgi/modules/getComponentExt.js
