@@ -17,8 +17,8 @@ module.exports = {
             script: 'cgi/src.js',
         },
         {
-            name: 'server',
-            script: 'cgi/server.js'
+            name: 'serve',
+            script: 'cgi/serve.js'
         },
         {
             name: 'auth',

@@ -7,7 +7,7 @@ export const swap: Function = <T>(arr: any[], i: number, j: number): Array<T> =>
     return arr;
 }
 
-export const blanks: Function = () => ["", '', null, undefined];
+export const blanks: Function = (): any[] => ["", '', null, undefined];
 
 export const sumOf: Function = (arr: number[]): number => {
     let sum: number = 0;
@@ -51,7 +51,7 @@ export const toInt: Function = (obj: unknown): number => {
 
 export const abs: Function = (num: number): number => Math.abs(num);
 
-export const loop: Function = (count: number, callback: Function): void => { for (let i = 0; i < count; i++) callback(i); }
+export const loop: Function = (count: number, callback: Function): void => { for (let i = 0; i < count; i++) callback(); }
 
 export const max: Function = (arr: number[]): number => Math.max(...arr);
 
@@ -73,15 +73,7 @@ export const isJSON: Function = (obj: unknown): boolean => {
     }
 }
 
-export const stringify: Function = (obj: any): string => {
-    let stringified: string = '';
-    if (Array.isArray(obj)) stringified = '[ ' + obj.join(', ') + ' ]';
-    else if (isJSON(obj)) stringified = JSON.stringify(obj);
-    else if (typeof obj === 'string') return obj;
-    else if (typeof obj === 'undefined' || obj === null) return '';
-    else stringified = obj.toString();
-    return stringified;
-}
+export const stringify: Function = (obj: any): string => String(obj);
 
 export const insertionSort: Function = (arr: any): any[] => {
     for (let i: number = 1; i < len(arr); i++) {
@@ -105,7 +97,7 @@ export const selectionSort: Function = <T>(arr: Array<T>): Array<T> => {
     return arr;
 }
 
-export function sort(arr: any[]): any[] {
+export function sort<T>(arr: T[]): T[] {
     return mergeSort(arr);
 }
 
@@ -189,3 +181,62 @@ export const supertrim: Function = (input: string): string => {
     input = input.trim();
     return input;
 }
+
+export const typeOf: Function = (input: any): string => typeof input;
+
+export const all: Function = (arr: any[]): boolean => {
+    for (let i: number = 0; i < len(arr); i++) if (!arr[i]) return false;
+    return true;
+}
+
+export const str: Function = (input: any): string => {
+    return String(input);
+}
+
+export const sorted: Function = (input: any[]): any[] => {
+    return insertionSort(input);
+}
+
+export const any: Function = (arr: any[]): boolean => {
+    for (let i: number = 0; i < len(arr); i++) if (arr[i]) return true;
+    return false;
+}
+
+export const isPrime: Function = (n: number): boolean => {
+    if (n <= 1) return false;
+    for (let i: number = 2; i < sqrt(n); i++) if (isZero(mod(n, i))) return false;
+    return true;
+}
+
+export const isZero: Function = (input: any): boolean => input === 0;
+
+export const mod: Function = (n: number, m: number): number => n % m;
+
+export const add: Function = (n: number, m: number): number => n + m;
+
+export const subtract: Function = (n: number, m: number): number => sub(n, m);
+
+export const sub: Function = (n: number, m: number): number => n - m;
+
+export const ZERO: number = 0;
+
+export const isPerfect: Function = (n: number): boolean => {
+    let sum: number = ZERO;
+    for (let i: number; i < n; i++) if (isZero(mod(n, i))) sum += i;
+    return sum === n;
+}
+
+export const isPalindrome: Function = (s: string): boolean => str(s) === rev(s);
+
+export const rev: Function = (s: string): string => s.split('').reverse().join('');
+
+export const factorial: Function = (n: number): number => {
+    if (OR(isZero(n), n === 1)) return 1;
+    let result: number = 1;
+    for (let i: number = 2; i < n; i++) result *= i;
+    return result;
+}
+
+export const OR: Function = (c1: boolean, c2: boolean): boolean => c1 || c2;
+
+export const AND: Function = (c1: boolean, c2: boolean): boolean => c1 && c2;

@@ -105,7 +105,7 @@ fn traverse_directories(dir: String) {
                 let mut _j: usize = 0;
                 while _j < TRANSPILEABLES.lock().unwrap().len() {
                     if TRANSPILEABLES.lock().unwrap()[_j].type_ == get_file_extension(&_files[_i]) {
-                        let _file = vec![FileStruct {
+                        let _file: Vec<FileStruct> = vec![FileStruct {
                             dir: strip_dir(&dir),
                             file: _files[_i].clone(),
                         }];
