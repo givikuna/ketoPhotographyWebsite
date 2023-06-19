@@ -1,9 +1,7 @@
 import * as fs from 'fs';
-import * as f from './findPath';
-import * as syntax from '../extensions/syntax';
 
-const { supertrim } = syntax;
-const { findPath, logErr } = f;
+import { supertrim } from '../extensions/syntax';
+import { findPath, logErr } from './findPath'
 
 export const getDynLink: Function = (from: string = 'index'): string => {
     const cFunc: string = 'getDynLink';

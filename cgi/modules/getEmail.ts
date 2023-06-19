@@ -1,8 +1,7 @@
 import * as fs from 'fs';
-import * as f from './findPath';
-const { findPath, logErr } = f;
-import * as syntax from '../extensions/syntax';
-const { stringify, supertrim } = syntax;
+
+import { findPath, logErr } from './findPath';
+import { stringify, supertrim } from '../extensions/syntax';
 
 export const getEmail: Function = (data: JSON): string => {
     const cFunc: string = 'getEmail';

@@ -1,7 +1,5 @@
-import * as syntax from '../extensions/syntax';
-import * as fp from './findPath';
-const { stringify } = syntax;
-const { logErr } = fp;
+import { stringify } from '../extensions/syntax';
+import { logErr } from './findPath';
 
 export const getLang: Function = (url_info: any, file_name: string = 'index') => {
     const cFunc = 'getLang';

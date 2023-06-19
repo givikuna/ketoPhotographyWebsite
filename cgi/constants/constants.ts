@@ -1,8 +1,7 @@
-import * as syntax from "../extensions/syntax";
-const { isJSON, jsonify } = syntax;
 import * as fs from "fs";
-import * as f from "../modules/findPath";
-const { findPath } = f;
+
+import { isJSON, jsonify } from "../extensions/syntax";
+import { findPath } from "../modules/findPath";
 
 export const NULL: null = null;
 

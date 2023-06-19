@@ -1,19 +1,13 @@
 import * as url from "url";
 import * as fs from "fs";
-import * as syntax from "./extensions/syntax";
-import * as dynamicLinkGetter from "./modules/dynamicLinkGetter";
-import * as portServer from "./modules/portServer";
-import * as getExtSelect from "./modules/getExtSelect";
 import * as http from "http";
-import * as fp from "./modules/findPath";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-const { findPath } = fp;
-const { stringify } = syntax;
-const { getDynLink } = dynamicLinkGetter;
-const { getPort } = portServer;
-const { getExt } = getExtSelect;
+import { findPath } from "./modules/findPath";
+import { getDynLink } from "./modules/dynamicLinkGetter";
+import { getPort } from "./modules/portServer";
+import { getExt } from "./modules/getExtSelect";
 
 const filename = "src";
 const port = getPort(filename);
@@ -31,7 +25,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
         const fpath: fs.PathLike = findPath(["public"], "app." + getExt(url_info));
         const data: string = fs.existsSync(fpath)
-          ? stringify(
+          ? String(
             fs
               .readFileSync(fpath, "utf-8")
               .replace(/@dynamic_link/g, getDynLink(filename))

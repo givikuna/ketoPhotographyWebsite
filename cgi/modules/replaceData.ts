@@ -1,9 +1,6 @@
-import * as dynamicLinkGetter from './dynamicLinkGetter';
-import * as languageGetter from './getLang';
-import * as emailGetter from './getEmail';
-const { getEmail } = emailGetter;
-const { getLang } = languageGetter;
-const { getDynLink } = dynamicLinkGetter;
+import { getDynLink } from './dynamicLinkGetter';
+import { getLang } from './getLang';
+import { getEmail } from './getEmail';
 import { ParsedUrlQuery } from 'querystring';
 
 export const replaceData: Function = (data: string, url_info: ParsedUrlQuery | JSON = { "lang": 'en' }): string => {

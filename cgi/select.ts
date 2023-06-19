@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as url from 'url';
 
-import { isJSON, stringify, isBlank } from './extensions/syntax';
+import { isJSON, isBlank } from './extensions/syntax';
 import { getPort } from './modules/portServer';
 import { logErr, findPath } from './modules/findPath';
 import { ParsedUrlQuery } from 'querystring';
@@ -35,7 +35,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if (!isBlank(url_info) && 'page' in url_info && validPage(url_info.page)) {
             const fpath: fs.PathLike = findPath(['public', 'data', url_info.page], 'data.json');
-            const data: string = stringify(fs.readdirSync(fpath));
+            const data: string = String(fs.readdirSync(fpath));
             if (data.length === 0) {
                 console.log('WARN: the requested data is an empty array');
             } else if (isJSON(data)) {

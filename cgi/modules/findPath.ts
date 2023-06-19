@@ -1,8 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as syntax from '../extensions/syntax';
-
-const { len, print } = syntax;
 
 export const findPath: Function = (folders: string[], req: string, reqFrom: string = 'index'): string => {
     const cFunc: string = 'findPath';
@@ -12,7 +9,7 @@ export const findPath: Function = (folders: string[], req: string, reqFrom: stri
         let foundDir: boolean = false;
         let count: number = 0;
         let i: number = 0;
-        while (i < len(folders)) {
+        while (i < folders.length) {
             let folder: string = fPath + folders[i];
             if (fs.existsSync(folder)) {
                 if (i === 0 && !foundDir && count === 0) {
@@ -38,6 +35,6 @@ export const findPath: Function = (folders: string[], req: string, reqFrom: stri
 }
 
 export const logErr: Function = (cFunc: string, e: any, def: any = '', filename: string): any => {
-    print(`${filename} ${cFunc}() ERROR: ` + e);
+    console.log(`${filename} ${cFunc}() ERROR: ` + e);
     return def
 }

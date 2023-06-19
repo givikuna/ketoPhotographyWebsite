@@ -1,18 +1,12 @@
 import * as express from 'express';
 import * as fs from 'fs';
-import * as syntax from './extensions/syntax';
 import * as url from 'url';
-import * as f from './modules/findPath';
-import * as portServer from './modules/portServer';
-import * as dataReplacer from './modules/replaceData';
-import * as _getLang from './modules/getLang';
 
-const { replaceData } = dataReplacer;
-const { getPort } = portServer;
-const { findPath } = f;
+import { replaceData } from './modules/replaceData';
+import { getPort } from './modules/portServer'
+import { findPath } from './modules/findPath';
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http'
-const { stringify } = syntax;
 
 const filename: string = 'index';
 const port: number = getPort(filename);
@@ -29,7 +23,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         if (fs.existsSync(fpath)) {
             fs.readFile(fpath, 'utf-8', (err: NodeJS.ErrnoException | null | string, data: any) => {
                 if (err) throw err;
-                data = stringify(data);
+                data = String(data);
                 data = replaceData(data, url_info);
                 return w(data);
             });

@@ -4,8 +4,7 @@ import * as url from 'url';
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { stringify, len } from './extensions/syntax';
-import { getDynLink } from './modules/dynamicLinkGetter';
+import { len } from './extensions/syntax';
 import { getExt } from './modules/getComponentExt';
 import { getPort } from './modules/portServer';
 import { findPath } from './modules/findPath';
@@ -27,7 +26,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
         } else if ('c' in url_info) {
             const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
             if (fs.existsSync(fpath)) {
-                w(stringify(fs.readFileSync(fpath, 'utf-8')));
+                w(String(fs.readFileSync(fpath, 'utf-8')));
             }
         } else {
             throw new Error('Wrong input');

@@ -1,13 +1,5 @@
-import * as fp from './findPath';
-import * as syntax from '../extensions/syntax';
-
-const {
-    logErr
-} = fp;
-
-const {
-    isBlank
-} = syntax;
+import { isBlank } from '../extensions/syntax';
+import { logErr } from './findPath';
 
 export const getExt: Function = (url_info: any, file_name) => {
     if (isBlank(file_name)) {
