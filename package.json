@@ -15,7 +15,8 @@
     "render-lang": "./render_lang",
     "render-file": "./render_file",
     "build-render": "./build_render",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "./cleaner"
   },
   "repository": {
     "type": "git",

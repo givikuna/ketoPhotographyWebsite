@@ -27,6 +27,9 @@ pub struct FileStruct {
 }
 
 fn main() {
+    clean();
+    build();
+
     let json_content: String = fs::read_to_string("render.json").unwrap();
     let render_json: Vec<Transpileable> = serde_json::from_str(&json_content).unwrap();
 
@@ -40,17 +43,24 @@ fn main() {
             let cmd: String = el.command.clone() + " " + file_name_fixer(&_file.file);
             run_command(&cmd);
             if el.type_ == "rs" {
-                let mv_cmd: String = "mv ./target/debug".to_owned()
+                let mv_cmd: String = "mv ./target/debug/".to_owned()
                     + file_name_fixer(&_file.file)
                     + " "
                     + file_path(&_file.dir).as_str();
                 run_command(&mv_cmd);
             }
-
             j += 1;
         }
         i += 1;
     }
+}
+
+fn build() {
+    run_command(&"cargo run --bin build_render".to_string());
+}
+
+fn clean() {
+    run_command(&"cargo run --bin cleaner".to_string())
 }
 
 fn get_right_text(type_: String) -> &'static str {
@@ -98,10 +108,7 @@ fn run_command(cmd: &String) {
         .output()
         .expect("Failed to execute command");
 
-    if output.status.success() {
-        let stdout: std::borrow::Cow<'_, str> = String::from_utf8_lossy(&output.stdout);
-        println!("{}", stdout);
-    } else {
+    if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         println!("ERROR: {}", stderr);
     }

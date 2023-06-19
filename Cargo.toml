@@ -32,3 +32,7 @@ path = "gitcommit.rs"
 [[bin]]
 name = "render"
 path = "render.rs"
+
+[[bin]]
+name = "cleaner"
+path = "cleaner.rs"

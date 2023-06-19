@@ -6,6 +6,8 @@ render_lang
 render_file
 img_data
 build_render
+render
+cleaner
 gitcommit
 cgi/auth.js
 cgi/img.js
