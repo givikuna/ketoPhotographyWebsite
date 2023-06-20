@@ -11,8 +11,7 @@ fn main() {
     for _file in to_del {
         let output: std::process::Output = Command::new("bash")
             .arg("-c")
-            .arg("rm ./".to_owned() + _file)
-            .arg("sudo rm -r ./".to_owned() + _file)
+            .arg("rm ".to_owned() + _file)
             .output()
             .expect("Failed to run command");
         if output.status.success() {

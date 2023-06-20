@@ -36,3 +36,7 @@ path = "render.rs"
 [[bin]]
 name = "cleaner"
 path = "cleaner.rs"
+
+[[bin]]
+name = "get_components"
+path = "get_components.rs"

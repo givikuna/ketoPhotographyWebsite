@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Keto's Photography</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent"> </div>
+</nav>
+
+<script>
+    function isJSON(obj) {
+        try {
+            JSON.parse(obj);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    fetch('@dynamiclink:8094/?data=pages')
+        .then(response => response.json())
+        .then(data => {
+            data = String(data);
+            if (isJSON(data)) {
+                data = JSON.parse(data);
+            }
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].type == "page") {
+                    let content = "<li class=\"nav-item\"><a class=\"nav-link\" href=\"#@CURRENTPAGE\" onclick=\"changePage(\'@CURRENTPAGE\')\">@CURRENTDISPLAY</a></li>";
+                    document.getElementById('navbarSupportedContent').innerHTML += content.replace(/@CURRENTPAGE/g, data[i].page).replace(/@CURRENTDISPLAY/g, data[i].display);
+                } else if (data[i].type == "dropdown") {
+                    let content = "<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">@DROPDOWNS</div>";
+                    let dropdowns = "";
+                    for (let j = 0; j < data[i].dropdownItems.length; j++) {
+                        const PAGE = data[i].dropdownItems[j].page;
+                        const DISPLAY = data[i].dropdownItems[j].display;
+                        dropdowns += "<a class=\"dropdown-item\" onclick=\"changePage(" + PAGE + ") href=\"#" + PAGE + "\">" + DISPLAY + "</a>";
+                    }
+                    document.getElementById('navbarSupportedContent').innerHTML += content.replace(/@DROPDOWNS/g, dropdowns);
+                }
+            }
+            fetch('dynamiclink:8094/?data=languages').then(response2 => response2.json()).then(data2 => {
+                let languagesComponent = "";
+                data2 = String(data2);
+                if (isJSON(data2)) {
+                    data2 = JSON.parse(data2);
+                }
+                for (let i = 0; i < data2.length; i++) {
+                    languagesComponent += "<a class=\"dropdown-item\" onclick=\"changeLang(\'" + data2[i].lang + "\')>" + data2[i].display + "</a>";
+                }
+                document.getElementById('navbarSupportedContent').innerHTML += languagesComponent;
+            });
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+</script>
