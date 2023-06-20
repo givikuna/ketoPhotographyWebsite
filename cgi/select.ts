@@ -33,21 +33,19 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
     }
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
-        if (!isBlank(url_info) && 'page' in url_info && validPage(url_info.page)) {
-            const fpath: fs.PathLike = findPath(['public', 'data', url_info.page], 'data.json');
-            const data: string = String(fs.readdirSync(fpath));
-            if (data.length === 0) {
-                console.log('WARN: the requested data is an empty array');
-            } else if (isJSON(data)) {
-                return w(data);
-            } else {
-                throw new Error('invalid request');
+        if ('data' in url_info) {
+            if (url_info.data == "pages" || url_info.data == "languages") {
+                return w(String(fs.readFileSync(findPath(['public', 'data'], url_info.data))));
+            } else if (url_info.data == "components") {
+                return w(String(fs.readFileSync("../components.json")));
             }
-        } else {
-            throw new Error('invalid request');
         }
     } catch (e) {
         console.log(e);
         return w('');
     }
+});
+
+app.listen(port, (): void => {
+    console.log('Server is running on http://localhost:' + port + '/');
 });

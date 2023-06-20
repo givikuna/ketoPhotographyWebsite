@@ -17,12 +17,13 @@ fn main() {
 
 fn write_data() {
     let file_path: &str = "./img.json";
-    let serialized_json: Vec<u8> = serde_json::to_vec(&IMAGES.lock().unwrap().clone()).unwrap();
+    let to_json: Vec<u8> = serde_json::to_vec(&IMAGES.lock().unwrap().clone()).unwrap();
     let mut json_file: File = File::create(file_path).expect("Failed to create file");
     json_file
-        .write_all(&serialized_json)
+        .write_all(&to_json)
         .expect("Failed to write to file");
 }
+
 fn traverse_directories(dir: String) {
     let approved_file_extensions: Vec<String> =
         vec!["png".to_string(), "jpg".to_string(), "jpeg".to_string()];

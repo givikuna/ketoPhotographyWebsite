@@ -1,11 +1,13 @@
 node_modules
 target
 render.json
+components.json
 img.json
 render_lang
 render_file
 img_data
 build_render
+get_components
 render
 cleaner
 gitcommit

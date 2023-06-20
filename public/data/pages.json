@@ -1,0 +1,61 @@
+[
+    {
+        "type": "page",
+        "page": "home",
+        "display": "Home",
+        "subpages": []
+    },
+    {
+        "type": "page",
+        "page": "contact",
+        "display": "Contact",
+        "subpages": []
+    },
+    {
+        "type": "dropdown",
+        "dropdownItems": [
+            {
+                "type": "page",
+                "page": "aboutme",
+                "display": "About Me",
+                "subpages": []
+            },
+            {
+                "type": "page",
+                "page": "pricing",
+                "display": "Pricing",
+                "subpages": []
+            },
+            {
+                "type": "page",
+                "page": "equipment",
+                "display": "Equipment",
+                "subpages": []
+            }
+        ]
+    },
+    {
+        "type": "page",
+        "page": "albums",
+        "display": "Albums",
+        "subpages": [
+            {
+                "type": "multi",
+                "page": "gallery",
+                "display": "@GALLERYNAME"
+            }
+        ]
+    },
+    {
+        "type": "page",
+        "page": "blog",
+        "display": "Blog",
+        "subpages": []
+    },
+    {
+        "type": "page",
+        "page": "auth",
+        "display": "Log In",
+        "subpages": []
+    }
+]
