@@ -4,4 +4,4 @@ cargo build
 cargo build --release
 npm install
 cargo run --bin render
-./render
+npm run render

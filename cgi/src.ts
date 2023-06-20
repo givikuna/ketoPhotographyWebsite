@@ -28,7 +28,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
           ? String(
             fs
               .readFileSync(fpath, "utf-8")
-              .replace(/@dynamic_link/g, getDynLink(filename))
+              .replace(/@dynamiclink/g, getDynLink(filename))
           )
           : "";
         return w(data);

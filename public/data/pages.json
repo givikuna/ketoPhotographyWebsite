@@ -13,6 +13,7 @@
     },
     {
         "type": "dropdown",
+        "subpages": [],
         "dropdownItems": [
             {
                 "type": "page",
@@ -56,6 +57,17 @@
         "type": "page",
         "page": "auth",
         "display": "Log In",
-        "subpages": []
+        "subpages": [
+            {
+                "type": "default",
+                "page": "login",
+                "display": "Log In"
+            },
+            {
+                "type": "page",
+                "page": "signup",
+                "display": "Sign Up"
+            }
+        ]
     }
 ]

@@ -4,7 +4,7 @@
   "description": "A photography website for keto",
   "main": "index.js",
   "scripts": {
-    "render": "./render",
+    "render": "./get_components && ./img_data && ./render",
     "build": "python3 build.py",
     "commit": "./gitcommit",
     "start": "pm2 start pm2.config.js",
@@ -16,7 +16,8 @@
     "render-file": "./render_file",
     "build-render": "./build_render",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "./cleaner"
+    "clean": "./cleaner",
+    "generate": "./get_components"
   },
   "repository": {
     "type": "git",

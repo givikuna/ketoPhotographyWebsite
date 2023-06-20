@@ -49,8 +49,7 @@ fn main() {
         .expect("Failed to execute command");
 
     if buildrender_output.status.success() {
-        let stdout: std::borrow::Cow<'_, str> = String::from_utf8_lossy(&buildrender_output.stdout);
-        println!("built render.json w/ {}", stdout);
+        println!("built render.json");
     } else {
         let stderr: std::borrow::Cow<'_, str> = String::from_utf8_lossy(&buildrender_output.stderr);
         println!("Error: {}", stderr);
@@ -71,11 +70,7 @@ fn main() {
                 .output()
                 .expect("Failed to execute command");
             if output.status.success() {
-                let stdout: std::borrow::Cow<'_, str> = String::from_utf8_lossy(&output.stdout);
-                println!(
-                    "Rendered {} successfully with {}: \n{}",
-                    &_file.file, _cmd, stdout
-                );
+                println!("Rendered {} successfully with {}", &_file.file, _cmd);
 
                 move_file(&_file);
             } else {

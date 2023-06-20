@@ -21,10 +21,6 @@
     fetch('@dynamiclink:8094/?data=pages')
         .then(response => response.json())
         .then(data => {
-            data = String(data);
-            if (isJSON(data)) {
-                data = JSON.parse(data);
-            }
             for (let i = 0; i < data.length; i++) {
                 if (data[i].type == "page") {
                     let content = "<li class=\"nav-item\"><a class=\"nav-link\" href=\"#@CURRENTPAGE\" onclick=\"changePage(\'@CURRENTPAGE\')\">@CURRENTDISPLAY</a></li>";
@@ -42,10 +38,6 @@
             }
             fetch('dynamiclink:8094/?data=languages').then(response2 => response2.json()).then(data2 => {
                 let languagesComponent = "";
-                data2 = String(data2);
-                if (isJSON(data2)) {
-                    data2 = JSON.parse(data2);
-                }
                 for (let i = 0; i < data2.length; i++) {
                     languagesComponent += "<a class=\"dropdown-item\" onclick=\"changeLang(\'" + data2[i].lang + "\')>" + data2[i].display + "</a>";
                 }
