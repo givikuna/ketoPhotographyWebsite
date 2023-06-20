@@ -34,21 +34,23 @@ fn get_components() -> Vec<Component> {
     let files: fs::ReadDir = fs::read_dir("./public/components").unwrap();
     for file in files {
         let f: String = file.unwrap().path().display().to_string();
-        let component: Vec<Component> = vec![Component {
-            type_: Path::new(&f)
-                .extension()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string(),
-            component: Path::new(&f)
-                .file_stem()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string(),
-        }];
-        components.push(component[0].clone());
+        if !(Path::new(&f).file_stem().unwrap().to_str().unwrap().to_string() == "js") {
+            let component: Vec<Component> = vec![Component {
+                type_: Path::new(&f)
+                    .extension()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string(),
+                component: Path::new(&f)
+                    .file_stem()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string(),
+            }];
+            components.push(component[0].clone());
+        }
     }
 
     components
