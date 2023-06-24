@@ -23,7 +23,8 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
     try {
       if (req.url) {
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
-        const fpath: fs.PathLike = findPath(["public"], "app." + getExt(url_info));
+        const reqsModule = 'type' in url_info && (url_info.type == 'jQuery' || url_info.type == 'Bootstrap');
+        const fpath: fs.PathLike = findPath(reqsModule ? ["public", "lib"] : ["public"], (reqsModule ? url_info.type + "." : "app.") + getExt(url_info));
         const data: string = fs.existsSync(fpath)
           ? String(
             fs

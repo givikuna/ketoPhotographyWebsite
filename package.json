@@ -4,7 +4,7 @@
   "description": "A photography website for keto",
   "main": "index.js",
   "scripts": {
-    "render": "./get_components && ./img_data && ./render",
+    "render": "./get_components && ./render && ./img_data",
     "build": "python3 build.py",
     "commit": "./gitcommit",
     "start": "pm2 start pm2.config.js",
@@ -12,6 +12,7 @@
     "list": "pm2 list",
     "save": "pm2 save",
     "update-images": "./img_data",
+    "update-img": "./img_data",
     "render-lang": "./render_lang",
     "render-file": "./render_file",
     "build-render": "./build_render",

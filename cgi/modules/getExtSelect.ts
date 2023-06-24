@@ -12,7 +12,7 @@ export const getExt: Function = (url_info: any, file_name) => {
     try {
         if ('type' in url_info) {
             const m_type = url_info.type;
-            if (m_type == 'style' || m_type == 'css') {
+            if (m_type == 'style' || m_type == 'css' || m_type == 'Bootstrap') {
                 return 'css';
             }
         }
