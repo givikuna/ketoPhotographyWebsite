@@ -14,6 +14,7 @@
     {
         "type": "dropdown",
         "subpages": [],
+        "display": "About",
         "dropdownItems": [
             {
                 "type": "page",

@@ -2,8 +2,8 @@ function main(d, l, c) {
     const dynamiclink = d;
     const language = l;
     const contactemail = c;
-    buildApp();
-    buildNavBar();
+    // buildApp();
+    // buildNavBar();
 }
 
 function changePage(page) {
@@ -59,6 +59,7 @@ function build_nav_bar() {
         .then(data => {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].type == "page") {
+                    if (data[i].display.toLowerCase() == "home") continue;
                     let content = "<li class=\"nav-item\"><a class=\"nav-link\" href=\"#@CURRENTPAGE\" onclick=\"changePage(\'@CURRENTPAGE\')\">@CURRENTDISPLAY</a></li>";
                     document.getElementById('navbarSupportedContent').innerHTML += content.replace(/@CURRENTPAGE/g, data[i].page).replace(/@CURRENTDISPLAY/g, data[i].display);
                 } else if (data[i].type == "dropdown") {
