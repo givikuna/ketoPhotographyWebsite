@@ -41,3 +41,4 @@ tests/select.test.js
 tests/syntax.test.js
 tests/serve.test.js
 tests/replaceData.test.js
+cgi/modules/getPages.js

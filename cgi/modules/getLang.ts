@@ -9,10 +9,7 @@ export const getLang: Function = (url_info: ParsedUrlQuery, file_name: string = 
     const cFunc: string = 'getLang';
     const def: string = 'en';
     try {
-        const langs: string[] = getLangs();
-        if ('lang' in url_info && typeof url_info.lang === 'string' && langs.includes(url_info.lang)) {
-            return stringify(url_info.lang);
-        }
+        return ('lang' in url_info && typeof url_info.lang === 'string' && getLangs().includes(url_info.lang)) ? String(url_info.lang) : 'en';
     } catch (e) {
         return logErr(cFunc, e, def, file_name);
     }

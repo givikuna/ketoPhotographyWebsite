@@ -22,13 +22,8 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         const fpath: fs.PathLike = findPath(['public'], 'index.html');
-        if (fs.existsSync(fpath)) {
-            fs.readFile(fpath, 'utf-8', (err: NodeJS.ErrnoException | null | string, data: string) => {
-                if (err) throw err;
-                return w(replaceData(data, url_info));
-            });
-        } else return w('');
-    } catch (e) {
+        return fs.existsSync(fpath) ? w(replaceData(String(fs.readFileSync(fpath)), url_info)) : w('');
+    } catch (e: any) {
         console.log(e);
         return w('');
     }

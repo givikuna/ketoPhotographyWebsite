@@ -7,6 +7,7 @@ import { IncomingMessage, ServerResponse } from 'http'
 
 import { getPort } from './modules/portServer';
 import { logErr, findPath } from './modules/findPath';
+import { getPages } from './modules/getPages';
 
 const filename: string = 'select';
 const port: number = getPort(filename); // 8094
@@ -15,13 +16,9 @@ const validPage: Function = (page: string): boolean => {
     const cFunc = 'validPage';
     const def = false;
     try {
-        const pages: string[] = ['home', 'about', 'contact', 'blog', 'gallery'];
-        if (pages.includes(page)) {
-            return true;
-        }
-        return def;
+        return getPages().includes(page) ? true : false;
     } catch (e) {
-        logErr(cFunc, e, def, filename)
+        return logErr(cFunc, e, def, filename);
     }
 }
 
@@ -34,9 +31,10 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if ('data' in url_info) {
-            if (url_info.data as string === "pages" || url_info.data as string === "languages") {
+            if (url_info.data === "pages" || url_info.data === "languages") {
                 return w(String(fs.readFileSync(findPath(['public', 'data'], url_info.data as string + ".json"))));
-            } else if (url_info.data == "components") {
+            }
+            if (url_info.data === "components") {
                 return w(String(fs.readFileSync("../components.json")));
             }
         }

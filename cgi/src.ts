@@ -27,7 +27,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
       const fpath: fs.PathLike = findPath(reqsModule ? ["public", "lib"] : ["public"], (reqsModule ? url_info.type + "." : "app.") + getExt(url_info));
       return w(fs.existsSync(fpath) ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink(filename))) : "");
     }
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     res.write("");
     return res.end();

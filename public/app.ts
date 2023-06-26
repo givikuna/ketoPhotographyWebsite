@@ -5,7 +5,11 @@ function main(d: string, l: string, c: string): void {
     changeLang(language);
     changePage(getPage());
 
-    buildApp();
+    if (buildApp()) {
+        nav_bar();
+        footer();
+        addPages();
+    }
 }
 
 const getLang: Function = (lang: string): string => lang === 'ru' ? lang : (lang === 'ge' ? lang : 'en');
@@ -18,61 +22,68 @@ function changeLang(lang: string): void {
     //
 }
 
+const addPages: Function = (): void => {
+    let pages: string[] = []; // will contain a list of the pages' names
+    for (let i: number = 0; i < pages.length; i++) {
+        fetch('@dynamiclink:8095/?c=navbar')
+            .then(response => response.text())
+            .then(data => {
+                let div_: HTMLElement | HTMLDivElement = document.getElementById(pages[i] ? pages[i] : 'app');
+                div_.innerHTML += data;
+            })
+            .catch(error => {
+                console.log('Error:', error);
+            });
+    }
+}
+
 const getPage: Function = (): string => window.location.hash.slice(1);
 
-function buildApp(): void {
+function buildApp(): boolean {
     fetch('@dynamiclink:8094/?data=pages').then(response => response.json()).then(data => {
         for (let i: number = 0; i < data.length; i++) {
             let pageDiv: HTMLDivElement = document.createElement('div');
-            pageDiv.setAttribute('id', data[i].page);
+            pageDiv.setAttribute('id', data[i].page ? data[i].page : "ERROR");
             document.getElementById('app').appendChild(pageDiv);
             if (data[i].subpages !== 0) {
                 for (let j: number = 0; j < data[i].subpages.length; j++) {
-                    let subpageDiv = document.createElement('div');
-                    subpageDiv.setAttribute('id', data[i].subpages[j].page);
+                    let subpageDiv: HTMLDivElement = document.createElement('div');
+                    subpageDiv.setAttribute('id', data[i].subpages[j].page ? data[i].subpages[j].page : "ERROR");
                     document.getElementById('app').appendChild(subpageDiv);
                 }
             } else if ('dropdownItems' in data[i]) {
                 for (let j: number = 0; j < data[i].dropdownItems.length; j++) {
                     let subpageDiv: HTMLDivElement = document.createElement('div');
-                    subpageDiv.setAttribute('id', data[i].dropdownItems[j].page);
+                    subpageDiv.setAttribute('id', data[i].dropdownItems[j].page ? data[i].dropdownItems[j].page : "ERROR");
                     document.getElementById('app').appendChild(subpageDiv);
                 }
             }
         }
+        return true;
     });
-    nav_bar();
+    return false;
 }
 
 function nav_bar(): void {
-    fetch('@dynamiclink:8094/?data=pages')
-    .then(response => response.json())
-    .then(data => {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].type == "page") {
-                if (data[i].display.toLowerCase() === "home") continue;
-                let content: string = "<li class=\"nav-item\"><a class=\"nav-link\" href=\"#@CURRENTPAGE\" onclick=\"changePage(\'@CURRENTPAGE\')\">@CURRENTDISPLAY</a></li>";
-                document.getElementById('navbarSupportedContent').innerHTML += content.replace(/@CURRENTPAGE/g, data[i].page).replace(/@CURRENTDISPLAY/g, data[i].display);
-            } else if (data[i].type === "dropdown") {
-                let content: string = "<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">@DROPDOWNS</div>";
-                let dropdowns = "";
-                for (let j = 0; j < data[i].dropdownItems.length; j++) {
-                    const PAGE = data[i].dropdownItems[j].page;
-                    const DISPLAY = data[i].dropdownItems[j].display;
-                    dropdowns += "<a class=\"dropdown-item\" onclick=\"changePage(" + PAGE + ") href=\"#" + PAGE + "\">" + DISPLAY + "</a>";
-                }
-                document.getElementById('navbarSupportedContent').innerHTML += content.replace(/@DROPDOWNS/g, dropdowns);
-            }
-        }
-        fetch('dynamiclink:8094/?data=languages').then(response2 => response2.json()).then(data2 => {
-            let languagesComponent: string = "";
-            for (let i = 0; i < data2.length; i++) {
-                languagesComponent += "<a class=\"dropdown-item\" onclick=\"changeLang(\'" + data2[i].lang + "\')>" + data2[i].display + "</a>";
-            }
-            document.getElementById('navbarSupportedContent').innerHTML += languagesComponent;
+    fetch('@dynamiclink:8095/?c=navbar')
+        .then(response => response.text())
+        .then(data => {
+            let div_: HTMLElement = document.getElementById('navbar');
+            div_.innerHTML = data;
+        })
+        .catch(error => {
+            console.log('Error:', error);
         });
-    })
-    .catch(error => {
-        console.log('Error:', error);
-    });
+}
+
+function footer(): void {
+    fetch('@dynamiclink:8095/?c=footer')
+        .then(response => response.text())
+        .then(data => {
+            let div_: HTMLElement = document.getElementById('footer');
+            div_.innerHTML = data;
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
 }

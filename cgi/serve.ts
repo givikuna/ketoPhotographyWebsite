@@ -22,14 +22,13 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
     };
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
-        if (len(url_info) === 0)
-            throw new Error('Wrong input');
+        if (len(url_info) === 0) throw new Error('Wrong input');
         else if ('c' in url_info) {
             const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
             if (fs.existsSync(fpath)) return w(String(fs.readFileSync(fpath, 'utf-8')));
         }
         throw new Error('Wrong input');
-    } catch (e) {
+    } catch (e: any) {
         console.log(e);
         return w('');
     }
