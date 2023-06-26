@@ -1,14 +1,16 @@
 import * as fs from 'fs';
 
+import { ParsedUrlQuery } from 'querystring';
+
 import { stringify } from '../extensions/syntax';
 import { logErr, findPath } from './findPath';
 
-export const getLang: Function = (url_info: any, file_name: string = 'index') => {
-    const cFunc = 'getLang';
-    const def = 'en';
+export const getLang: Function = (url_info: ParsedUrlQuery, file_name: string = 'index') => {
+    const cFunc: string = 'getLang';
+    const def: string = 'en';
     try {
-        const langs = getLangs();
-        if ('lang' in url_info && langs.includes(url_info.lang)) {
+        const langs: string[] = getLangs();
+        if ('lang' in url_info && typeof url_info.lang === 'string' && langs.includes(url_info.lang)) {
             return stringify(url_info.lang);
         }
     } catch (e) {

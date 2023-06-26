@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export const findPath: Function = (folders: string[], req: string, reqFrom: string = 'index'): string => {
+export const findPath: Function = (folders: string[], req: string, reqFrom: string = 'index'): string | fs.PathLike => {
     const cFunc: string = 'findPath';
     const def: string = '';
     try {
@@ -26,9 +26,9 @@ export const findPath: Function = (folders: string[], req: string, reqFrom: stri
             count++;
             i++;
         }
-        let p: string = path.join(fPath, req);
+        let p: string | fs.PathLike = path.join(fPath, req);
         if (fs.existsSync(p)) return p;
-        return "";
+        return def;
     } catch (e) {
         return logErr(cFunc, e, def, reqFrom);
     }

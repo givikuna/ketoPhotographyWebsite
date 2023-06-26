@@ -14,10 +14,6 @@ export const stringify: Function = (obj: any): string => String(obj);
 
 export const jsonify: Function = (input: string): JSON | null => isJSON(input) ? JSON.parse(input) : null;
 
-export const supertrim: Function = (input: string): string => {
-    input = input.replace(/\r?\n|\r/g, "");
-    input = input.trim();
-    return input;
-}
+export const supertrim: Function = (input: string): string => input.replace(/\r?\n|\r/g, "").trim();
 
 export const len: Function = <T>(arr: Array<T> | string): number => arr.length;

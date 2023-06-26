@@ -2,18 +2,20 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as url from 'url';
 
-import { replaceData } from './modules/replaceData';
-import { getPort } from './modules/portServer'
-import { findPath } from './modules/findPath';
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http'
 
+import { replaceData } from './modules/replaceData';
+import { getPort } from './modules/portServer'
+import { findPath } from './modules/findPath';
+
+const app: express.Application = express();
+
 const filename: string = 'index';
-const port: number = getPort(filename);
-const app: any = express();
+const port: number = getPort(filename); // 8091
 
 app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: unknown): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     }
@@ -21,11 +23,9 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         const fpath: fs.PathLike = findPath(['public'], 'index.html');
         if (fs.existsSync(fpath)) {
-            fs.readFile(fpath, 'utf-8', (err: NodeJS.ErrnoException | null | string, data: any) => {
+            fs.readFile(fpath, 'utf-8', (err: NodeJS.ErrnoException | null | string, data: string) => {
                 if (err) throw err;
-                data = String(data);
-                data = replaceData(data, url_info);
-                return w(data);
+                return w(replaceData(data, url_info));
             });
         } else return w('');
     } catch (e) {
