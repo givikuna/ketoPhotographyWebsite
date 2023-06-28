@@ -1,3 +1,71 @@
-<nav id="navbar">
-    <!-- -->
-</nav>
+<div id="navbar">
+    <a href="#home" class="navbar-home-option" id="navbar-home-option">
+        <button id="home-plain-button" class="plain-button">
+            Home
+        </button>
+    </a>
+    <div class="navbar-right">
+        <a class="navbar-option" id="navbar-contact-option" href="#contact">
+            <button id="contact-plain-button" class="plain-button">
+                Contact
+            </button>
+        </a>
+        <a class="navbar-option" id="navbar-about-option" href="#about">
+            <button id="about-plain-button" class="plain-button">
+                About
+            </button>
+        </a>
+        <a class="navbar-option" id="navbar-pricing-option" href="pricing">
+            <button id="pricing-plain-button" class="plain-button">
+                Pricing
+            </button>
+        </a>
+        <a class="navbar-option" id="navbar-blog-option" href="blog">
+            <button id="blog-plain-button" class="plain-button">
+                Blog
+            </button>
+        </a>
+        <a class="navbar-option" id="navbar-albums-option" href="albums">
+            <button id="albums-plain-button" class="plain-button">
+                Albums
+            </button>
+        </a>
+    </div>
+</div>
+
+<style>
+    #navbar {
+        background-color: #d1cccc;
+        padding: 1% 1%;
+    }
+
+    .navbar-right {
+        float: right;
+        margin-right: 4%;
+    }
+
+    #navbar a {
+        color: black;
+        text-decoration: none;
+    }
+
+    .navbar-option {
+        margin-left: 0.006%;
+    }
+
+    #navbar button:hover {
+        color: rgb(59, 59, 59);
+        border-radius: 5px;
+    }
+
+    .plain-button {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+        cursor: pointer;
+    }
+</style>

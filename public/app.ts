@@ -40,6 +40,7 @@ const addPages: Function = (): void => {
 const getPage: Function = (): string => window.location.hash.slice(1);
 
 function buildApp(): boolean {
+    /*
     fetch('@dynamiclink:8094/?data=pages').then(response => response.json()).then(data => {
         for (let i: number = 0; i < data.length; i++) {
             let pageDiv: HTMLDivElement | HTMLElement = document.createElement('div');
@@ -62,13 +63,15 @@ function buildApp(): boolean {
         return true;
     });
     return false;
+    */
+   return true;
 }
 
 function nav_bar(): void {
     fetch('@dynamiclink:8095/?c=navbar')
         .then(response => response.text())
         .then(data => {
-            let div_: HTMLElement = document.getElementById('navbar');
+            let div_: HTMLElement = document.getElementById('navbar_div');
             div_.innerHTML = data;
         })
         .catch(error => {
@@ -80,7 +83,7 @@ function footer(): void {
     fetch('@dynamiclink:8095/?c=footer')
         .then(response => response.text())
         .then(data => {
-            let div_: HTMLElement = document.getElementById('footer');
+            let div_: HTMLElement = document.getElementById('footer_div');
             div_.innerHTML = data;
         })
         .catch(error => {

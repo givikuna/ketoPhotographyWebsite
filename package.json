@@ -18,7 +18,8 @@
     "build-render": "./build_render",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "./cleaner",
-    "generate": "./get_components"
+    "generate": "./get_components",
+    "render-ui": "tsc public/app.ts"
   },
   "repository": {
     "type": "git",

@@ -3,72 +3,42 @@
         "type": "page",
         "page": "home",
         "display": "Home",
-        "subpages": []
+        "subpages": [],
+        "components": []
     },
     {
         "type": "page",
         "page": "contact",
         "display": "Contact",
-        "subpages": []
-    },
-    {
-        "type": "dropdown",
         "subpages": [],
-        "display": "About",
-        "dropdownItems": [
-            {
-                "type": "page",
-                "page": "aboutme",
-                "display": "About Me",
-                "subpages": []
-            },
-            {
-                "type": "page",
-                "page": "pricing",
-                "display": "Pricing",
-                "subpages": []
-            },
-            {
-                "type": "page",
-                "page": "equipment",
-                "display": "Equipment",
-                "subpages": []
-            }
-        ]
+        "components": []
     },
     {
         "type": "page",
-        "page": "albums",
-        "display": "Albums",
-        "subpages": [
-            {
-                "type": "multi",
-                "page": "gallery",
-                "display": "@GALLERYNAME"
-            }
-        ]
+        "page": "pricing",
+        "display": "Pricing",
+        "subpages": [],
+        "components": []
+    },
+    {
+        "type": "page",
+        "page": "about",
+        "display": "About",
+        "subpages": [],
+        "components": []
     },
     {
         "type": "page",
         "page": "blog",
         "display": "Blog",
-        "subpages": []
+        "subpages": [],
+        "components": []
     },
     {
         "type": "page",
-        "page": "auth",
-        "display": "Log In",
-        "subpages": [
-            {
-                "type": "default",
-                "page": "login",
-                "display": "Log In"
-            },
-            {
-                "type": "page",
-                "page": "signup",
-                "display": "Sign Up"
-            }
-        ]
+        "page": "albums",
+        "display": "Albums",
+        "subpages": [],
+        "components": []
     }
 ]

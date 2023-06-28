@@ -50,5 +50,6 @@ test.html
 test.vue
 test.astro
 test.marko
-test.java
-test.rs
+test.css
+test.scss
+test.less
