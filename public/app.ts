@@ -42,7 +42,7 @@ const getPage: Function = (): string => window.location.hash.slice(1);
 function buildApp(): boolean {
     fetch('@dynamiclink:8094/?data=pages').then(response => response.json()).then(data => {
         for (let i: number = 0; i < data.length; i++) {
-            let pageDiv: HTMLDivElement = document.createElement('div');
+            let pageDiv: HTMLDivElement | HTMLElement = document.createElement('div');
             pageDiv.setAttribute('id', data[i].page ? data[i].page : "ERROR");
             document.getElementById('app').appendChild(pageDiv);
             if (data[i].subpages !== 0) {
@@ -53,7 +53,7 @@ function buildApp(): boolean {
                 }
             } else if ('dropdownItems' in data[i]) {
                 for (let j: number = 0; j < data[i].dropdownItems.length; j++) {
-                    let subpageDiv: HTMLDivElement = document.createElement('div');
+                    let subpageDiv: HTMLDivElement | HTMLElement = document.createElement('div');
                     subpageDiv.setAttribute('id', data[i].dropdownItems[j].page ? data[i].dropdownItems[j].page : "ERROR");
                     document.getElementById('app').appendChild(subpageDiv);
                 }

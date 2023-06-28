@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { isJSON } from '../extensions/syntax';
-import { findPath, logErr } from './findPath';
+import { findPath } from './findPath';
 
 export const getPages: Function = (): JSON => {
     const fpath: string | fs.PathLike = findPath(['public', 'data'], 'pages.json');

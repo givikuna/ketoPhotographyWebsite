@@ -1,14 +1,5 @@
 [
     {
-        "dependency": "Crystal",
-        "arch": "sudo pacman -Syy && sudo pacman -S crystal shards",
-        "debian": "curl -fsSL https://crystal-lang.org/install.sh | sudo bash",
-        "fedora": "curl -fsSL https://crystal-lang.org/install.sh | sudo bash",
-        "gentoo": "sudo emerge -a dev-lang/crystal",
-        "nixos": "sudo nix-shell -p crystal_1_7",
-        "suse": "sudo zypper --gpg-auto-import-keys install crystal"
-    },
-    {
         "dependency": "Rust",
         "arch": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
         "debian": "sudo apt update -y && sudo apt install -y cargo && sudo apt install -y rustc",

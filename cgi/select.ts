@@ -42,9 +42,8 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
         console.log(e);
         return w('');
     }
-}
-);
+});
 
 server.listen(port, (): void => {
-    console.log("Server is running on http://localhost:" + port + "/");
+    console.log(`Server is running on http://localhost:${port}/`);
 });

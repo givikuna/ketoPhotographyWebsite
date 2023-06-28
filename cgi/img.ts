@@ -3,12 +3,13 @@ import * as fs from 'fs';
 import * as url from 'url';
 
 import { ParsedUrlQuery } from 'querystring';
-import { IncomingMessage, ServerResponse } from 'http'
+import { IncomingMessage, ServerResponse } from 'http';
+import { Application } from 'express';
 
 import { findPath } from './modules/findPath';
 import { getPort } from './modules/portServer';
 
-const app: express.Application = express();
+const app: Application = express();
 
 const filename: string = 'img';
 const port: number = getPort(filename); // 8092
@@ -20,24 +21,23 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         return res.end();
     }
     try {
-        const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
+        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if ('img' in url_info && 'type' in url_info && typeof url_info.type === 'string') {
-            const fpath_arr: string[] = ['public', 'img', url_info.type];
+            const type_: string = url_info.type;
+            let arr: string[] = ['public', 'img', type_];
             const imgname: string = typeof url_info.img === 'string' ? url_info.img : null;
-            if (url_info.type === 'gallery' && 'gallery' in url_info && 'album' in url_info) {
-                fpath_arr.push(typeof url_info.album === 'string' ? url_info.album : null);
-                fpath_arr.push(typeof url_info.gallery === 'string' ? url_info.gallery : null);
-            } else if (url_info.type === 'icon')
-                fpath_arr.push('icons');
-            else
-                throw new Error('incorrect input');
 
-            const fpath: fs.PathLike = findPath(fpath_arr, imgname, filename);
-            if (fs.existsSync(fpath)) {
-                return w(fs.readFileSync(fpath));
-            } else {
-                throw new Error('image doesn\'t exist');
-            }
+            if (type_ === 'gallery' && 'gallery' in url_info && 'album' in url_info) {
+                arr.push(typeof url_info.album === 'string' ? url_info.album : null);
+                arr.push(typeof url_info.gallery === 'string' ? url_info.gallery : null);
+            } else if (type_ === 'icon')
+                arr.push('icons');
+            else
+                return w('');
+
+            const fpath: fs.PathLike = findPath(arr, imgname, filename);
+
+            return fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('');
         }
     } catch (e: any) {
         console.log(e);
@@ -46,5 +46,5 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
 });
 
 app.listen(port, (): void => {
-    console.log('Server is running on http://localhost:' + port + '/');
+    console.log(`Server is running on http://localhost:${port}/`);
 });

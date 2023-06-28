@@ -60,7 +60,7 @@ fn main() {
             files.push(_file.file.clone());
         }
     }
-    if files.contains(&file.to_string().clone()) {
+    if file_exists(&file.to_string(), &files) {
         let m_cmd: String =
             get_command(file.to_string().clone(), render_json).to_string() + " " + &file;
         let m_output = Command::new("bash")
@@ -92,5 +92,25 @@ fn get_command(file: String, arr: Vec<Transpileable>) -> String {
             }
         }
     }
-    return "".to_string();
+    "".to_string()
+}
+
+fn file_exists(file: &String, files: &Vec<String>) -> bool {
+    let mut flag: bool = false;
+    if files.contains(&file.to_string()) {
+        flag = true;
+    }
+    let mut i: usize = 0;
+    while &i < &files.len() {
+        println!("{}", &filename(&files[i]));
+        if &&filename(&files[i]) == &file {
+            flag = true;
+        }
+        i += 1;
+    }
+    flag
+}
+
+fn filename(file: &String) -> String {
+    std::path::Path::new(file).file_name().and_then(std::ffi::OsStr::to_str).unwrap().to_string()
 }

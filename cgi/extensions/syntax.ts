@@ -10,8 +10,6 @@ export const isJSON: Function = (obj: unknown): boolean => {
     }
 }
 
-export const stringify: Function = (obj: any): string => String(obj);
-
 export const jsonify: Function = (input: string): JSON | null => isJSON(input) ? JSON.parse(input) : null;
 
 export const supertrim: Function = (input: string): string => input.replace(/\r?\n|\r/g, "").trim();

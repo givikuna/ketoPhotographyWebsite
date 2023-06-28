@@ -42,3 +42,13 @@ tests/syntax.test.js
 tests/serve.test.js
 tests/replaceData.test.js
 cgi/modules/getPages.js
+public/app.js
+CMS/cms.js
+test.js
+test.ts
+test.html
+test.vue
+test.astro
+test.marko
+test.java
+test.rs
