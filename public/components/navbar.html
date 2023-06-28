@@ -5,31 +5,41 @@
         </button>
     </a>
     <div class="navbar-right">
-        <a class="navbar-option" id="navbar-contact-option" href="#contact">
-            <button id="contact-plain-button" class="plain-button">
-                Contact
-            </button>
-        </a>
-        <a class="navbar-option" id="navbar-about-option" href="#about">
-            <button id="about-plain-button" class="plain-button">
-                About
-            </button>
-        </a>
-        <a class="navbar-option" id="navbar-pricing-option" href="pricing">
-            <button id="pricing-plain-button" class="plain-button">
-                Pricing
-            </button>
-        </a>
-        <a class="navbar-option" id="navbar-blog-option" href="blog">
-            <button id="blog-plain-button" class="plain-button">
-                Blog
-            </button>
-        </a>
-        <a class="navbar-option" id="navbar-albums-option" href="albums">
-            <button id="albums-plain-button" class="plain-button">
-                Albums
-            </button>
-        </a>
+        <div class="navbar-option">
+            <a id="navbar-contact-option" href="#contact">
+                <button id="contact-plain-button" class="plain-button">
+                    Contact
+                </button>
+            </a>
+        </div>
+        <div class="navbar-option">
+            <a id="navbar-about-option" href="#about">
+                <button id="about-plain-button" class="plain-button">
+                    About
+                </button>
+            </a>
+        </div>
+        <div class="navbar-option">
+            <a id="navbar-pricing-option" href="pricing">
+                <button id="pricing-plain-button" class="plain-button">
+                    Pricing
+                </button>
+            </a>
+        </div>
+        <div class="navbar-option">
+            <a id="navbar-blog-option" href="blog">
+                <button id="blog-plain-button" class="plain-button">
+                    Blog
+                </button>
+            </a>
+        </div>
+        <div class="navbar-option">
+            <a id="navbar-albums-option" href="albums">
+                <button id="albums-plain-button" class="plain-button">
+                    Albums
+                </button>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -37,11 +47,15 @@
     #navbar {
         background-color: #d1cccc;
         padding: 1% 1%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .navbar-right {
-        float: right;
-        margin-right: 4%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
     }
 
     #navbar a {
@@ -50,7 +64,7 @@
     }
 
     .navbar-option {
-        margin-left: 0.006%;
+        margin-left: 8%;
     }
 
     #navbar button:hover {
@@ -64,7 +78,7 @@
         padding: 0;
         margin: 0;
         font-family: inherit;
-        font-size: inherit;
+        font-size: 120%;
         color: inherit;
         cursor: pointer;
     }
