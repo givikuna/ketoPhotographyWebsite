@@ -4,7 +4,10 @@
         "page": "home",
         "display": "Home",
         "subpages": [],
-        "components": []
+        "components": [
+            "facebook_api",
+            "small_aboutme"
+        ]
     },
     {
         "type": "page",

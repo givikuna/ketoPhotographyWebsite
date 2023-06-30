@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as url from 'url';
 
 import { ParsedUrlQuery } from "querystring";
-import { IncomingMessage, ServerResponse } from "http";
+import { IncomingMessage, ServerResponse, Server } from "http";
 
 import { len } from './extensions/syntax';
 import { getExt } from './modules/getComponentExt';
@@ -13,7 +13,7 @@ import { findPath } from './modules/findPath';
 const filename = 'serve'
 const port = getPort(filename); // 8095
 
-const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+const server: Server<typeof IncomingMessage, typeof ServerResponse> = http.createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {

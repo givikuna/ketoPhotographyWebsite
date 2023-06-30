@@ -1,9 +1,8 @@
 import * as fs from 'fs';
 import * as url from 'url';
-import * as http from 'http';
 
 import { ParsedUrlQuery } from 'querystring';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse, createServer } from 'http';
 import { Server } from 'http';
 
 import { getPort } from './modules/portServer';
@@ -23,7 +22,7 @@ const validPage: Function = (page: string): boolean => {
     }
 }
 
-const server: Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": "text/html" });
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data);

@@ -1,6 +1,5 @@
 import * as url from 'url';
 import * as fs from 'fs';
-import * as http from 'http';
 
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse, Server, createServer } from 'http';

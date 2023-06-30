@@ -5,6 +5,7 @@ import * as url from 'url';
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Application } from 'express';
+import { PathLike } from 'fs';
 
 import { findPath } from './modules/findPath';
 import { getPort } from './modules/portServer';
@@ -35,7 +36,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
             else
                 return w('');
 
-            const fpath: fs.PathLike = findPath(arr, imgname, filename);
+            const fpath: PathLike = findPath(arr, imgname, filename);
 
             return fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('');
         }
