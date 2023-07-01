@@ -1,0 +1,22 @@
+[
+    {
+        "icon": "facebook",
+        "file": "facebook.png"
+    },
+    {
+        "icon": "flickr",
+        "file": "flickr.png"
+    },
+    {
+        "icon": "instagram",
+        "file": "instagram.svg"
+    },
+    {
+        "icon": "pinterest",
+        "file": "pinterest.svg"
+    },
+    {
+        "icon": "youtube",
+        "file": "youtube.png"
+    }
+]

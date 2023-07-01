@@ -9,11 +9,21 @@ import { PathLike } from 'fs';
 
 import { findPath } from './modules/findPath';
 import { getPort } from './modules/portServer';
+import { getIcons } from './modules/getIcons';
+import { getFileExtension } from './extensions/syntax';
 
 const app: Application = express();
 
 const filename: string = 'img';
 const port: number = getPort(filename); // 8092
+
+function getIconExtension(icon: string): string {
+    let icons: any = getIcons();
+    for (let i: number = 0; i < icons.length; i++) {
+        if (icons[i].icon === icon) return `.${getFileExtension(icons[i].file)}`;
+    }
+    return '.png';
+}
 
 app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
@@ -23,23 +33,12 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
     }
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
-        if ('img' in url_info && 'type' in url_info && typeof url_info.type === 'string') {
+        if ('img' in url_info && typeof url_info.img === 'string' && 'type' in url_info && typeof url_info.type === 'string') {
             const type_: string = url_info.type;
-            let arr: string[] = ['public', 'img', type_];
-            const imgname: string = typeof url_info.img === 'string' ? url_info.img : null;
-
-            if (type_ === 'gallery' && 'gallery' in url_info && 'album' in url_info) {
-                arr.push(typeof url_info.album === 'string' ? url_info.album : null);
-                arr.push(typeof url_info.gallery === 'string' ? url_info.gallery : null);
-            } else if (type_ === 'icon')
-                arr.push('icons');
-            else
-                return w('');
-
-            const fpath: PathLike = findPath(arr, imgname, filename);
+            const fpath: PathLike = findPath(['public', 'assets', type_], url_info.img);
 
             return fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('');
-        }
+        } else throw new Error('Invalid request');
     } catch (e: any) {
         console.log(e);
         return w('');

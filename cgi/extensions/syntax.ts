@@ -20,7 +20,6 @@ export function supertrim(input: string): string {
     return input.replace(/\r?\n|\r/g, "").trim();
 }
 
-export function lengthOf<T>(input: Array<T> | string): number {
-    return input.length;
+export function getFileExtension(file: string): string {
+    return file.split('.').pop();
 }
-

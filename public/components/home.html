@@ -8,9 +8,50 @@
 <br>
 <br>
 
+<div class="image-gallery">
+    <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/305653417_807235380434514_8722089209226072148_n.jpg?_nc_cat=101&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=XcOsUm-zUMoAX9ipyk4&_nc_ht=scontent-lga3-2.xx&oh=00_AfDoifwI0FIYLL2GEahESHpb8iwZiRU-_sowhWYvoEgqZg&oe=64A36E10"
+        alt="Image 1">
+    <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/294639359_760018571822862_4470258014825449777_n.jpg?_nc_cat=111&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=2G60alL28RoAX9qRGI9&_nc_ht=scontent-lga3-2.xx&oh=00_AfC__2dNcrPvU5DlZwhdlAetIdJpzgFMutfEgCW3SKLv7g&oe=64A47F02"
+        alt="Image 2">
+    <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/292590532_586248233121489_6032948464711523399_n.jpg?_nc_cat=100&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=XSTRYcF3MuMAX86_NZt&_nc_ht=scontent-lga3-2.xx&oh=00_AfB2bfQgrg8RtIOkFwDc3_6uI36J3GlkJrkkFLqIb5BzVQ&oe=64A5504D"
+        alt="Image 3">
+    <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/292590532_586248233121489_6032948464711523399_n.jpg?_nc_cat=100&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=XSTRYcF3MuMAX86_NZt&_nc_ht=scontent-lga3-2.xx&oh=00_AfB2bfQgrg8RtIOkFwDc3_6uI36J3GlkJrkkFLqIb5BzVQ&oe=64A5504D"
+        alt="Image 4">
+    <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/292590532_586248233121489_6032948464711523399_n.jpg?_nc_cat=100&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=XSTRYcF3MuMAX86_NZt&_nc_ht=scontent-lga3-2.xx&oh=00_AfB2bfQgrg8RtIOkFwDc3_6uI36J3GlkJrkkFLqIb5BzVQ&oe=64A5504D"
+        alt="Image 5">
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 <style>
     #backgroundImage {
         width: 100%;
         opacity: 0.97;
+    }
+
+    .image-gallery {
+        width: 70%;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .image-gallery img {
+        width: calc(33.33% - 10px);
+        margin: 5px;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+        filter: blur(0.1px);
+    }
+
+    .image-gallery img:hover {
+        transform: scale(1.01);
+        filter: blur(0px);
     }
 </style>

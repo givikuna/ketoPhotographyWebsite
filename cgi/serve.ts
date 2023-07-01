@@ -5,10 +5,10 @@ import * as url from 'url';
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse, Server } from "http";
 
-import { lengthOf } from './extensions/syntax';
 import { getExt } from './modules/getComponentExt';
 import { getPort } from './modules/portServer';
 import { findPath } from './modules/findPath';
+import { replaceData } from './modules/replaceData';
 
 const filename = 'serve'
 const port = getPort(filename); // 8095
@@ -25,7 +25,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = http.creat
         if (Object.keys(url_info).length === 0) throw new Error('Wrong input');
         else if ('c' in url_info) {
             const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
-            if (fs.existsSync(fpath)) return w(String(fs.readFileSync(fpath, 'utf-8')));
+            if (fs.existsSync(fpath)) return w(replaceData(String(fs.readFileSync(fpath, 'utf-8')), url_info));
         }
         throw new Error('Wrong input');
     } catch (e: any) {

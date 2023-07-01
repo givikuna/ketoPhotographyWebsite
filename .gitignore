@@ -24,6 +24,7 @@ cgi/modules/portServer.js
 cgi/modules/getExtSelect.js
 cgi/modules/getLang.js
 cgi/modules/getEmail.js
+cgi/modules/getIcons.js
 cgi/modules/replaceData.js
 cgi/modules/getComponentExt.js
 tests/auth.test.js
