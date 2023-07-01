@@ -1,13 +1,13 @@
 const pages = [];
 
-function main(d, l, c) {
+async function main(d, l, c) {
     const dynamiclink = d ? d : 'ketojibladze.com';
     const language = l ? getLang(l) : 'en';
     const contactemail = c ? c : 'givitsvariani@proton.me';
 
     changeLang(language);
 
-    buildApp();
+    let built = await buildApp().then(updateApp).then(footer);
 }
 
 const getLang = lang => lang === 'ru' ? lang : (lang === 'ge' ? lang : 'en');
@@ -22,29 +22,31 @@ function changeLang(lang) {
 
 const getPage = () => window.location.hash.slice(1);
 
+async function getPages() {
+    const url = '@dynamiclink:8094/?data=pages';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('An error occurred while fetching dynamic data:', error);
+        return null;
+    }
+}
+
 async function buildApp() {
-    fetch('@dynamiclink:8094/?data=pages').then(response => response.json()).then(data => {
-        nav_bar();
-        footer();
-        for (let i = 0; i < lengthOf(data); i++) {
-            let pageDiv = document.createElement('div');
-            pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
-            document.getElementById('app').appendChild(pageDiv);
-            buildComponent(pageDiv.id);
-            if (data[i].components.length > 0) {
-                for (let j = 0; j < data[i].components.length; j++) {
-                    let componentDiv = document.createElement('div');
-                    componentDiv.setAttribute("id", data[i].components[j] ? data[i].components[j] : 'ERROR');
-                    pageDiv.appendChild(componentDiv);
-                    buildComponent(componentDiv.id);
-                }
-            }
-        }
-    }).then(() => {
-        updateApp();
-    }).catch(error => {
-        console.error(`Error: ${error}`);
-    });
+    const data = await getPages();
+    nav_bar();
+    for (let i = 0; i < data.length; i++) {
+        let pageDiv = document.createElement('div');
+        pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
+        document.getElementById('app').appendChild(pageDiv);
+        pages.push(data[i].page);
+        let _ = buildComponent(pageDiv.id);
+    }
+    return true;
 }
 
 function updateApp() {
@@ -66,15 +68,24 @@ function showPage(page) {
     document.getElementById(page).style.display = 'block';
 }
 
-const lengthOf = (l) => l.length;
+async function getComponent(component) {
+    try {
+        const response = await fetch(`@dynamiclink:8095/?c=${component}`);
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
 
 async function buildComponent(component) {
     let componentDiv = document.getElementById(component ? component : 'ERROR');
-    fetch(`@dynamiclink:8095/?c=${component}`).then(response => response.text()).then(data => {
-        componentDiv.innerHTML = data;
-    }).catch(error => {
-        console.error(`Error: ${error}`);
-    });
+    componentDiv.innerHTML = await getComponent(component);
+    return componentDiv;
 }
 
 function nav_bar() {

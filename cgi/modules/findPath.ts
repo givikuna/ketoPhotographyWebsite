@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { PathLike } from 'fs';
-export const findPath: Function = (folders: string[], req: string, reqFrom: string = 'index'): string | PathLike => {
+export function findPath(folders: string[], req: string, reqFrom: string = 'index'): string | PathLike {
     const cFunc: string = 'findPath';
     const def: string = '';
     try {
@@ -35,7 +35,7 @@ export const findPath: Function = (folders: string[], req: string, reqFrom: stri
     }
 }
 
-export const logErr: Function = (cFunc: string, e: any, def: any = '', filename: string): any => {
+export function logErr(cFunc: string, e: any, def: any = '', filename: string): any {
     console.log(`${filename} ${cFunc}() ERROR: ${e}`);
     return def
 }

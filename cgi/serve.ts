@@ -5,7 +5,7 @@ import * as url from 'url';
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse, Server } from "http";
 
-import { len } from './extensions/syntax';
+import { lengthOf } from './extensions/syntax';
 import { getExt } from './modules/getComponentExt';
 import { getPort } from './modules/portServer';
 import { findPath } from './modules/findPath';
@@ -22,7 +22,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = http.creat
     };
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url, true).query;
-        if (len(url_info) === 0) throw new Error('Wrong input');
+        if (Object.keys(url_info).length === 0) throw new Error('Wrong input');
         else if ('c' in url_info) {
             const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
             if (fs.existsSync(fpath)) return w(String(fs.readFileSync(fpath, 'utf-8')));

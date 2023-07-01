@@ -12,15 +12,17 @@ import { getPages } from './modules/getPages';
 const filename: string = 'select';
 const port: number = getPort(filename); // 8094
 
+/*
 const validPage: Function = (page: string): boolean => {
     const cFunc = 'validPage';
-    const def = false;
+    const _default = false;
     try {
         return getPages().includes(page) ? true : false;
     } catch (e) {
-        return logErr(cFunc, e, def, filename);
+        return logErr(cFunc, e, _default, filename);
     }
 }
+*/
 
 const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": "text/html" });
