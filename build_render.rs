@@ -84,6 +84,7 @@ fn traverse_directories(dir: String) {
         "archived".to_string(),
         "components".to_string(),
         "lib".to_string(),
+        "types".to_string(),
     ];
 
     let approved_file_extensions: Vec<String> =

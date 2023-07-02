@@ -7,7 +7,9 @@ async function main(d, l, c) {
 
     changeLang(language);
 
-    let built = await buildApp().then(updateApp).then(footer);
+    let built = await buildApp().then(updateApp).then(() => {
+        footer(dynamiclink);
+    });
 }
 
 const getLang = lang => lang === 'ru' ? lang : (lang === 'ge' ? lang : 'en');
@@ -18,6 +20,34 @@ window.addEventListener('hashchange', function () {
 
 function changeLang(lang) {
     //
+}
+
+function footer(dynamiclink) {
+    document.getElementById('footer_div').style.display = 'block';
+    document.getElementById('footer_div').innerHTML = `
+    <footer>
+        <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
+                class="imagee_"></a>
+        <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
+                class="imagee_"></a>
+        <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
+                class="imagee_"></a>
+        <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
+                class="imagee_"></a>
+        <a href="https://www.youtube.com"><img src="${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
+                class="imagee_"></a>
+        <div>
+            <p>
+                <a href="#contact" class="contact-link">
+                    Contact Me
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <br>
+    <br>
+    `;
 }
 
 const getPage = () => window.location.hash.slice(1);
@@ -38,7 +68,6 @@ async function getPages() {
 
 async function buildApp() {
     const data = await getPages();
-    nav_bar();
     for (let i = 0; i < data.length; i++) {
         let pageDiv = document.createElement('div');
         pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
@@ -86,22 +115,4 @@ async function buildComponent(component) {
     let componentDiv = document.getElementById(component ? component : 'ERROR');
     componentDiv.innerHTML = await getComponent(component);
     return componentDiv;
-}
-
-function nav_bar() {
-    fetch('@dynamiclink:8095/?c=navbar').then(response => response.text()).then(data => {
-        let div_ = document.getElementById('navbar_div');
-        div_.innerHTML = data;
-    }).catch(error => {
-        console.error(`Error: ${error}`);
-    });
-}
-
-function footer() {
-    fetch('@dynamiclink:8095/?c=footer').then(response => response.text()).then(data => {
-        let div_ = document.getElementById('footer_div');
-        div_.innerHTML = data;
-    }).catch(error => {
-        console.error(`Error: ${error}`);
-    });
 }

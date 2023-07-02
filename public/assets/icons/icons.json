@@ -1,22 +1,27 @@
 [
     {
         "icon": "facebook",
-        "file": "facebook.png"
+        "file": "facebook.png",
+        "extension": "png"
     },
     {
         "icon": "flickr",
-        "file": "flickr.png"
+        "file": "flickr.png",
+        "extension": "png"
     },
     {
         "icon": "instagram",
-        "file": "instagram.svg"
+        "file": "instagram.svg",
+        "extension": "svg"
     },
     {
         "icon": "pinterest",
-        "file": "pinterest.svg"
+        "file": "pinterest.svg",
+        "extension": "svg"
     },
     {
         "icon": "youtube",
-        "file": "youtube.png"
+        "file": "youtube.png",
+        "extension": "png"
     }
 ]

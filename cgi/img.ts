@@ -6,11 +6,11 @@ import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Application } from 'express';
 import { PathLike } from 'fs';
+import { SocialMediaIcon } from './types/types';
 
 import { findPath } from './modules/findPath';
 import { getPort } from './modules/portServer';
 import { getIcons } from './modules/getIcons';
-import { getFileExtension } from './extensions/syntax';
 
 const app: Application = express();
 
@@ -18,9 +18,9 @@ const filename: string = 'img';
 const port: number = getPort(filename); // 8092
 
 function getIconExtension(icon: string): string {
-    let icons: any = getIcons();
+    let icons: SocialMediaIcon[] = getIcons();
     for (let i: number = 0; i < icons.length; i++) {
-        if (icons[i].icon === icon) return `.${getFileExtension(icons[i].file)}`;
+        if (icons[i].icon === icon) return `.${icons[i].extension}`;
     }
     return '.png';
 }
@@ -35,7 +35,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if ('img' in url_info && typeof url_info.img === 'string' && 'type' in url_info && typeof url_info.type === 'string') {
             const type_: string = url_info.type;
-            const fpath: PathLike = findPath(['public', 'assets', type_], url_info.img);
+            const fpath: PathLike = findPath(['public', 'assets', type_], `${url_info.img}${getIconExtension(url_info.img)}`);
 
             return fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('');
         } else throw new Error('Invalid request');
