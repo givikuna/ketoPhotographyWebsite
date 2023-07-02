@@ -19,13 +19,13 @@ export function getIcons(): SocialMediaIcon[] {
         },
         {
             "icon": "instagram",
-            "file": "instagram.svg",
-            "extension": "svg"
+            "file": "instagram.png",
+            "extension": "png"
         },
         {
             "icon": "pinterest",
-            "file": "pinterest.svg",
-            "extension": "svg"
+            "file": "pinterest.png",
+            "extension": "png"
         },
         {
             "icon": "youtube",
@@ -34,7 +34,7 @@ export function getIcons(): SocialMediaIcon[] {
         }
     ]
     try {
-        return JSON.parse(fs.readFileSync(findPath(['public', 'assets'], 'icons.json'), 'utf-8'));
+        return JSON.parse(fs.readFileSync(findPath(['public', 'assets', 'icons'], 'icons.json'), 'utf-8'));
     } catch (e: any) {
         return logErr(cFunc, e, default_, 'img');
     }

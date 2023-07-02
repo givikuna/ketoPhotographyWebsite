@@ -1,16 +1,13 @@
-import * as constants from '../constants/constants';
+import { logErr } from './findPath';
 
-const { PORTS } = constants;
+import { Ports } from '../constants/constants';
 
 export function getPort(servername: string): number {
-    const _default: number = 8080;
-    if (PORTS.length === 0)
-        console.log('ERROR: ports.json is not functioning properly, assigning 8080 by _defaultault to all');
-
-    for (const server of PORTS)
-        if ('port' in server && 'filename' in server && String(server.filename) === String(servername))
-            return typeof server.port === 'number' ? server.port : _default;
-
-    console.log(`${servername} ERROR: ${servername}\'s port wasn\'t found, so ${_default} will be assigned to all by dafault`);
-    return _default;
+    const cFunc: string = 'getPort';
+    const default_: number = 8080;
+    try {
+        return Ports[servername];
+    } catch (e: any) {
+        return logErr(cFunc, e, default_, servername);
+    }
 }

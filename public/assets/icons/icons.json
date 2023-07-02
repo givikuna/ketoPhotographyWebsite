@@ -11,13 +11,13 @@
     },
     {
         "icon": "instagram",
-        "file": "instagram.svg",
-        "extension": "svg"
+        "file": "instagram.png",
+        "extension": "png"
     },
     {
         "icon": "pinterest",
-        "file": "pinterest.svg",
-        "extension": "svg"
+        "file": "pinterest.png",
+        "extension": "png"
     },
     {
         "icon": "youtube",

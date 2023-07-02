@@ -36,6 +36,10 @@ function footer(dynamiclink) {
                 class="imagee_"></a>
         <a href="https://www.youtube.com"><img src="${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
                 class="imagee_"></a>
+
+        <br>
+        <br>
+
         <div>
             <p>
                 <a href="#contact" class="contact-link">
