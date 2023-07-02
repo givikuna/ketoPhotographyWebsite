@@ -5,7 +5,7 @@ use std::fs;
 use std::process::Command;
 
 #[derive(Clone, Serialize, Debug, Deserialize)]
-pub struct Transpileable {
+pub struct Compileable {
     type_: String,
     command: String,
     files: Vec<FileStruct>,
@@ -31,12 +31,12 @@ fn main() {
     build();
 
     let json_content: String = fs::read_to_string("render.json").unwrap();
-    let render_json: Vec<Transpileable> = serde_json::from_str(&json_content).unwrap();
+    let render_json: Vec<Compileable> = serde_json::from_str(&json_content).unwrap();
 
     let mut i: usize = 0;
     while i < render_json.len() {
         let mut j: usize = 0;
-        let el: &Transpileable = &render_json[i];
+        let el: &Compileable = &render_json[i];
         while j < render_json[i].files.len() {
             let _file: &FileStruct = &render_json[i].files[j];
             println!("{} {}", get_right_text(el.type_.clone()), _file.file);
@@ -109,7 +109,7 @@ fn run_command(cmd: &String) {
         .expect("Failed to execute command");
 
     if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr: std::borrow::Cow<'_, str> = String::from_utf8_lossy(&output.stderr);
         println!("ERROR: {}", stderr);
     }
 }

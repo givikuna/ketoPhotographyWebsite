@@ -12,23 +12,23 @@ lazy_static! {
 }
 
 lazy_static! {
-    static ref TRANSPILEABLES: Mutex<Vec<Transpileable>> = Mutex::new(vec![
-        Transpileable {
+    static ref COMPILEABLES: Mutex<Vec<Compileable>> = Mutex::new(vec![
+        Compileable {
             type_: String::from("rs"),
             command: String::from("cargo build --bin"),
             files: vec![],
         },
-        Transpileable {
+        Compileable {
             type_: String::from("ts"),
             command: String::from("tsc"),
             files: vec![],
         },
-        Transpileable {
+        Compileable {
             type_: String::from("cr"),
             command: String::from("crystal build"),
             files: vec![],
         },
-        Transpileable {
+        Compileable {
             type_: String::from("sh"),
             command: String::from("sudo chmod +x"),
             files: vec![],
@@ -37,7 +37,7 @@ lazy_static! {
 }
 
 #[derive(Serialize, Clone, Debug)]
-pub struct Transpileable {
+pub struct Compileable {
     type_: String,
     command: String,
     files: Vec<FileStruct>,
@@ -60,12 +60,12 @@ impl Clone for FileStruct {
 
 fn main() {
     traverse_directories("./".to_string());
-    save_data(TRANSPILEABLES.lock().unwrap().clone());
+    save_data(COMPILEABLES.lock().unwrap().clone());
 }
 
-fn save_data(_transpileables: Vec<Transpileable>) {
+fn save_data(_Compileables: Vec<Compileable>) {
     let file_path: &str = "./render.json";
-    let serialized_json: Vec<u8> = serde_json::to_vec(&_transpileables).unwrap();
+    let serialized_json: Vec<u8> = serde_json::to_vec(&_Compileables).unwrap();
     let mut json_file: std::fs::File = File::create(file_path).expect("Failed to create file");
     json_file
         .write_all(&serialized_json)
@@ -106,13 +106,13 @@ fn traverse_directories(dir: String) {
         } else {
             if approved_file_extensions.contains(&get_file_extension(&_files[_i])) {
                 let mut _j: usize = 0;
-                while _j < TRANSPILEABLES.lock().unwrap().len() {
-                    if TRANSPILEABLES.lock().unwrap()[_j].type_ == get_file_extension(&_files[_i]) {
+                while _j < COMPILEABLES.lock().unwrap().len() {
+                    if COMPILEABLES.lock().unwrap()[_j].type_ == get_file_extension(&_files[_i]) {
                         let _file: Vec<FileStruct> = vec![FileStruct {
                             dir: strip_dir(&dir),
                             file: _files[_i].clone(),
                         }];
-                        TRANSPILEABLES.lock().unwrap()[_j]
+                        COMPILEABLES.lock().unwrap()[_j]
                             .files
                             .push(_file[0].clone());
                     }

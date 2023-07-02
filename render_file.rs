@@ -5,7 +5,7 @@ use std::io;
 use std::process::Command;
 
 #[derive(Clone, Serialize, Debug, Deserialize)]
-pub struct Transpileable {
+pub struct Compileable {
     type_: String,
     command: String,
     files: Vec<FileStruct>,
@@ -53,7 +53,7 @@ fn main() {
     }
 
     let json_content: String = fs::read_to_string("render.json").unwrap();
-    let render_json: Vec<Transpileable> = serde_json::from_str(&json_content).unwrap();
+    let render_json: Vec<Compileable> = serde_json::from_str(&json_content).unwrap();
     let mut files: Vec<String> = Vec::new();
     for item in render_json.clone() {
         for _file in &item.files {
@@ -78,13 +78,13 @@ fn main() {
             return;
         }
     } else {
-        println!("{} isn't compileable/transpileable or doesn't exist", file);
+        println!("{} isn't compileable/Compileable or doesn't exist", file);
     }
 
     return;
 }
 
-fn get_command(file: String, arr: Vec<Transpileable>) -> String {
+fn get_command(file: String, arr: Vec<Compileable>) -> String {
     for el in arr.clone() {
         for _file in el.files.clone() {
             if _file.file == file {
