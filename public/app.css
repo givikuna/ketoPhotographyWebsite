@@ -3,6 +3,10 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 footer {
     text-align: center;
     margin-top: 20px;
@@ -45,35 +49,6 @@ footer p a:hover {
     transform: scale(4);
 }
 
-#navbar {
-    background-color: #3A3A3B;
-    color: white;
-    padding: 1% 1%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar-right {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-#navbar a {
-    color: white;
-    text-decoration: none;
-}
-
-.navbar-option {
-    margin-left: 8%;
-}
-
-#navbar button:hover {
-    color: rgb(218, 216, 216);
-    border-radius: 5px;
-}
-
 .plain-button {
     background: none;
     border: none;
@@ -83,4 +58,49 @@ footer p a:hover {
     font-size: 120%;
     color: inherit;
     cursor: pointer;
+}
+
+#homepage-navbar-div {
+    background-image: url("https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/246018913_426724492407198_4330767959258349349_n.jpg?_nc_cat=109&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=dorQQJ_hKqwAX_RFhlb&_nc_ht=scontent-lga3-2.xx&oh=00_AfCTnMJXMd17OvdKUaou2RDlGPjykVn3cCQRqt5fIx-Tqg&oe=64A7D19A");
+    display: none;
+    width: 100%;
+    opacity: 0.97;
+    background-repeat: no-repeat;
+    height: 100%;
+    transition: background-image 0.5s ease, filter 0.5s ease;
+    filter: blur(0);
+    background-position: center;
+}
+
+#homepage-navbar-div.blur {
+    filter: blur(10px);
+}
+
+.navbar-container {
+    position: absolute;
+    width: auto;
+    margin-left: 65%;
+    margin-top: 1%;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #3A3A3B;
+}
+
+#navbar-home-option {
+    font-size: 17.5px;
+}
+
+.navbar a {
+    text-decoration: none;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 24px;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: gray;
 }
