@@ -63,9 +63,9 @@ fn main() {
     save_data(COMPILEABLES.lock().unwrap().clone());
 }
 
-fn save_data(_Compileables: Vec<Compileable>) {
+fn save_data(_compileables: Vec<Compileable>) {
     let file_path: &str = "./render.json";
-    let serialized_json: Vec<u8> = serde_json::to_vec(&_Compileables).unwrap();
+    let serialized_json: Vec<u8> = serde_json::to_vec(&_compileables).unwrap();
     let mut json_file: std::fs::File = File::create(file_path).expect("Failed to create file");
     json_file
         .write_all(&serialized_json)

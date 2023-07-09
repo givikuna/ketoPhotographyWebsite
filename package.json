@@ -4,21 +4,15 @@
   "description": "A photography website for keto",
   "main": "index.js",
   "scripts": {
-    "render": "./render",
+    "render": "python3 render.py",
     "build": "python3 build.py",
-    "commit": "./gitcommit",
     "start": "pm2 start pm2.config.js",
     "stop": "pm2 stop all",
     "list": "pm2 list",
     "save": "pm2 save",
-    "update-images": "./img_data",
-    "update-img": "./img_data",
-    "render-lang": "./render_lang",
-    "render-file": "./render_file",
     "build-render": "./build_render",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "./cleaner",
-    "generate": "./get_components"
+    "clean": "./cleaner"
   },
   "repository": {
     "type": "git",
