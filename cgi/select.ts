@@ -6,8 +6,7 @@ import { IncomingMessage, ServerResponse, createServer } from 'http';
 import { Server } from 'http';
 
 import { getPort } from './modules/portServer';
-import { logErr, findPath } from './modules/findPath';
-import { getPages } from './modules/getPages';
+import { findPath } from './modules/findPath';
 
 const filename: string = 'select';
 const port: number = getPort(filename); // 8094

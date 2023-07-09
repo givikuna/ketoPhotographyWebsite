@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { PathLike } from 'fs';
+
 export function findPath(folders: string[], req: string, reqFrom: string = 'index'): string | PathLike {
     const cFunc: string = 'findPath';
     const default_: string = '';

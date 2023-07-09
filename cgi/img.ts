@@ -4,15 +4,13 @@ import * as url from 'url';
 
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http';
-import { Application } from 'express';
-import { PathLike } from 'fs';
 import { SocialMediaIcon } from './types/types';
 
 import { findPath } from './modules/findPath';
 import { getPort } from './modules/portServer';
 import { getIcons } from './modules/getIcons';
 
-const app: Application = express();
+const app: express.Application = express();
 
 const filename: string = 'img';
 const port: number = getPort(filename); // 8092
@@ -35,7 +33,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if ('img' in url_info && typeof url_info.img === 'string' && 'type' in url_info && typeof url_info.type === 'string') {
             const type_: string = url_info.type;
-            const fpath: PathLike = findPath(['public', 'assets', type_], `${url_info.img}${getIconExtension(url_info.img)}`);
+            const fpath: fs.PathLike = findPath(['public', 'assets', type_], `${url_info.img}${getIconExtension(url_info.img)}`);
 
             return fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('');
         } else throw new Error('Invalid request');

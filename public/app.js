@@ -43,7 +43,7 @@ window.addEventListener('hashchange', function () {
     updateApp();
 });
 
-setInterval(changeBackgroundImage, 3000);
+setInterval(changeBackgroundImage, 10000);
 
 function changeBackgroundImage() {
     if (getPage() === 'home')

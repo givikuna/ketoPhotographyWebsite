@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { supertrim } from '../extensions/syntax';
-import { findPath, logErr } from './findPath'
+import { findPath, logErr } from './findPath';
 
 export function getDynLink(from: string = 'index'): fs.PathLike {
     const cFunc: string = 'getDynLink';

@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as fs from 'fs';
 import * as url from 'url';
 
 import { ParsedUrlQuery } from 'querystring';

@@ -1,5 +1,3 @@
-import * as fs from "fs";
-
 export const NULL: null = null;
 
 export const ZERO: number = 0;

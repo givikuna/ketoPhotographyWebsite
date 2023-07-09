@@ -4,14 +4,12 @@ import * as url from 'url';
 
 import { ParsedUrlQuery } from 'querystring';
 import { IncomingMessage, ServerResponse } from 'http';
-import { PathLike } from 'fs';
-import { Application } from 'express';
 
 import { replaceData } from './modules/replaceData';
 import { getPort } from './modules/portServer'
 import { findPath } from './modules/findPath';
 
-const app: Application = express();
+const app: express.Application = express();
 
 const filename: string = 'index';
 const port: number = getPort(filename); // 8091
@@ -23,7 +21,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
     }
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
-        const fpath: PathLike = findPath(['public'], 'index.html');
+        const fpath: fs.PathLike = findPath(['public'], 'index.html');
         return fs.existsSync(fpath) ? w(replaceData(String(fs.readFileSync(fpath)), url_info)) : w('');
     } catch (e: any) {
         console.log(e);
