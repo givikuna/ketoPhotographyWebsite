@@ -39,6 +39,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
                 return w(String(fs.readFileSync("../components.json")));
             }
         }
+        return w('')
     } catch (e) {
         console.log(e);
         return w('');

@@ -24,7 +24,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
             const reqsLib: boolean = 'type' in url_info && (url_info.type == 'jQuery' || url_info.type == 'Bootstrap');
             const fpath: PathLike = findPath(reqsLib ? ["public", "lib"] : ["public"], (reqsLib ? url_info.type + "." : "app.") + getExt(url_info));
             return w(fs.existsSync(fpath) ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink(filename).toString())) : "");
-        } else w('');
+        } else return w('');
     } catch (e) {
         console.log(e);
         return w('');

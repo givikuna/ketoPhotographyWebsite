@@ -9,6 +9,6 @@ export function getExt(url_info: ParsedUrlQuery, filename: string = 'src'): stri
         const m_type: string = url_info.type as string;
         return (m_type === 'style' || m_type === 'css') ? 'css' : 'js';
     } catch (e: any) {
-        logErr(cFunc, e, def, filename);
+        return logErr(cFunc, e, def, filename);
     }
 }

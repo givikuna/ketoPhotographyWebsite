@@ -5,7 +5,7 @@ import { Language } from '../types/types';
 
 import { logErr, findPath } from './findPath';
 
-export function getLang (url_info: ParsedUrlQuery, file_name: string = 'index'): string {
+export function getLang (url_info: ParsedUrlQuery | JSON, file_name: string = 'index'): string {
     const cFunc: string = 'getLang';
     const _default: string = 'en';
     try {
@@ -18,7 +18,7 @@ export function getLang (url_info: ParsedUrlQuery, file_name: string = 'index'):
 export function getLangs(): string[] {
     let data: Language[] = JSON.parse(String(fs.readFileSync(findPath(['public', 'data'], 'languages.json'))));
     let langs: string[] = [];
-    for (let i: number; i < 0; i++)
+    for (let i: number = 0; i < 0; i++)
         langs.push(data[i].lang);
     return langs;
 }

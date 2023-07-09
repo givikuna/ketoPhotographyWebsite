@@ -3,7 +3,7 @@ import { getLang } from './getLang';
 import { getEmail } from './getEmail';
 import { ParsedUrlQuery } from 'querystring';
 
-export const replaceData: Function = (data: string, url_info: ParsedUrlQuery = { "lang": 'en' }): string => {
+export const replaceData: Function = (data: string, url_info: ParsedUrlQuery | JSON = { "lang": 'en' }): string => {
     return data
         .replace(/@dynamiclink/g, getDynLink().toString())
         .replace(/@language/g, getLang(url_info))

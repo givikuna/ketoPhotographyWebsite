@@ -20,6 +20,6 @@ export function supertrim(input: string): string {
     return input.replace(/\r?\n|\r/g, "").trim();
 }
 
-export function getFileExtension(file: string): string {
-    return file.split('.').pop();
+export function getFileExtension(file: string): string | undefined {
+    return file.split('.').length > 1 ? file.split('.').pop() : undefined;
 }
