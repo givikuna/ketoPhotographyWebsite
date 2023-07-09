@@ -24,11 +24,6 @@ lazy_static! {
             files: vec![],
         },
         Compileable {
-            type_: String::from("cr"),
-            command: String::from("crystal build"),
-            files: vec![],
-        },
-        Compileable {
             type_: String::from("sh"),
             command: String::from("sudo chmod +x"),
             files: vec![],
@@ -88,7 +83,7 @@ fn traverse_directories(dir: String) {
     ];
 
     let approved_file_extensions: Vec<String> =
-        vec!["rs".to_string(), "ts".to_string(), "cr".to_string()];
+        vec!["rs".to_string(), "ts".to_string(), "sh".to_string()];
 
     let paths: std::fs::ReadDir = fs::read_dir(dir.clone()).unwrap();
     let mut _files: Vec<String> = Vec::new();

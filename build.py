@@ -10,8 +10,4 @@ if install_rust == "y": os.system(data[0]["a"])
 install_typescript = input("install typescript? (y/n): ")
 if install_typescript == "y": os.system(data[1]["a"])
 
-os.system("cargo build")
-os.system("npm install")
-
-os.system("cargo run --bin build_render")
-os.system("python3 render.py")
+os.system("chmod +x ./build.sh && ./build.sh")
