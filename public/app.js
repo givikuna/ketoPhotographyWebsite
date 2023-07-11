@@ -1,26 +1,77 @@
 const pages = [];
-const images = [
-    "https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/246018913_426724492407198_4330767959258349349_n.jpg?_nc_cat=109&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=dorQQJ_hKqwAX_RFhlb&_nc_ht=scontent-lga3-2.xx&oh=00_AfCTnMJXMd17OvdKUaou2RDlGPjykVn3cCQRqt5fIx-Tqg&oe=64A7D19A",
-    "https://scontent-lga3-1.xx.fbcdn.net/v/t1.6435-9/117320521_161346885611628_9134533897020980342_n.jpg?_nc_cat=110&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=ONpgsE2QX5EAX-RR_ff&_nc_oc=AQnZwQV3qYbancpufTeQYDsDuKYEVufYBgwj1On07ouDHeNSx0yfNkETY8U93gdAvE4&_nc_ht=scontent-lga3-1.xx&oh=00_AfDnE-ne0lqOIt8NkkpcguY90qQflIoO1BnFPE8I7_srDg&oe=64CADDFB",
-    "https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-6/349984376_255579210458984_8220216849840623738_n.jpg?_nc_cat=103&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=dImWWWClD3EAX-fVqcl&_nc_ht=scontent-lga3-1.xx&oh=00_AfAZNVAXCm9gW30JYxyELrlp59TJxdAYvNV05QlbkpaHtg&oe=64A84DB4",
-    "https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/326988248_695766632214878_1398532937315296194_n.jpg?_nc_cat=105&cb=99be929b-3346023f&ccb=1-7&_nc_sid=730e14&_nc_ohc=kO1R2ek6XP4AX-NxGmJ&_nc_ht=scontent-lga3-2.xx&oh=00_AfDpBZCf2Z7Vj6ae15U2r5_qsxZ8-VkhFPcQxHC7k7g2rA&oe=64A77D6E"
-];
 let iterated = 0;
 
+let dynamiclink;
+let language;
+let contactemail;
+
 async function main(d, l, c) {
-    const dynamiclink = d ? d : 'ketojibladze.com';
-    const language = l ? getLang(l) : 'en';
-    const contactemail = c ? c : 'givitsvariani@proton.me';
+    dynamiclink = d ? d : 'ketojibladze.com';
+    language = l ? getLang(l) : 'en';
+    contactemail = c ? c : 'givitsvariani@proton.me';
 
     changeLang(language);
     navbar();
 
     let builtNavBar = await buildNavBar();
     let built = await buildApp().then(updateApp).then(() => {
-        footer(dynamiclink);
+        footer();
     }).then(() => {
         navbar();
     });
+}
+
+async function populateImages() {
+    const m_images = [];
+    const gottenImages = await fetchWelcomeImageData();
+    for (let i = 1; i <= gottenImages.length; i++) {
+        if (i === 3) {
+            let temp = m_images[0];
+            m_images[0] = m_images[1];
+            m_images[1] = temp;
+        }
+        m_images.push(`${dynamiclink}:8092/?type=welcome&img=${i}`);
+    }
+    return m_images;
+}
+
+async function fetchWelcomeImageData() {
+    const url = '@dynamiclink:8094/?data=welcome';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('An error occurred while fetching dynamic data:', error);
+        return [
+            {
+                img: "1.jpeg",
+                extension: "jpeg"
+            },
+            {
+                img: "2.jpeg",
+                extension: "jpeg"
+            },
+            {
+                img: "3.jpeg",
+                extension: "jpeg"
+            },
+            {
+                img: "4.jpeg",
+                extension: "jpeg"
+            },
+            {
+                img: "5.jpeg",
+                extension: "jpeg"
+            },
+            {
+                img: "6.jpeg",
+                extension: "jpeg"
+            }
+        ];
+    }
 }
 
 async function buildNavBar() {
@@ -39,18 +90,8 @@ function navbar() {
 
 const getLang = lang => lang === 'ru' ? lang : (lang === 'ge' ? lang : 'en');
 
-window.addEventListener('hashchange', function () {
-    updateApp();
-});
-
-setInterval(changeBackgroundImage, 10000);
-
-function changeBackgroundImage() {
-    if (getPage() === 'home')
-        nextImage();
-}
-
-function nextImage() {
+async function nextImage() {
+    let images = await populateImages();
     if (iterated === images.length) {
         iterated = 0;
         document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated]})`;
@@ -65,7 +106,7 @@ function changeLang(lang) {
     //
 }
 
-function footer(dynamiclink) {
+function footer() {
     document.getElementById('footer-div').style.display = 'block';
     document.getElementById('footer-div').innerHTML = `
     <footer>
@@ -153,6 +194,7 @@ async function fetchComponent(component) {
         const response = await fetch(`@dynamiclink:8095/?c=${component}`);
         if (!response.ok)
             throw new Error(`HTTP error! Status: ${response.status}`);
+
         const data = await response.text();
         return data;
     } catch (error) {
@@ -166,3 +208,9 @@ async function buildComponent(component) {
     componentDiv.innerHTML = await fetchComponent(component);
     return componentDiv;
 }
+
+window.addEventListener('hashchange', updateApp);
+
+setInterval(function () {
+    if (getPage() === 'home') nextImage();
+}, 10000);

@@ -12,14 +12,15 @@ export function isJSON(obj: unknown): boolean {
     }
 }
 
-export function jsonify(input: string): JSON | null {
-    return isJSON(input) ? JSON.parse(input) : null;
-}
-
 export function supertrim(input: string): string {
     return input.replace(/\r?\n|\r/g, "").trim();
 }
 
 export function getFileExtension(file: string): string | undefined {
     return file.split('.').length > 1 ? file.split('.').pop() : undefined;
+}
+
+export function isNumeric(givenString: string): boolean {
+    if (typeof givenString !== 'string') return false;
+    return /^-?\d+$/.test(givenString)
 }

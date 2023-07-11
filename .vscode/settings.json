@@ -2,5 +2,20 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "cSpell.words": [
+        "contactemail",
+        "dynamiclink",
+        "flickr",
+        "fpath",
+        "Givi",
+        "homepagenavbar",
+        "ketophotographywebsite",
+        "pinterest",
+        "proto",
+        "reqs",
+        "subpages",
+        "supertrim",
+        "Tsvariani"
+    ]
 }

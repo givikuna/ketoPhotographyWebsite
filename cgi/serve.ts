@@ -23,10 +23,12 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = http.creat
     try {
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if (Object.keys(url_info).length === 0) throw new Error('Wrong input');
-        else if ('c' in url_info) {
-            const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
-            if (fs.existsSync(fpath)) return w(replaceData(String(fs.readFileSync(fpath, 'utf-8')), url_info));
-        }
+        if (!('c' in url_info)) throw new Error('Wrong input');
+
+        const fpath: fs.PathLike = findPath(['public', 'components'], url_info.c + '.' + getExt(url_info));
+        if (fs.existsSync(fpath))
+            return w(replaceData(String(fs.readFileSync(fpath, 'utf-8')), url_info));
+
         throw new Error('Wrong input');
     } catch (e: any) {
         console.log(e);

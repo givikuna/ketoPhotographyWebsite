@@ -1,7 +1,7 @@
 export type SocialMediaIcon = {
     icon: string;
     file: string;
-    extension: string;
+    extension: 'png' | 'jpg' | 'jpeg';
 };
 
 export type Language = {
@@ -14,5 +14,14 @@ export type Page = {
     page: string;
     display: string;
     subpages: Page[];
-    components: string[]; // You can replace "any[]" with a specific type if you have one for the components
+    components: string[];
 };
+
+export type WelcomeImage = {
+    img: string;
+    extension: ImageExtension;
+};
+
+export type ImageExtension = 'jpeg' | 'png' | 'gif' | 'raw' | 'jpg';
+
+export let imageExtensions: ImageExtension[] = ['jpeg', 'png', 'gif', 'raw', 'jpg'];

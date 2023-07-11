@@ -1,0 +1,21 @@
+{
+    "extends": ["eslint:recommended"],
+    "rules": {
+        "strict": ["error", "global"],
+        "no-var": "error",
+        "no-unused-vars": "error",
+        "no-extra-semi": "error",
+        "no-console": "error",
+        "no-alert": "error",
+        "no-debugger": "error",
+        "no-eval": "error",
+        "no-implicit-globals": "error",
+        "no-restricted-globals": [
+            "error",
+            {
+                "name": "event",
+                "message": "Use local parameter instead."
+            }
+        ]
+    }
+}

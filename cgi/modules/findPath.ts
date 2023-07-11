@@ -16,7 +16,7 @@ export function findPath(folders: string[], req: string, reqFrom: string = 'inde
             if (fs.existsSync(folder)) {
                 if (i === 0 && !foundDir && count === 0) {
                     foundDir = true;
-                    fPath = "./"
+                    fPath = "./";
                 }
                 fPath += folders[i] + "/";
                 i++;

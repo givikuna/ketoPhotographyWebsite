@@ -13,7 +13,7 @@ with open('render.json') as file:
 
 for lang in data:
     for file in lang["files"]:
-        print(f"compiling {file['file']}")
+        print(f"{'giving permissions to' if lang['type_'] == 'sh' else 'compiling'} {file['file']}")
         run(f"{lang['command']} {file['file'][2:-3] if file['file'][-2:] == 'rs' else file['file']}")
         if lang["type_"] == "rs": run(f"mv ./target/debug/{file['file'][2:-3]} ./")
     print("\n")
