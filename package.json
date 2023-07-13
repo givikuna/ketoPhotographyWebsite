@@ -13,7 +13,8 @@
     "build-render": "./build_render",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "./cleaner",
-    "rebuild": "./rebuild.sh"
+    "rebuild": "./rebuild.sh",
+    "collect-images": "ts-node imageCleaner && ts-node imageCollector"
   },
   "repository": {
     "type": "git",

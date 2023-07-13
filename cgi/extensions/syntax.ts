@@ -17,6 +17,7 @@ export function supertrim(input: string): string {
 }
 
 export function getFileExtension(file: string): string | undefined {
+    if (file == undefined || file == null) return undefined
     return file.split('.').length > 1 ? file.split('.').pop() : undefined;
 }
 

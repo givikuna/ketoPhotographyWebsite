@@ -54,3 +54,4 @@ test.less
 cgi/types/types.js
 public/assets/.DS_Store
 public/assets/welcome/.DS_Store
+imageCollector.js
