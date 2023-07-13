@@ -1,16 +1,16 @@
-import * as fs from 'fs';
+import { PathLike, existsSync, readFileSync } from 'fs'
 
-import { supertrim } from '../extensions/syntax';
-import { findPath, logErr } from './findPath';
+import { supertrim } from '../extensions/syntax'
+import { findPath } from './findPath'
 
-export function getDynLink(from: string = 'index'): fs.PathLike {
-    const cFunc: string = 'getDynLink';
-    const _default: string = 'http://127.0.0.1';
+export function getDynLink(): PathLike {
+    const _default: string = 'http://127.0.0.1'
     try {
-        const fpath: fs.PathLike = findPath(['public', 'data'], 'dynamicLink.txt');
-        if (fs.existsSync(fpath)) return supertrim(fs.readFileSync(fpath).toString());
-        throw new Error('dynamic link not found');
-    } catch (e: any) {
-        return logErr(cFunc, e, _default, from);
+        const fpath: PathLike = findPath(['public', 'data'], 'dynamicLink.txt')
+        if (existsSync(fpath)) return supertrim(readFileSync(fpath).toString())
+        throw new Error('dynamic link not found')
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
     }
 }

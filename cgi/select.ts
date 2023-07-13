@@ -18,6 +18,8 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
         return res.end();
     }
     try {
+        if (!req.url) return w('');
+
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if (!('data' in url_info))
             return w('');

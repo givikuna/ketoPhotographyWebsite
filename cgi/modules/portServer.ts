@@ -3,11 +3,11 @@ import { logErr } from './findPath';
 import { Ports } from '../constants/constants';
 
 export function getPort(servername: string): number {
-    const cFunc: string = 'getPort';
-    const default_: number = 8080;
+    const cFunc: string = 'getPort'
+    const default_: number = 8080
     try {
-        return Ports[servername as keyof typeof Ports];
+        return Ports[servername as keyof typeof Ports]
     } catch (e: any) {
-        return logErr(cFunc, e, default_, servername);
+        return logErr(cFunc, e, default_, servername)
     }
 }

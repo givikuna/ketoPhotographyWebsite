@@ -21,6 +21,8 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = http.creat
         return res.end();
     };
     try {
+        if (!req.url) return w('');
+
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         if (Object.keys(url_info).length === 0) throw new Error('Wrong input');
         if (!('c' in url_info)) throw new Error('Wrong input');

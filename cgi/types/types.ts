@@ -32,7 +32,7 @@ export type Image = {
 
 export type ImageExtension = 'jpeg' | 'png' | 'gif' | 'raw' | 'jpg';
 
-export let imageExtensions: ImageExtension[] = ['jpeg', 'png', 'gif', 'raw', 'jpg'];
+export const imageExtensions: ImageExtension[] = ['jpeg', 'png', 'gif', 'raw', 'jpg'];
 
 export type Album = {
     album: string,
