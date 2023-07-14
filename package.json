@@ -4,7 +4,7 @@
   "description": "A photography website for keto",
   "main": "index.js",
   "scripts": {
-    "render": "python3 render.py",
+    "compile": "python3 compile.py",
     "build": "python3 build.py",
     "start": "pm2 start pm2.config.js",
     "stop": "pm2 stop all",

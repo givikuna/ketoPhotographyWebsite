@@ -1,0 +1,42 @@
+{
+    "compilerIgnore": {
+        "files": [
+            "imageCleaner.ts",
+            "imageCollector.ts",
+            "buildCompilerFile.ts"
+        ],
+        "directories": [
+            "target",
+            "node_modules",
+            ".git",
+            "public",
+            "data",
+            "img",
+            "coverage",
+            "archived",
+            ".vscode"
+        ]
+    },
+    "compile": {
+        "languages": [
+            {
+                "extension": "rs",
+                "language": "Rust",
+                "command": "cargo build --bin",
+                "files": []
+            },
+            {
+                "extension": "ts",
+                "language": "TypeScript",
+                "command": "tsc",
+                "files": []
+            },
+            {
+                "extension": "sh",
+                "language": "BASH",
+                "command": "sudo chmod +x",
+                "files": []
+            }
+        ]
+    }
+}

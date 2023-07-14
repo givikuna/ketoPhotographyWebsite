@@ -1,4 +1,4 @@
-touch render.json
+touch compile.json
 cargo build
 cargo install
-python3 render.py
+python3 compile.py

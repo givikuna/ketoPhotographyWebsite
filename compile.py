@@ -6,9 +6,10 @@ devnull = os.devnull
 def run(command):
     os.system(f"{command} > {devnull} 2>&1")
 
-run("cargo run --bin build_render")
+run("cargo run --bin cleaner")
+run("ts-node buildCompilerFile")
 
-with open('render.json') as file:
+with open('compile.json') as file:
     data = json.load(file)
 
 for lang in data:

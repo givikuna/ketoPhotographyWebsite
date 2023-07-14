@@ -4,7 +4,7 @@ import { existsSync, PathLike } from 'fs'
 
 export function findPath(folders: string[], req: string, reqFrom: string = 'index'): string | PathLike {
     const cFunc: string = 'findPath'
-    const default_: string = ''
+    const _default: string = ''
     try {
         let fPath: string = ""
         let foundDir: boolean = false
@@ -27,11 +27,12 @@ export function findPath(folders: string[], req: string, reqFrom: string = 'inde
             count++
             i++
         }
-        let p: string | PathLike = path.join(fPath, req)
-        if (existsSync(p)) return p
-        return default_
+        const p: string | PathLike = path.join(fPath, req)
+        if (existsSync(p))
+            return p
+        return _default
     } catch (e: unknown) {
-        return logErr(cFunc, e, default_, reqFrom)
+        return logErr(cFunc, e, _default, reqFrom)
     }
 }
 

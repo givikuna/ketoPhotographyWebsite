@@ -1,20 +1,57 @@
 import * as express from 'express'
-import * as fs from 'fs'
 import * as url from 'url'
+
+import { readdirSync, readFileSync, existsSync } from 'fs'
 
 import { ParsedUrlQuery } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
 import { SocialMediaIcon, WelcomeImage, ImageExtension, imageExtensions, Album } from './types/types'
+import { PathLike } from 'fs'
 
 import { findPath } from './modules/findPath'
 import { getPort } from './modules/portServer'
-import { getIcons } from './modules/getIcons'
 import { isNumeric } from './extensions/syntax'
 
 const app: express.Application = express()
 
 const filename: string = 'img'
 const port: number = getPort(filename) // 8092
+
+function getIcons(): SocialMediaIcon[] {
+    const _default: SocialMediaIcon[] = [
+        {
+            "icon": "facebook",
+            "file": "facebook.png",
+            "extension": "png"
+        },
+        {
+            "icon": "flickr",
+            "file": "flickr.png",
+            "extension": "png"
+        },
+        {
+            "icon": "instagram",
+            "file": "instagram.png",
+            "extension": "png"
+        },
+        {
+            "icon": "pinterest",
+            "file": "pinterest.png",
+            "extension": "png"
+        },
+        {
+            "icon": "youtube",
+            "file": "youtube.png",
+            "extension": "png"
+        }
+    ]
+    try {
+        return JSON.parse(readFileSync(findPath(['public', 'assets', 'icons'], 'icons.json'), 'utf-8'))
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
+    }
+}
 
 function getIconExtension(icon: string): string {
     try {
@@ -44,7 +81,7 @@ function getWelcomeImageExtension(img: string): string {
 function getWelcomeImageData(): WelcomeImage[] {
     const images: WelcomeImage[] = []
     try {
-        const files: string[] = fs.readdirSync('public/assets/welcome')
+        const files: string[] = readdirSync('public/assets/welcome')
         for (let i: number = 0; i < files.length; i++) {
             for (let j: number = 0; j < imageExtensions.length; j++) {
                 if (files[i].endsWith(imageExtensions[j])) images.push({
@@ -62,7 +99,7 @@ function getWelcomeImageData(): WelcomeImage[] {
 
 function getAlbumImage(url_info: ParsedUrlQuery): string {
     try {
-        const albumImagesData: Album[] = JSON.parse(fs.readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' })) as Album[]
+        const albumImagesData: Album[] = JSON.parse(readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' })) as Album[]
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === url_info.album as string) return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0]
         }
@@ -73,7 +110,7 @@ function getAlbumImage(url_info: ParsedUrlQuery): string {
     }
 }
 
-function getPath(url_info: ParsedUrlQuery): fs.PathLike | undefined {
+function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
     try {
         const type_: string = 'type' in url_info ? url_info.type as string : ''
         if (type_ === 'icons' && 'img' in url_info)
@@ -104,15 +141,15 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         if (!('img' in url_info) && typeof url_info.img !== 'string' && !('type' in url_info) && typeof url_info.type == 'string')
             throw new Error('Invalid request')
 
-        const fpath: fs.PathLike | undefined = getPath(url_info)
+        const fpath: PathLike | undefined = getPath(url_info)
 
-        return fpath !== undefined && fs.existsSync(fpath) ? w(fs.readFileSync(fpath)) : w('')
+        return fpath !== undefined && existsSync(fpath) ? w(readFileSync(fpath)) : w('')
     } catch (e: any) {
         console.log(e)
         return w('')
     }
-});
+})
 
 app.listen(port, (): void => {
     console.log(`Server is running on http://localhost:${port}/`)
-});
+})
