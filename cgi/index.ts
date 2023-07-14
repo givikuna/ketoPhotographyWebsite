@@ -16,7 +16,7 @@ const app: express.Application = express()
 const filename: string = 'index'
 const port: number = getPort(filename) // 8091
 
-app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data)
         return res.end()

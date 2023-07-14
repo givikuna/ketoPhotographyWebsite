@@ -147,7 +147,7 @@ function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
     }
 }
 
-app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" })
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data)

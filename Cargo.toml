@@ -10,9 +10,5 @@ serde = "1.0"
 serde_derive = "1.0"
 
 [[bin]]
-name = "build_render"
-path = "build_render.rs"
-
-[[bin]]
 name = "cleaner"
 path = "cleaner.rs"

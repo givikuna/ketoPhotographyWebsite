@@ -225,22 +225,17 @@ async function fetchAlbumData() {
             "display": "Business"
         }
     ]
-    const url = "http://127.0.0.1:8094/?data=albumData";
-    const response = await fetch(url);
-    const data = await response.text();
-    alert(data)
-    return _default
-    /*
     const url = '@dynamiclink:8094/?data=albumData';
     try {
         const response = await fetch(url);
-        const data = await response.text();
-        return JSON.parse(data);
+        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error('An error occurred:', error);
-        return _default;
+        console.error('An error occurred while fetching dynamic data:', error);
+        return null;
     }
-    */
 }
 
 function updateApp() {

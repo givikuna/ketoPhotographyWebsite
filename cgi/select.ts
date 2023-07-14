@@ -3,14 +3,13 @@ import * as url from 'url'
 
 const app: express.Application = express()
 
-import {readFileSync, existsSync, PathLike} from 'fs';
+import { readFileSync } from 'fs';
 
 import { ParsedUrlQuery } from 'querystring'
-import { IncomingMessage, ServerResponse, createServer } from 'http'
+import { IncomingMessage, ServerResponse } from 'http'
 
 import { getPort } from './modules/portServer'
 import { findPath } from './modules/findPath'
-import { isJSON } from './extensions/syntax'
 
 const filename: string = 'select'
 const port: number = getPort(filename) // 8094
@@ -36,13 +35,13 @@ app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         switch (givenData) {
             case 'languages':
             case 'pages':
-                write  = String(readFileSync(findPath(['public', 'data'], `${url_info.data}.json`)))
+                write  = String(readFileSync(findPath(['public', 'data'], `${url_info.data}.json`), { encoding: 'utf8', flag: 'r' }))
                 break
             case 'welcome':
-                write = String(readFileSync(findPath(['public', 'assets', url_info.data], 'info.json')))
+                write = String(readFileSync(findPath(['public', 'assets', url_info.data], 'info.json'), { encoding: 'utf8', flag: 'r' }))
                 break
             case 'albumData':
-                write = String(readFileSync('../img/info.json'))
+                write = String(readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' }))
                 break
             default:
                 write = ''

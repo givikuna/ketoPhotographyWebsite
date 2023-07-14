@@ -24,7 +24,7 @@ function getSourceFileExtension(url_info: ParsedUrlQuery): string {
     }
 }
 
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data)
         return res.end()
