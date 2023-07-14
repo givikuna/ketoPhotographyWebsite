@@ -1,19 +1,22 @@
+import * as express from 'express'
 import * as url from 'url'
 
-import { readFileSync } from 'fs'
+const app: express.Application = express()
+
+import {readFileSync, existsSync, PathLike} from 'fs';
 
 import { ParsedUrlQuery } from 'querystring'
 import { IncomingMessage, ServerResponse, createServer } from 'http'
-import { Server } from 'http'
 
 import { getPort } from './modules/portServer'
 import { findPath } from './modules/findPath'
+import { isJSON } from './extensions/syntax'
 
 const filename: string = 'select'
 const port: number = getPort(filename) // 8094
 
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
-    res.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": "text/html" })
+app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
+    res.writeHead(200, { "Access-Control-Allow-Origin": "*" })
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data)
         return res.end()
@@ -26,22 +29,32 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
         if (!('data' in url_info) || typeof url_info.data !== 'string')
             return w('')
 
-        if (['pages', 'languages'].includes(url_info.data))
-            return w(String(readFileSync(findPath(['public', 'data'], `${url_info.data}.json`))))
+        let write: string = ''
 
-        if (url_info.data === 'welcome')
-            return w(String(readFileSync(findPath(['public', 'assets', url_info.data], 'info.json'))))
+        const givenData: string = url_info.data;
 
-        if (url_info.data === 'components')
-            return w(String(readFileSync('../components.json')))
+        switch (givenData) {
+            case 'languages':
+            case 'pages':
+                write  = String(readFileSync(findPath(['public', 'data'], `${url_info.data}.json`)))
+                break
+            case 'welcome':
+                write = String(readFileSync(findPath(['public', 'assets', url_info.data], 'info.json')))
+                break
+            case 'albumData':
+                write = String(readFileSync('../img/info.json'))
+                break
+            default:
+                write = ''
+        }
 
-        return w('')
+        return w(write)
     } catch (e) {
         console.log(e)
         return w('')
     }
 })
 
-server.listen(port, (): void => {
+app.listen(port, (): void => {
     console.log(`Server is running on http://localhost:${port}/`)
 })

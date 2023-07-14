@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as url from 'url'
 
-import { readdirSync, readFileSync, existsSync } from 'fs'
+import { readdirSync, readFileSync, existsSync, readFile } from 'fs'
 
 import { ParsedUrlQuery } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
@@ -97,11 +97,29 @@ function getWelcomeImageData(): WelcomeImage[] {
     }
 }
 
+function readAlbumData(): Album[] {
+    return JSON.parse(readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' })) as Album[]
+}
+
 function getAlbumImage(url_info: ParsedUrlQuery): string {
     try {
-        const albumImagesData: Album[] = JSON.parse(readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' })) as Album[]
+        const albumImagesData: Album[] = readAlbumData()
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === url_info.album as string) return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0]
+        }
+        return ''
+    } catch (e: unknown) {
+        console.log(e)
+        return ''
+    }
+}
+
+function getAlbumCoverImage(url_info: ParsedUrlQuery): string {
+    try {
+        const albumImagesData: Album[] = readAlbumData()
+        console.log(albumImagesData)
+        for (let i: number = 0; i < albumImagesData.length; i++) {
+            if (albumImagesData[i].album === url_info.album) return albumImagesData[i].coverImage;
         }
         return ''
     } catch (e: unknown) {
@@ -119,6 +137,8 @@ function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
             return findPath(['public', 'assets', type_ as string], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`)
         if (type_ === 'album' && 'album' in url_info && 'img' in url_info && typeof url_info.img === 'string')
             return findPath(['img', url_info.album as string], getAlbumImage(url_info))
+        if (type_ === 'cover' && 'album' in url_info && typeof url_info.album === 'string')
+            return findPath(['img', url_info.album], getAlbumCoverImage(url_info))
 
         return undefined
     } catch (e: unknown) {
@@ -134,7 +154,8 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         return res.end()
     }
     try {
-        if (!req.url) return w('');
+        if (!req.url)
+            return w('');
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query
 
@@ -144,7 +165,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<Incomin
         const fpath: PathLike | undefined = getPath(url_info)
 
         return fpath !== undefined && existsSync(fpath) ? w(readFileSync(fpath)) : w('')
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.log(e)
         return w('')
     }

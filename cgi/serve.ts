@@ -1,6 +1,6 @@
+import * as express from 'express'
 import * as url from 'url'
 
-import { createServer } from 'http'
 import { existsSync, readFileSync } from 'fs'
 
 import { PathLike } from 'fs'
@@ -10,6 +10,8 @@ import { IncomingMessage, ServerResponse, Server } from 'http'
 import { getPort } from './modules/portServer'
 import { findPath } from './modules/findPath'
 import { replaceData } from './modules/replaceData'
+
+const app: express.Application = express()
 
 const filename = 'serve'
 const port = getPort(filename) // 8095
@@ -24,9 +26,8 @@ function getExt(url_info: ParsedUrlQuery): string {
     }
 }
 
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
-    res.writeHead(200, { "Content-Type": "text/html" })
-    res.writeHead(200, { "Access-Control-Allow-Origin": "*" })
+app.get('/', (req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+    res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" })
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
         res.write(data)
         return res.end()
@@ -52,6 +53,20 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
     }
 })
 
+app.listen(port, (): void => {
+    console.log(`Server is running on http://localhost:${port}/`)
+})
+
+
+
+
+/*
+const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
+
+    }
+})
+
 server.listen(port, (): void => {
     console.log(`Server is running on http://localhost:${port}/`)
 })
+*/

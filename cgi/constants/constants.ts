@@ -8,5 +8,4 @@ export enum Ports {
     src = 8093,
     select = 8094,
     serve = 8095,
-    auth = 8096
 };

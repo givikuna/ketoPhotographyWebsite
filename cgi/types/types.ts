@@ -36,7 +36,7 @@ export const imageExtensions: ImageExtension[] = ['jpeg', 'png', 'gif', 'raw', '
 
 export type Album = {
     album: string,
-    frontImage: string,
+    coverImage: string,
     images: string[],
     display: string
 }

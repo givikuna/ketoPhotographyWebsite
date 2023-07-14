@@ -11,9 +11,9 @@ import { getPort } from './modules/portServer'
 import { getDynLink } from './modules/dynamicLinkGetter'
 
 const filename = 'src'
-const port = getPort(filename)
+const port = getPort(filename) // 8093
 
-function getExt(url_info: ParsedUrlQuery): string {
+function getSourceFileExtension(url_info: ParsedUrlQuery): string {
     const _default: string = 'js'
     try {
         const m_type: string = url_info.type as string
@@ -35,7 +35,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query
         const requestsLibrary: boolean = 'type' in url_info && (url_info.type == 'jQuery' || url_info.type == 'Bootstrap')
-        const fpath: PathLike = findPath(requestsLibrary ? ["public", "lib"] : ["public"], (requestsLibrary ? `${url_info.type}.` : "app.") + getExt(url_info))
+        const fpath: PathLike = findPath(requestsLibrary ? ["public", "lib"] : ["public"], (requestsLibrary ? `${url_info.type}.` : "app.") + getSourceFileExtension(url_info))
         return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "")
     } catch (e: unknown) {
         console.log(e)

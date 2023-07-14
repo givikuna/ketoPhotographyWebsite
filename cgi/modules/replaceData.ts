@@ -11,7 +11,7 @@ export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { "l
     return data
         .replace(/@dynamiclink/g, getDynLink().toString())
         .replace(/@language/g, getLang(url_info))
-        .replace(/@contactemail/g, getEmail({ arr: ['public', 'data', 'contactEmail'], file: 'data.txt' }))
+        .replace(/@contactemail/g, getEmail({ arr: ['public', 'data'], file: 'contactemail.txt' }))
 }
 
 export function getLang (url_info: ParsedUrlQuery | JSON): string {
