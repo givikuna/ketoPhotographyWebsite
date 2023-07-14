@@ -30,7 +30,7 @@ async function populateImages() {
             m_images[0] = m_images[1];
             m_images[1] = temp;
         }
-        m_images.push(`${dynamiclink}:8092/?type=welcome&img=${i}`);
+        m_images.push(`@dynamiclink:8092/?type=welcome&img=${i}`);
     }
     return m_images;
 }
@@ -110,15 +110,15 @@ function footer() {
     document.getElementById('footer-div').style.display = 'block';
     document.getElementById('footer-div').innerHTML = `
     <footer>
-        <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
+        <a href="https://www.facebook.com"><img src="@dynamiclink:8092/?type=icons&img=facebook" alt="Facebook"
                 class="imagee_"></a>
-        <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
+        <a href="https://www.flickr.com"><img src="@dynamiclink:8092/?type=icons&img=flickr" alt="Flickr"
                 class="imagee_"></a>
-        <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
+        <a href="https://www.instagram.com"><img src="@dynamiclink:8092/?type=icons&img=instagram" alt="Instagram"
                 class="imagee_"></a>
-        <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
+        <a href="https://www.pinterest.com"><img src="@dynamiclink:8092/?type=icons&img=pinterest" alt="Pinterest"
                 class="imagee_"></a>
-        <a href="https://www.youtube.com"><img src="${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
+        <a href="https://www.youtube.com"><img src="@dynamiclink:8092/?type=icons&img=youtube" alt="YouTube"
                 class="imagee_"></a>
 
         <br>
@@ -164,9 +164,83 @@ async function buildApp() {
         pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
         document.getElementById('app').appendChild(pageDiv);
         pages.push(data[i].page);
-        let _ = buildComponent(pageDiv.id);
+        let _1 = await buildComponent(pageDiv.id);
+        let _2 = buildPage(pageDiv.id);
     }
     return true;
+}
+
+async function buildPage(page) {
+    switch (page) {
+        case 'home':
+            const albumData = await fetchAlbumData();
+            for (let i = 0; i < albumData.length; i++) {
+                const element = `
+                    <img src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}" alt="Image ${i}" id="${albumData[i].album}AlbumCover">
+                `;
+                document.getElementById('album-gallery').innerHTML += element;
+            }
+            break;
+        default:
+            buildComponent(page);
+    }
+}
+
+async function fetchAlbumData() {
+    const _default = [
+        {
+            "album": "newborns",
+            "coverImage": "294546948_760020545155998_2532217280930973580_n.jpeg",
+            "images": [],
+            "display": "Newborns"
+        },
+        {
+            "album": "families",
+            "coverImage": "119904284_176645870748396_1710356227522994443_n.jpeg",
+            "images": [],
+            "display": "Families"
+        },
+        {
+            "album": "advertisements",
+            "coverImage": "326988248_695766632214878_1398532937315296194_n.jpeg",
+            "images": [],
+            "display": "Advertisements"
+        },
+        {
+            "album": "portraits",
+            "coverImage": "313259401_838576830633702_7727858395197320125_n.jpeg",
+            "images": [],
+            "display": "Portraits"
+        },
+        {
+            "album": "weddings",
+            "coverImage": "275321951_506245004455146_138720927218083306_n.jpeg",
+            "images": [],
+            "display": "Weddings"
+        },
+        {
+            "album": "business",
+            "coverImage": "323284989_1161493651165139_5280267032390652084_n.jpeg",
+            "images": [],
+            "display": "Business"
+        }
+    ]
+    const url = "http://127.0.0.1:8094/?data=albumData";
+    const response = await fetch(url);
+    const data = await response.text();
+    alert(data)
+    return _default
+    /*
+    const url = '@dynamiclink:8094/?data=albumData';
+    try {
+        const response = await fetch(url);
+        const data = await response.text();
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('An error occurred:', error);
+        return _default;
+    }
+    */
 }
 
 function updateApp() {
@@ -199,7 +273,7 @@ async function fetchComponent(component) {
         return data;
     } catch (error) {
         console.error('Error:', error);
-        throw error;
+        return ''
     }
 }
 

@@ -19,10 +19,6 @@ module.exports = {
         {
             name: 'serve',
             script: 'cgi/serve.js'
-        },
-        {
-            name: 'auth',
-            script: 'cgi/auth.js'
         }
     ]
 };

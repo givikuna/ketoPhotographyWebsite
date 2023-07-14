@@ -13,16 +13,6 @@ function isImage(img: string | ImageExtension) {
     return false
 }
 
-function isDirectory(dirPath: string | fs.PathLike): boolean {
-    try {
-        const stats: fs.Stats = fs.statSync(dirPath)
-        return stats.isDirectory()
-    } catch (e: unknown) {
-        console.error(e)
-        return false
-    }
-}
-
 const dir: string = './img'
 const albumData: Album[] = JSON.parse(fs.readFileSync(findPath(['img'], 'info.json'), { encoding: 'utf8', flag: 'r' })) as Album[]
 
