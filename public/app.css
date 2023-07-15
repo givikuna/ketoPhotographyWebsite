@@ -104,3 +104,12 @@ footer p a:hover {
 .navbar a:hover {
     background-color: gray;
 }
+
+.contactFormDiv {
+    text-align: center;
+}
+
+.albumImage {
+    max-width: 30%;
+    height: auto;
+}

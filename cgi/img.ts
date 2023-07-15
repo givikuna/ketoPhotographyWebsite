@@ -1,5 +1,6 @@
 import * as express from 'express'
 import * as url from 'url'
+import * as subProcess from 'child_process'
 
 import { readdirSync, readFileSync, existsSync, readFile } from 'fs'
 
@@ -147,6 +148,11 @@ function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
     }
 }
 
+subProcess.exec('npm run collect-images', (err: subProcess.ExecException | null, output: string): void => {
+    if (err) console.log(`Image collection failed:\n${err}`)
+    console.log('Images were collected')
+})
+
 app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" })
     const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
@@ -155,7 +161,7 @@ app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
     }
     try {
         if (!req.url)
-            return w('');
+            return w('')
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query
 

@@ -18,7 +18,7 @@ async function main(d, l, c) {
         footer();
     }).then(() => {
         navbar();
-    });
+    }).then(updateApp);
 }
 
 async function populateImages() {
@@ -85,6 +85,7 @@ function navbar() {
         document.getElementById('homepage-navbar-div').style.display = 'block';
     } else {
         document.getElementById('homepage-navbar-div').style.display = 'none';
+        document.getElementById('navbar-div').style.display = 'block'
     }
 }
 
@@ -164,10 +165,24 @@ async function buildApp() {
         pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
         document.getElementById('app').appendChild(pageDiv);
         pages.push(data[i].page);
-        let _1 = await buildComponent(pageDiv.id);
-        let _2 = buildPage(pageDiv.id);
+        let _ = await buildComponent(pageDiv.id);
+        updateApp();
+    }
+    for (let i = 0; i < data.length; i++) {
+        let _ = await buildPage(data[i].page);
     }
     return true;
+}
+
+async function createAlbum(album) {
+    const albumComponent = await fetchComponent('inAlbum');
+    const albumDiv = document.createElement('div');
+    albumDiv.setAttribute('id', `album_${album}`);
+    albumDiv.innerHTML = albumComponent;
+    albumDiv.innerHTML += `
+        <div class="inAlbumImages" id="${album}Gallery"> </div>
+    `;
+    document.getElementById('app').appendChild(albumDiv);
 }
 
 async function buildPage(page) {
@@ -176,9 +191,12 @@ async function buildPage(page) {
             const albumData = await fetchAlbumData();
             for (let i = 0; i < albumData.length; i++) {
                 const element = `
-                    <img src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}" alt="Image ${i}" id="${albumData[i].album}AlbumCover">
+                    <img src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}" onclick="window.location.href='#album_${albumData[i].album}'" alt="Image ${i}" id="${albumData[i].album}AlbumCoverForHome">
                 `;
                 document.getElementById('album-gallery').innerHTML += element;
+
+                let _ = await createAlbum(albumData[i].album);
+                pages.push(`album_${albumData[i].album}`);
             }
             break;
         default:
@@ -234,11 +252,11 @@ async function fetchAlbumData() {
         return data;
     } catch (error) {
         console.error('An error occurred while fetching dynamic data:', error);
-        return null;
+        return _default;
     }
 }
 
-function updateApp() {
+async function updateApp() {
     navbar();
     const currentPage = pages.length > 0 ? (pages.includes(getPage()) ? getPage() : 'home') : 'home';
     for (let i = 0; i < pages.length; i++) {
@@ -248,6 +266,40 @@ function updateApp() {
             hidePage(pages[i]);
         }
     }
+
+    if (currentPage.startsWith("album_")) {
+        const currentAlbum = currentPage.replace(/album_/g, "");
+        const albumImages = await getAlbum(currentAlbum);
+        let count = 1;
+        let containerCount = 1;
+        const containerClass = `${currentAlbum}ImageContainer`;
+        let containerID = '';
+        for (let i = 0; i < albumImages.images.length; i++) {
+            if (count === 3 || i === 0) {
+                containerID = `${currentAlbum}ImageContainer${containerCount++}`;
+                const imageContainerDiv = document.createElement('div', containerID);
+                imageContainerDiv.setAttribute('id', containerID);
+                imageContainerDiv.setAttribute('class', containerClass);
+                document.getElementById(currentPage).appendChild(imageContainerDiv);
+            } else {
+                const imageElement = `
+                    <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
+                `;
+                document.getElementById(containerID).innerHTML += imageElement;
+            }
+            count++;
+        }
+    }
+}
+
+async function getAlbum(currentAlbum) {
+    const albumData = await fetchAlbumData();
+    for (let i = 0; i < albumData.length; i++) {
+        if (albumData[i].album === currentAlbum) {
+            return albumData[i];
+        }
+    }
+    return albumData[0];
 }
 
 function hidePage(page) {
