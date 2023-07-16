@@ -6,7 +6,7 @@ devnull = os.devnull
 def run(command):
     os.system(f"{command} > {devnull} 2>&1")
 
-run("cargo run --bin cleaner")
+run("python3 compilercleaner.py")
 run("ts-node buildCompilerFile")
 
 with open('compile.json') as file:

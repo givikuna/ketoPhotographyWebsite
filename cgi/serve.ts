@@ -56,17 +56,3 @@ app.get('/', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 app.listen(port, (): void => {
     console.log(`Server is running on http://localhost:${port}/`)
 })
-
-
-
-
-/*
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse): ServerResponse<IncomingMessage> => {
-
-    }
-})
-
-server.listen(port, (): void => {
-    console.log(`Server is running on http://localhost:${port}/`)
-})
-*/

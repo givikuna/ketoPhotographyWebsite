@@ -11,7 +11,8 @@ type LanguageToCompile = {
 type LanguageFile = {
     "dir": string,
     "file": string,
-    "filename"?: string,
+    "filename": string,
+    "compilesTo": string,
 }
 
 type CompilerIgnore = {
@@ -59,7 +60,17 @@ function traverseDirectories(dir: string = './') {
                     compileables[j].files.push({
                         dir: dir.slice(2),
                         file: `${dir}${paths[i]}`,
-                        filename: paths[i].split('/').pop(),
+                        filename: paths[i].split('/').pop() as string,
+                        compilesTo: ((): string => {
+                            switch ((fileExtension)) {
+                                case 'ts':
+                                    return `${dir}${paths[i].slice(0, -2)}js`
+                                case 'rs':
+                                    return `${dir}${[paths[i]]}`.slice(0, -3)
+                                default:
+                                    return ''
+                            }
+                        })(),
                     })
                 }
             }

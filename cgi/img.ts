@@ -21,29 +21,29 @@ const port: number = getPort(filename) // 8092
 function getIcons(): SocialMediaIcon[] {
     const _default: SocialMediaIcon[] = [
         {
-            "icon": "facebook",
-            "file": "facebook.png",
-            "extension": "png"
+            icon: "facebook",
+            file: "facebook.png",
+            extension: "png",
         },
         {
-            "icon": "flickr",
-            "file": "flickr.png",
-            "extension": "png"
+            icon: "flickr",
+            file: "flickr.png",
+            extension: "png",
         },
         {
-            "icon": "instagram",
-            "file": "instagram.png",
-            "extension": "png"
+            icon: "instagram",
+            file: "instagram.png",
+            extension: "png",
         },
         {
-            "icon": "pinterest",
-            "file": "pinterest.png",
-            "extension": "png"
+            icon: "pinterest",
+            file: "pinterest.png",
+            extension: "png",
         },
         {
-            "icon": "youtube",
-            "file": "youtube.png",
-            "extension": "png"
+            icon: "youtube",
+            file: "youtube.png",
+            extension: "png",
         }
     ]
     try {
@@ -55,27 +55,30 @@ function getIcons(): SocialMediaIcon[] {
 }
 
 function getIconExtension(icon: string): string {
+    const _default: string = 'png'
     try {
         const icons: SocialMediaIcon[] = getIcons()
         for (let i: number = 0; i < icons.length; i++)
             if (icons[i].icon === icon) return `${icons[i].extension}`
-        return 'png'
+        return _default
     } catch (e: unknown) {
         console.log(e)
-        return 'png'
+        return _default
     }
 }
 
 function getWelcomeImageExtension(img: string): string {
+    const _default: string = 'jpeg';
     try {
         const welcomeImages: WelcomeImage[] = getWelcomeImageData()
         for (let i: number = 0; i < welcomeImages.length; i++) {
-            if (welcomeImages[i].img === 'img') return welcomeImages[i].extension
+            if (welcomeImages[i].img === img)
+                return welcomeImages[i].extension
         }
-        return 'jpeg'
+        return _default
     } catch (e: unknown) {
         console.log(e)
-        return 'jpeg'
+        return _default
     }
 }
 
@@ -85,7 +88,8 @@ function getWelcomeImageData(): WelcomeImage[] {
         const files: string[] = readdirSync('public/assets/welcome')
         for (let i: number = 0; i < files.length; i++) {
             for (let j: number = 0; j < imageExtensions.length; j++) {
-                if (files[i].endsWith(imageExtensions[j])) images.push({
+                if (files[i].endsWith(imageExtensions[j]))
+                    images.push({
                     img: files[i].split('.')[0],
                     extension: files[i].split('.')[1] as ImageExtension,
                 })
@@ -106,7 +110,8 @@ function getAlbumImage(url_info: ParsedUrlQuery): string {
     try {
         const albumImagesData: Album[] = readAlbumData()
         for (let i: number = 0; i < albumImagesData.length; i++) {
-            if (albumImagesData[i].album === url_info.album as string) return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0]
+            if (albumImagesData[i].album === url_info.album as string)
+                return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0]
         }
         return ''
     } catch (e: unknown) {
@@ -129,17 +134,61 @@ function getAlbumCoverImage(url_info: ParsedUrlQuery): string {
     }
 }
 
-function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
+function wantsIcon(url_info: ParsedUrlQuery): boolean {
+    const _default: boolean = false
     try {
         const type_: string = 'type' in url_info ? url_info.type as string : ''
-        if (type_ === 'icons' && 'img' in url_info)
+        return type_ === 'icons' && 'img' in url_info
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
+    }
+}
+
+function wantsAlbumCover(url_info: ParsedUrlQuery): boolean {
+    const _default: boolean = false
+    try {
+        const type_: string = 'type' in url_info ? url_info.type as string : ''
+        return type_ === 'cover' && 'album' in url_info && typeof url_info.album === 'string'
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
+    }
+}
+
+function wantsAlbumImage(url_info: ParsedUrlQuery): boolean {
+    const _default: boolean = false
+    try {
+        const type_: string = 'type' in url_info ? url_info.type as string : ''
+        return type_ === 'album' && 'album' in url_info && 'img' in url_info && typeof url_info.img === 'string'
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
+    }
+}
+
+function wantsWelcomeImage(url_info: ParsedUrlQuery): boolean {
+    const _default: boolean = false
+    try {
+        const type_: string = 'type' in url_info ? url_info.type as string : ''
+        return type_ === 'welcome' && 'img' in url_info && isNumeric(url_info.img as string)
+    } catch (e: unknown) {
+        console.log(e)
+        return _default
+    }
+}
+
+function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
+    try {
+        const type_: string = 'type' in url_info && typeof url_info.type === 'string' ? url_info.type as string : ''
+        if (wantsIcon(url_info))
             return findPath(['public', 'assets', type_], `${url_info.img}.${getIconExtension(url_info.img as string)}`)
-        if (type_ === 'welcome' && 'img' in url_info && isNumeric(url_info.img as string))
-            return findPath(['public', 'assets', type_ as string], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`)
-        if (type_ === 'album' && 'album' in url_info && 'img' in url_info && typeof url_info.img === 'string')
+        if (wantsWelcomeImage(url_info))
+            return findPath(['public', 'assets', type_], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`)
+        if (wantsAlbumImage(url_info))
             return findPath(['img', url_info.album as string], getAlbumImage(url_info))
-        if (type_ === 'cover' && 'album' in url_info && typeof url_info.album === 'string')
-            return findPath(['img', url_info.album], getAlbumCoverImage(url_info))
+        if (wantsAlbumCover(url_info))
+            return findPath(['img', url_info.album as string], getAlbumCoverImage(url_info))
 
         return undefined
     } catch (e: unknown) {

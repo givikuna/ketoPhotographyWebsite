@@ -193,7 +193,7 @@ async function createAlbum(album) {
     const albumDiv = document.createElement('div');
     albumDiv.setAttribute('id', `album_${album}`);
     albumDiv.innerHTML = albumComponent;
-    albumDiv.innerHTML += `
+    albumDiv.innerHTML += /*HTML*/`
         <div class="inAlbumImages" id="${album}Gallery"> </div>
     `;
     document.getElementById('app').appendChild(albumDiv);
@@ -219,43 +219,45 @@ async function buildPage(page) {
 async function fetchAlbumData() {
     const _default = [
         {
-            "album": "newborns",
-            "coverImage": "294546948_760020545155998_2532217280930973580_n.jpeg",
-            "images": [],
-            "display": "Newborns"
+            album: "newborns",
+            coverImage: "294546948_760020545155998_2532217280930973580_n.jpeg",
+            images: [],
+            display: "Newborns"
         },
         {
-            "album": "families",
-            "coverImage": "119904284_176645870748396_1710356227522994443_n.jpeg",
-            "images": [],
-            "display": "Families"
+            album: "families",
+            coverImage: "119904284_176645870748396_1710356227522994443_n.jpeg",
+            images: [],
+            display: "Families"
         },
         {
-            "album": "advertisements",
-            "coverImage": "326988248_695766632214878_1398532937315296194_n.jpeg",
-            "images": [],
-            "display": "Advertisements"
+            album: "advertisements",
+            coverImage: "326988248_695766632214878_1398532937315296194_n.jpeg",
+            images: [],
+            display: "Advertisements"
         },
         {
-            "album": "portraits",
-            "coverImage": "313259401_838576830633702_7727858395197320125_n.jpeg",
-            "images": [],
-            "display": "Portraits"
+            album: "portraits",
+            coverImage: "313259401_838576830633702_7727858395197320125_n.jpeg",
+            images: [],
+            display: "Portraits"
         },
         {
-            "album": "weddings",
-            "coverImage": "275321951_506245004455146_138720927218083306_n.jpeg",
-            "images": [],
-            "display": "Weddings"
+            album: "weddings",
+            coverImage: "275321951_506245004455146_138720927218083306_n.jpeg",
+            images: [],
+            display: "Weddings"
         },
         {
-            "album": "business",
-            "coverImage": "323284989_1161493651165139_5280267032390652084_n.jpeg",
-            "images": [],
-            "display": "Business"
+            album: "business",
+            coverImage: "323284989_1161493651165139_5280267032390652084_n.jpeg",
+            images: [],
+            display: "Business"
         }
     ]
+
     const url = '@dynamiclink:8094/?data=albumData';
+
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -270,7 +272,7 @@ async function fetchAlbumData() {
 
 async function updateApp() {
     navbar();
-    const currentPage = pages.length > 0 ? (pages.includes(getPage()) ? getPage() : 'home') : 'home';
+    const currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : 'home';
     for (let i = 0; i < pages.length; i++) {
         if (currentPage === pages[i]) {
             showPage(pages[i]);
@@ -303,7 +305,7 @@ async function updateApp() {
             count++;
         }
     }
-    document.getElementById(currentPage).innerHTML += `
+    document.getElementById(currentPage).innerHTML += /*HTML*/`
         <br>
         <br>
         <br>

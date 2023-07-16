@@ -1,6 +1,7 @@
 {
     "python.formatting.provider": "none",
     "cSpell.words": [
+        "compilercleaner",
         "contactemail",
         "dynamiclink",
         "flickr",
