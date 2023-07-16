@@ -109,33 +109,47 @@ function changeLang(lang) {
 
 function footer() {
     document.getElementById('footer-div').style.display = 'block';
-    document.getElementById('footer-div').innerHTML = `
-    <footer>
-        <a href="https://www.facebook.com"><img src="@dynamiclink:8092/?type=icons&img=facebook" alt="Facebook"
-                class="imagee_"></a>
-        <a href="https://www.flickr.com"><img src="@dynamiclink:8092/?type=icons&img=flickr" alt="Flickr"
-                class="imagee_"></a>
-        <a href="https://www.instagram.com"><img src="@dynamiclink:8092/?type=icons&img=instagram" alt="Instagram"
-                class="imagee_"></a>
-        <a href="https://www.pinterest.com"><img src="@dynamiclink:8092/?type=icons&img=pinterest" alt="Pinterest"
-                class="imagee_"></a>
-        <a href="https://www.youtube.com"><img src="@dynamiclink:8092/?type=icons&img=youtube" alt="YouTube"
-                class="imagee_"></a>
+    document.getElementById('footer-div').innerHTML = /*HTML*/`
+        <footer>
+            <a href="https://www.facebook.com"><img src="@dynamiclink:8092/?type=icons&img=facebook" alt="Facebook"
+                    class="SocialMediaIcon"></a>
+            <a href="https://www.flickr.com"><img src="@dynamiclink:8092/?type=icons&img=flickr" alt="Flickr"
+                    class="SocialMediaIcon"></a>
+            <a href="https://www.instagram.com"><img src="@dynamiclink:8092/?type=icons&img=instagram" alt="Instagram"
+                    class="SocialMediaIcon"></a>
+            <a href="https://www.pinterest.com"><img src="@dynamiclink:8092/?type=icons&img=pinterest" alt="Pinterest"
+                    class="SocialMediaIcon"></a>
+            <a href="https://www.youtube.com"><img src="@dynamiclink:8092/?type=icons&img=youtube" alt="YouTube"
+                    class="SocialMediaIcon"></a>
+
+            <br>
+            <br>
+
+            <div>
+                <p>
+                    <a href="#contact" class="contact-link">
+                        Contact Me
+                    </a>
+                </p>
+            </div>
+        </footer>
 
         <br>
         <br>
 
-        <div>
-            <p>
-                <a href="#contact" class="contact-link">
-                    Contact Me
-                </a>
-            </p>
-        </div>
-    </footer>
+        <style>
+            .SocialMediaIcon {
+                display: inline-block;
+                margin: 0 10px;
+                transition: transform 0.2s;
+                width: 40px;
+                height: 40px;
+            }
 
-    <br>
-    <br>
+            .SocialMediaIcon:hover {
+                transform: scale(1.05);
+            }
+        </style>
     `;
 }
 
@@ -190,7 +204,7 @@ async function buildPage(page) {
         case 'home':
             const albumData = await fetchAlbumData();
             for (let i = 0; i < albumData.length; i++) {
-                const element = `
+                const element = /*HTML*/`
                     <img src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}" onclick="window.location.href='#album_${albumData[i].album}'" alt="Image ${i}" id="${albumData[i].album}AlbumCoverForHome">
                 `;
                 document.getElementById('album-gallery').innerHTML += element;
@@ -199,8 +213,6 @@ async function buildPage(page) {
                 pages.push(`album_${albumData[i].album}`);
             }
             break;
-        default:
-            buildComponent(page);
     }
 }
 
@@ -280,9 +292,10 @@ async function updateApp() {
                 const imageContainerDiv = document.createElement('div', containerID);
                 imageContainerDiv.setAttribute('id', containerID);
                 imageContainerDiv.setAttribute('class', containerClass);
+                imageContainerDiv.style.textAlign = 'center';
                 document.getElementById(currentPage).appendChild(imageContainerDiv);
             } else {
-                const imageElement = `
+                const imageElement = /*HTML*/`
                     <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
                 `;
                 document.getElementById(containerID).innerHTML += imageElement;
@@ -290,6 +303,11 @@ async function updateApp() {
             count++;
         }
     }
+    document.getElementById(currentPage).innerHTML += `
+        <br>
+        <br>
+        <br>
+    `;
 }
 
 async function getAlbum(currentAlbum) {

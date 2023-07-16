@@ -1,7 +1,4 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
     "python.formatting.provider": "none",
     "cSpell.words": [
         "contactemail",
@@ -18,5 +15,21 @@
         "subpages",
         "supertrim",
         "Tsvariani"
-    ]
+    ],
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "string.quoted.double.js",
+                "settings": {
+                    "foreground": "#66CC66" // Specify the desired color
+                }
+            },
+            {
+                "scope": "string.quoted.double.html",
+                "settings": {
+                    "foreground": "#66CC66" // Specify the desired color
+                }
+            }
+        ]
+    }
 }

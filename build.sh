@@ -1,4 +1,7 @@
 touch compile.json
 cargo build
 cargo install
-python3 compile.py
+npm install
+npm run collect-images
+npm run collect-compiler-information
+npm run compile
