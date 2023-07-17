@@ -35,7 +35,11 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query
         const requestsLibrary: boolean = 'type' in url_info && (url_info.type == 'jQuery' || url_info.type == 'Bootstrap')
-        const fpath: PathLike = findPath(requestsLibrary ? ["public", "lib"] : ["public"], (requestsLibrary ? `${url_info.type}.` : "app.") + getSourceFileExtension(url_info))
+        const fpath: PathLike = ((): PathLike => {
+            if (requestsLibrary)
+                return findPath(["public", "lib"], `${url_info.type}.${getSourceFileExtension(url_info)}`)
+            return findPath(["public"], `app.${getSourceFileExtension(url_info)}`)
+        })()
         return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "")
     } catch (e: unknown) {
         console.log(e)

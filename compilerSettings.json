@@ -3,7 +3,8 @@
         "files": [
             "imageCleaner.ts",
             "imageCollector.ts",
-            "buildCompilerFile.ts"
+            "buildCompilerFile.ts",
+            "scrambleImages.ts"
         ],
         "directories": [
             "target",
