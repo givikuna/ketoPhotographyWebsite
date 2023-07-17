@@ -22,7 +22,7 @@ async function main(d = null, l = null, c = null) {
         console.log('unknown errors found with loading')
 }
 
-async function populateImages() {
+async function populateHomepageWelcomeImages() {
     const m_images = [];
     const gottenImages = await fetchWelcomeImageData();
     for (let i = 1; i <= gottenImages.length; i++) {
@@ -93,8 +93,8 @@ function navbar() {
 
 const getLang = lang => lang === 'ru' ? lang : (lang === 'ge' ? lang : 'en');
 
-async function nextImage() {
-    let images = await populateImages();
+async function nextHomepageImage() {
+    let images = await populateHomepageWelcomeImages();
     if (iterated === images.length) {
         iterated = 0;
         document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated++]})`;
@@ -131,6 +131,11 @@ function footer() {
                         Contact Me
                     </a>
                 </p>
+                <p>
+                <a href="#home" class="contact-link">
+                    Home
+                </a>
+            </p>
             </div>
         </footer>
 
@@ -215,7 +220,17 @@ async function buildPage(page) {
             const albumData = await fetchAlbumData();
             for (let i = 0; i < albumData.length; i++) {
                 const element = /*HTML*/`
-                    <img src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}" onclick="window.location.href='#album_${albumData[i].album}'" alt="Image ${i}" id="${albumData[i].album}AlbumCoverForHome">
+                    <div class="imageContainer">
+                        <img
+                            src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}"
+                            onclick="window.location.href='#album_${albumData[i].album}'"
+                            alt="Image ${i}"
+                            id="${albumData[i].album}AlbumCoverForHome"
+                        >
+                        <span id="${albumData[i].album}AlbumCoverForHomeSpan">
+                            ${albumData[i].album}
+                        </span>
+                    </div>
                 `;
                 document.getElementById('album-gallery').innerHTML += element;
 
@@ -365,5 +380,5 @@ async function buildComponent(component) {
 window.addEventListener('hashchange', updateApp);
 
 setInterval(function () {
-    if (getPage() === 'home') nextImage();
+    if (getPage() === 'home') nextHomepageImage();
 }, 10000);
