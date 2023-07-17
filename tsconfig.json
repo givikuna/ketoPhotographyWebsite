@@ -3,6 +3,35 @@
         "target": "ES2022",
         "strict": true,
         "module": "CommonJS",
-        "forceConsistentCasingInFileNames": true
-    }
+        "forceConsistentCasingInFileNames": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "alwaysStrict": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+        "allowUmdGlobalAccess": true
+    },
+    "files": [
+        "cgi/img.ts",
+        "cgi/index.ts",
+        "cgi/select.ts",
+        "cgi/serve.ts",
+        "cgi/src.ts",
+        "cgi/types/types.ts",
+        "cgi/modules/dynamicLinkGetter.ts",
+        "cgi/modules/findPath.ts",
+        "cgi/modules/portServer.ts",
+        "cgi/modules/replaceData.ts",
+        "cgi/extensions/syntax.ts",
+        "cgi/constants/constants.ts"
+    ]
 }

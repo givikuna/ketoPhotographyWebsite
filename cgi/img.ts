@@ -2,7 +2,7 @@ import * as express from 'express'
 import * as url from 'url'
 import * as subProcess from 'child_process'
 
-import { readdirSync, readFileSync, existsSync, readFile } from 'fs'
+import { readdirSync, readFileSync, existsSync } from 'fs'
 
 import { ParsedUrlQuery } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
@@ -197,7 +197,7 @@ function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
     }
 }
 
-subProcess.exec('npm run collect-images', (err: subProcess.ExecException | null, output: string): void => {
+subProcess.exec('npm run collect-images', (err: subProcess.ExecException | null, _output: string): void => {
     if (err) console.log(`Image collection failed:\n${err}`)
     console.log('Images were collected')
 })

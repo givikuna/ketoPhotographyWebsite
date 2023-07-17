@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import * as path from 'path'
 
 import { Album, ImageExtension, imageExtensions } from './cgi/types/types'
 import { findPath } from './cgi/modules/findPath'

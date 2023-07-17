@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'fs'
 
 import { PathLike } from 'fs'
 import { ParsedUrlQuery } from 'querystring'
-import { IncomingMessage, ServerResponse, Server } from 'http'
+import { IncomingMessage, ServerResponse } from 'http'
 
 import { getPort } from './modules/portServer'
 import { findPath } from './modules/findPath'
