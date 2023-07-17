@@ -15,7 +15,8 @@
     "clean": "./cleaner",
     "rebuild": "./rebuild.sh",
     "collect-images": "ts-node imageCleaner && ts-node imageCollector",
-    "collect-compiler-information": "ts-node buildCompilerFile.ts"
+    "collect-compiler-information": "ts-node buildCompilerFile.ts",
+    "scramble-images": "ts-node scrambleImages.ts"
   },
   "repository": {
     "type": "git",

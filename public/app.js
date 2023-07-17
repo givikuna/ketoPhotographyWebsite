@@ -1,14 +1,11 @@
 const pages = [];
+const builtAlbums = [];
 let iterated = 0;
 
-let dynamiclink;
-let language;
-let contactemail;
-
-async function main(d, l, c) {
-    dynamiclink = d ? d : 'ketojibladze.com';
-    language = l ? getLang(l) : 'en';
-    contactemail = c ? c : 'givitsvariani@proton.me';
+async function main(d = null, l = null, c = null) {
+    const dynamiclink = d ? d : 'ketojibladze.com';
+    const language = l ? getLang(l) : 'en';
+    const contactemail = c ? c : 'givitsvariani@proton.me';
 
     changeLang(language);
     navbar();
@@ -19,6 +16,10 @@ async function main(d, l, c) {
     }).then(() => {
         navbar();
     }).then(updateApp);
+    if (builtNavBar && built)
+        console.log('all loaded properly')
+    else
+        console.log('unknown errors found with loading')
 }
 
 async function populateImages() {
@@ -39,7 +40,8 @@ async function fetchWelcomeImageData() {
     const url = '@dynamiclink:8094/?data=welcome';
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+        if (!response.ok)
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
 
         const data = await response.json();
         return data;
@@ -95,11 +97,9 @@ async function nextImage() {
     let images = await populateImages();
     if (iterated === images.length) {
         iterated = 0;
-        document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated]})`;
-        iterated++;
+        document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated++]})`;
     } else {
-        document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated]})`;
-        iterated++;
+        document.querySelector('#homepage-navbar-div').style.backgroundImage = `url(${images[iterated++]})`;
     }
 }
 
@@ -162,7 +162,8 @@ async function getPages() {
     const url = '@dynamiclink:8094/?data=pages';
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+        if (!response.ok)
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
 
         const data = await response.json();
         return data;
@@ -177,14 +178,23 @@ async function buildApp() {
     for (let i = 0; i < data.length; i++) {
         let pageDiv = document.createElement('div');
         pageDiv.setAttribute('id', data[i].page ? data[i].page : 'ERROR');
+        pageDiv.setAttribute('class', (() => {
+            const pageID = data[i].page ? data[i].page : 'ERROR';
+            if (pageID.startsWith("album_")) {
+                return "albumPage";
+            }
+            return "webPage";
+        })());
         document.getElementById('app').appendChild(pageDiv);
         pages.push(data[i].page);
         let _ = await buildComponent(pageDiv.id);
         updateApp();
     }
+
     for (let i = 0; i < data.length; i++) {
         let _ = await buildPage(data[i].page);
     }
+
     return true;
 }
 
@@ -210,6 +220,7 @@ async function buildPage(page) {
                 document.getElementById('album-gallery').innerHTML += element;
 
                 let _ = await createAlbum(albumData[i].album);
+
                 pages.push(`album_${albumData[i].album}`);
             }
             break;
@@ -260,7 +271,8 @@ async function fetchAlbumData() {
 
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
+        if (!response.ok)
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
 
         const data = await response.json();
         return data;
@@ -268,6 +280,34 @@ async function fetchAlbumData() {
         console.error('An error occurred while fetching dynamic data:', error);
         return _default;
     }
+}
+
+async function buildAlbum(currentPage) {
+    if (!currentPage.startsWith("album_")) {
+        return;
+    }
+
+    if (builtAlbums.includes(currentPage)) {
+        return;
+    }
+
+    const currentAlbum = currentPage.replace(/album_/g, "");
+    const albumImages = await getAlbum(currentAlbum);
+    for (let i = 0; i < albumImages.images.length; i++) {
+        document.getElementById(`${currentPage.replace(/album_/g, "")}Gallery`).innerHTML += /*HTML*/`
+            <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+        `;
+    }
+    builtAlbums.push(currentPage);
+    document.getElementById(currentPage).innerHTML += /*HTML*/`
+        <br>
+        <br>
+        <br>
+    `;
 }
 
 async function updateApp() {
@@ -281,35 +321,7 @@ async function updateApp() {
         }
     }
 
-    if (currentPage.startsWith("album_")) {
-        const currentAlbum = currentPage.replace(/album_/g, "");
-        const albumImages = await getAlbum(currentAlbum);
-        let count = 1;
-        let containerCount = 1;
-        const containerClass = `${currentAlbum}ImageContainer`;
-        let containerID = '';
-        for (let i = 0; i < albumImages.images.length; i++) {
-            if (count === 3 || i === 0) {
-                containerID = `${currentAlbum}ImageContainer${containerCount++}`;
-                const imageContainerDiv = document.createElement('div', containerID);
-                imageContainerDiv.setAttribute('id', containerID);
-                imageContainerDiv.setAttribute('class', containerClass);
-                imageContainerDiv.style.textAlign = 'center';
-                document.getElementById(currentPage).appendChild(imageContainerDiv);
-            } else {
-                const imageElement = /*HTML*/`
-                    <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
-                `;
-                document.getElementById(containerID).innerHTML += imageElement;
-            }
-            count++;
-        }
-    }
-    document.getElementById(currentPage).innerHTML += /*HTML*/`
-        <br>
-        <br>
-        <br>
-    `;
+    await buildAlbum(currentPage);
 }
 
 async function getAlbum(currentAlbum) {
@@ -340,7 +352,7 @@ async function fetchComponent(component) {
         return data;
     } catch (error) {
         console.error('Error:', error);
-        return ''
+        return '';
     }
 }
 

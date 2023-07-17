@@ -67,8 +67,24 @@ footer p a:hover {
 .navbar-container {
     position: absolute;
     width: auto;
-    margin-left: 60%;
+    margin-left: 50%;
     margin-top: 1%;
+}
+
+@media (min-width: 100px) {
+
+    /* Adjust margin-left for screens larger than 1200px */
+    .navbar-container {
+        margin-left: 10%;
+    }
+}
+
+@media (min-width: 1640px) {
+
+    /* Adjust margin-left for screens larger than 1440px */
+    .navbar-container {
+        margin-left: 60%;
+    }
 }
 
 .navbar {
@@ -100,6 +116,7 @@ footer p a:hover {
 .albumImage {
     max-width: 30%;
     max-height: 40vh;
+    margin-bottom: 10px;
     border-radius: 30px;
     filter: brightness(1.2) blur(0.05px);
     transition: all 0.3s ease;
@@ -108,4 +125,8 @@ footer p a:hover {
 .albumImage:hover {
     transform: scale(1.01);
     filter: brightness(1.2) blur(0px);
+}
+
+.inAlbumImages {
+    text-align: center;
 }
