@@ -72,16 +72,12 @@ footer p a:hover {
 }
 
 @media (min-width: 100px) {
-
-    /* Adjust margin-left for screens larger than 1200px */
     .navbar-container {
         margin-left: 10%;
     }
 }
 
 @media (min-width: 1640px) {
-
-    /* Adjust margin-left for screens larger than 1440px */
     .navbar-container {
         margin-left: 60%;
     }
