@@ -12,10 +12,15 @@ async function main(d = null, l = null, c = null) {
 
     let builtNavBar = await buildNavBar();
     let built = await buildApp().then(updateApp).then(() => {
-        footer();
+        makeFooter();
     }).then(() => {
         navbar();
-    }).then(updateApp);
+    }).then(updateApp).then(() => {
+        const navbars = ['navbar-div-phone', 'homepage-navbar-div-phone'];
+        for (let i = 0; i < navbars.length; i++) {
+            let _ = buildHamburger(navbars[i]);
+        }
+    });
     if (builtNavBar && built)
         console.log('all loaded properly')
     else
@@ -40,8 +45,9 @@ async function fetchWelcomeImageData() {
     const url = '@dynamiclink:8094/?data=welcome';
     try {
         const response = await fetch(url);
-        if (!response.ok)
+        if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
 
         const data = await response.json();
         return data;
@@ -81,13 +87,16 @@ async function buildNavBar() {
     document.getElementById('homepage-navbar-div').innerHTML = await fetchComponent('homepagenavbar');
 }
 
-function navbar() {
+function navbar(callingFromWindowSizeCheck = false) {
+    if (callingFromWindowSizeCheck === false && windowSizeCheck() === true) {
+        return;
+    }
     if (getPage() === 'home') {
-        document.getElementById('navbar-div').style.display = 'none';
-        document.getElementById('homepage-navbar-div').style.display = 'block';
+        hideDiv('navbar-div');
+        showDiv('homepage-navbar-div');
     } else {
-        document.getElementById('homepage-navbar-div').style.display = 'none';
-        document.getElementById('navbar-div').style.display = 'block'
+        hideDiv('homepage-navbar-div');
+        showDiv('navbar-div');
     }
 }
 
@@ -107,9 +116,8 @@ function changeLang(lang) {
     //
 }
 
-function footer() {
-    document.getElementById('footer-div').style.display = 'block';
-    document.getElementById('footer-div').innerHTML = /*HTML*/`
+function makeFooter() {
+    const footerHTML = /*HTML*/`
         <footer>
             <a href="https://www.facebook.com"><img src="@dynamiclink:8092/?type=icons&img=facebook" alt="Facebook"
                     class="SocialMediaIcon"></a>
@@ -141,21 +149,8 @@ function footer() {
 
         <br>
         <br>
-
-        <style>
-            .SocialMediaIcon {
-                display: inline-block;
-                margin: 0 10px;
-                transition: transform 0.2s;
-                width: 40px;
-                height: 40px;
-            }
-
-            .SocialMediaIcon:hover {
-                transform: scale(1.05);
-            }
-        </style>
     `;
+    $('#footer-div').show().append(footerHTML);
 }
 
 function getPage() {
@@ -190,7 +185,7 @@ async function buildApp() {
             }
             return "webPage";
         })());
-        document.getElementById('app').appendChild(pageDiv);
+        $('#app').append(pageDiv);
         pages.push(data[i].page);
         let _ = await buildComponent(pageDiv.id);
         updateApp();
@@ -211,7 +206,7 @@ async function createAlbum(album) {
     albumDiv.innerHTML += /*HTML*/`
         <div class="inAlbumImages" id="${album}Gallery"> </div>
     `;
-    document.getElementById('app').appendChild(albumDiv);
+    $('#app').append(albumDiv);
 }
 
 async function buildPage(page) {
@@ -232,7 +227,7 @@ async function buildPage(page) {
                         </span>
                     </div>
                 `;
-                document.getElementById('album-gallery').innerHTML += element;
+                $('#album-gallery').append(element);
 
                 let _ = await createAlbum(albumData[i].album);
 
@@ -298,24 +293,22 @@ async function fetchAlbumData() {
 }
 
 async function buildAlbum(currentPage) {
-    if (!currentPage.startsWith("album_")) {
+    if (!currentPage.startsWith("album_"))
         return;
-    }
 
-    if (builtAlbums.includes(currentPage)) {
+    if (builtAlbums.includes(currentPage))
         return;
-    }
 
     const currentAlbum = currentPage.replace(/album_/g, "");
     const albumImages = await getAlbum(currentAlbum);
     for (let i = 0; i < albumImages.images.length; i++) {
-        document.getElementById(`${currentPage.replace(/album_/g, "")}Gallery`).innerHTML += /*HTML*/`
+        $(`#${currentPage.replace(/album_/g, '')}Gallery`).append(/*HTML*/`
             <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
             &nbsp;
             &nbsp;
             &nbsp;
             &nbsp;
-        `;
+        `);
     }
     builtAlbums.push(currentPage);
     document.getElementById(currentPage).innerHTML += /*HTML*/`
@@ -330,9 +323,9 @@ async function updateApp() {
     const currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : 'home';
     for (let i = 0; i < pages.length; i++) {
         if (currentPage === pages[i]) {
-            showPage(pages[i]);
+            showDiv(pages[i]);
         } else {
-            hidePage(pages[i]);
+            hideDiv(pages[i]);
         }
     }
 
@@ -349,12 +342,12 @@ async function getAlbum(currentAlbum) {
     return albumData[0];
 }
 
-function hidePage(page) {
-    document.getElementById(page).style.display = 'none';
+function hideDiv(div) {
+    $(`#${div}`).hide();
 }
 
-function showPage(page) {
-    document.getElementById(page).style.display = 'block';
+function showDiv(div) {
+    $(`#${div}`).show();
 }
 
 async function fetchComponent(component) {
@@ -371,10 +364,76 @@ async function fetchComponent(component) {
     }
 }
 
+function hamburgerClick(from) {
+    alert(`clicked on the hamburger from ${from}`)
+}
+
+function buildHamburger(div) {
+    const newNavbar = /*HTML*/`
+        <div class="hamburger-navbar" id="inside-${div}">
+            <div class="navbar">
+                <div id="inside-hamburger-wrapper-for-${div}">
+                    <a id="navbar-home-option" href="#home">Home</a>
+                    <a id="navbar-contact-option" href="#contact">Contact</a>
+                    <a id="navbar-about-option" href="#about">About</a>
+                    <a id="navbar-pricing-option" href="#pricing">Pricing</a>
+                    <a id="navbar-blog-option" href="#blog">Blog</a>
+                    <a id="navbar-albums-option" href="#albums">Albums</a>
+                </div>
+                <div class="hamburger" onclick="hamburgerClick('${div}')">&#9776;</div>
+            </div>
+        </div>
+    `;
+    $(`#${div}`).append(newNavbar);
+    $(`#inside-hamburger-wrapper-for-${div}`).hide();
+    if (div === 'navbar-div-phone') {
+        $(`#${div}`).append(
+            /*HTML*/`
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+        `);
+    }
+}
+
+function resizeNavBar() {
+    const navbars = ['navbar-div', 'homepage-navbar-div'];
+    for (let i = 0; i < navbars.length; i++) {
+        $(`#${navbars[i]}`).hide();
+    }
+    if (getPage() === 'home') {
+        hideDiv('navbar-div-phone');
+        showDiv('homepage-navbar-div-phone')
+
+    } else {
+        showDiv('navbar-div-phone');
+        hideDiv('homepage-navbar-div-phone');
+    }
+}
+
 async function buildComponent(component) {
     let componentDiv = document.getElementById(component ? component : 'ERROR');
     componentDiv.innerHTML = await fetchComponent(component);
-    return componentDiv;
+    return componentDiv; windowSizeCheck
+}
+
+function windowSizeCheck() {
+    if (window.innerWidth <= 768) {
+        resizeNavBar();
+        return true;
+    } else {
+        hideDiv('navbar-div-phone');
+        hideDiv('homepage-navbar-div-phone');
+        if (getPage() === 'home') {
+            showDiv('homepage-navbar-div');
+        } else {
+            showDiv('navbar-div');
+        }
+        return false;
+    }
 }
 
 window.addEventListener('hashchange', updateApp);
@@ -382,3 +441,5 @@ window.addEventListener('hashchange', updateApp);
 setInterval(function () {
     if (getPage() === 'home') nextHomepageImage();
 }, 10000);
+
+window.addEventListener('resize', windowSizeCheck);

@@ -71,7 +71,7 @@ footer p a:hover {
     margin-top: 1%;
 }
 
-@media (min-width: 100px) {
+@media (min-width: 800px) {
     .navbar-container {
         margin-left: 10%;
     }
@@ -128,14 +128,6 @@ footer p a:hover {
 }
 
 #album-gallery {
-    /*
-    width: 70%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-    */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -171,4 +163,29 @@ footer p a:hover {
 #album-gallery img:hover {
     transform: scale(1.01);
     filter: blur(0px);
+}
+
+.hamburger {
+    display: block;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        background-color: #444;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 6%;
+    }
+
+    .navbar a {
+        padding: 10px 20px;
+        border-bottom: 1px solid #fff;
+        color: white;
+    }
 }
