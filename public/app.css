@@ -25,18 +25,6 @@ footer p a:hover {
     transform: scale(1.05);
 }
 
-.contact-link {
-    color: black;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: transform 0.2s;
-    font-size: 20px;
-}
-
-.contact-link:hover {
-    transform: scale(4);
-}
-
 .plain-button {
     background: none;
     border: none;
@@ -165,27 +153,54 @@ footer p a:hover {
     filter: blur(0px);
 }
 
-.hamburger {
-    display: block;
-    cursor: pointer;
-    font-size: 24px;
-    padding: 10px;
-    color: white;
+.SocialMediaIcon {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s ease, filter 0.2s ease;
+    -webkit-transition: transform 0.3s ease, filter 0.2s ease;
+    -moz-transition: transform 0.3s ease, filter 0.2s ease;
+    -ms-transition: transform 0.3s ease, filter 0.2s ease;
+    -o-transition: transform 0.3s ease, filter 0.2s ease;
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        background-color: #444;
-        position: absolute;
-        top: 50px;
-        left: 0;
-        width: 6%;
-    }
+.SocialMediaIcon:hover {
+    transform: scale(1.1);
+    filter: brightness(110%);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    -webkit-filter: brightness(110%);
+}
 
-    .navbar a {
-        padding: 10px 20px;
-        border-bottom: 1px solid #fff;
-        color: white;
-    }
+.contact-link {
+    color: black;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 20px;
+    transition: font-size 0.2s ease, transform 0.2s ease;
+    -webkit-transition: font-size 0.2s ease, transform 0.2s ease;
+    -moz-transition: font-size 0.2s ease, transform 0.2s ease;
+    -ms-transition: font-size 0.2s ease, transform 0.2s ease;
+    -o-transition: font-size 0.2s ease, transform 0.2s ease;
+}
+
+.contact-link:hover {
+    font-size: 22px;
+    transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+    -moz-transform: rotate(20deg);
+    -ms-transform: rotate(20deg);
+    -o-transform: rotate(20deg);
+}
+
+.hamburger-navbar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #3a3a3b;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
 }
