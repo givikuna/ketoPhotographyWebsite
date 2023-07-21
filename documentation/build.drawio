@@ -13,13 +13,13 @@
                         <mxPoint x="206" y="42" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="6" value="run:&lt;br&gt;npm run build" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="6" value="run npm run start" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="213" y="7" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="7" value="runs ./build.sh" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="213" y="107" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#000000;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="6">
+                <mxCell id="8" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#000000;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="6" target="7">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="391" y="106" as="sourcePoint"/>
                         <mxPoint x="401" y="37" as="targetPoint"/>
@@ -81,19 +81,6 @@
                 </mxCell>
                 <mxCell id="21" value="runs the program" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="130" y="596" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="22" value="runs build.makefile" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="404" y="7" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="23" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#000000;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="22" target="7">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="443" y="117" as="sourcePoint"/>
-                        <mxPoint x="493" y="67" as="targetPoint"/>
-                        <Array as="points">
-                            <mxPoint x="464" y="78"/>
-                            <mxPoint x="271" y="78"/>
-                        </Array>
-                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>
