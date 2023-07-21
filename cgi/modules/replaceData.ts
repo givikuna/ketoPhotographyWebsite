@@ -1,53 +1,51 @@
-import {readFileSync, PathLike, existsSync} from 'fs';
+import { readFileSync, PathLike, existsSync } from "fs";
 
-import { getDynLink } from './dynamicLinkGetter'
-import { findPath } from './findPath'
+import { getDynLink } from "./dynamicLinkGetter";
+import { findPath } from "./findPath";
 
-import { ParsedUrlQuery } from 'querystring'
-import { Language } from '../types/types'
-import {supertrim} from '../extensions/syntax';
+import { ParsedUrlQuery } from "querystring";
+import { Language } from "../types/types";
+import { supertrim } from "../extensions/syntax";
 
-export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { "lang": 'en' }): string {
+export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { lang: "en" }): string {
     return data
         .replace(/@dynamiclink/g, getDynLink().toString())
         .replace(/@language/g, getLang(url_info))
-        .replace(/@contactemail/g, getEmail({ arr: ['public', 'data'], file: 'contactemail.txt' }))
+        .replace(/@contactemail/g, getEmail({ arr: ["public", "data"], file: "contactemail.txt" }));
 }
 
-export function getLang (url_info: ParsedUrlQuery | JSON): string {
-    const _default: string = 'en'
+export function getLang(url_info: ParsedUrlQuery | JSON): string {
+    const _default: string = "en";
     try {
-        return 'lang' in url_info && typeof url_info.lang === 'string' && getLangs().includes(url_info.lang) ? String(url_info.lang) : 'en'
+        return "lang" in url_info && typeof url_info.lang === "string" && getLangs().includes(url_info.lang) ? String(url_info.lang) : "en";
     } catch (e: unknown) {
-        console.log(e)
-        return _default
+        console.log(e);
+        return _default;
     }
 }
 
 export function getLangs(): string[] {
     try {
-        const data: Language[] = JSON.parse(String(readFileSync(findPath(['public', 'data'], 'languages.json'))));
+        const data: Language[] = JSON.parse(String(readFileSync(findPath(["public", "data"], "languages.json"))));
         const langs: string[] = [];
-        for (let i: number = 0; i < 0; i++)
-            langs.push(data[i].lang);
+        for (let i: number = 0; i < 0; i++) langs.push(data[i].lang);
         return langs;
     } catch (e: unknown) {
-        console.log(e)
-        return []
+        console.log(e);
+        return [];
     }
 }
 
 export function getEmail(data: JSON | object): string {
-    const _default: string = 'givitsvariani@proton.me'
+    const _default: string = "givitsvariani@proton.me";
     try {
-        const fpath: PathLike = findPath('arr' in data ? data.arr as string[] : [], 'file' in data ? data.file as string: '')
+        const fpath: PathLike = findPath("arr" in data ? (data.arr as string[]) : [], "file" in data ? (data.file as string) : "");
 
-        if (existsSync(fpath))
-            return supertrim(String(readFileSync(fpath)))
+        if (existsSync(fpath)) return supertrim(String(readFileSync(fpath)));
 
-        throw new Error('contact email not found')
+        throw new Error("contact email not found");
     } catch (e: unknown) {
-        console.log(e)
-        return _default
+        console.log(e);
+        return _default;
     }
 }

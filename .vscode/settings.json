@@ -1,5 +1,4 @@
 {
-    "python.formatting.provider": "none",
     "cSpell.words": [
         "compilercleaner",
         "contactemail",
@@ -10,6 +9,7 @@
         "homepagenavbar",
         "ketophotographywebsite",
         "navbars",
+        "Parens",
         "pfrd",
         "pinterest",
         "proto",
@@ -19,8 +19,7 @@
         "Tsvariani"
     ],
     "editor.tokenColorCustomizations": {
-        "textMateRules": [
-            {
+        "textMateRules": [{
                 "scope": "string.quoted.double.js",
                 "settings": {
                     "foreground": "#66CC66" // Specify the desired color
@@ -33,5 +32,19 @@
                 }
             }
         ]
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }
