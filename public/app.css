@@ -194,7 +194,7 @@ footer p a:hover {
     -o-transform: rotate(20deg);
 }
 
-.hamburger-navbar {
+.hamburger-button {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -203,4 +203,41 @@ footer p a:hover {
     font-size: 24px;
     padding: 10px;
     cursor: pointer;
+}
+
+/*
+
+.hamburger-navbar {
+    display: none;
+    position: fixed;
+    top: 74px;
+    right: 20px;
+    background-color: #3a3a3b;
+    padding: 10px;
+    max-width: calc(100% - 100px);
+    text-align: right;
+}
+
+*/
+
+.hamburger-navbar {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background-color: #3a3a3b;
+    padding: 10px;
+}
+
+.hamburger-navbar-option {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    text-align: left;
+}
+
+.hamburger-navbar-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

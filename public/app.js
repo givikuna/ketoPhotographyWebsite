@@ -366,13 +366,40 @@ async function fetchComponent(component) {
 }
 
 function hamburgerClick(from) {
-    alert(`clicked on the hamburger from ${from}`);
+    const navbar = document.getElementById(`hamburger-navbar-for-${from}`);
+    navbar.style.display = navbar.style.display === "none" ? "block" : "none";
 }
 
 function buildHamburger(div) {
     const newNavbar = /*HTML*/ `
-        <div class="hamburger-navbar" onclick="hamburgerClick('${div}')" id="inside-${div}">
+        <div class="hamburger-button" onclick="hamburgerClick('${div}')" id="inside-${div}">
             &#9776;
+        </div>
+        <!-- Hamburger Navbar -->
+        <div class="hamburger-navbar" id="hamburger-navbar-for-${div}">
+            <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">
+                Home
+            </a>
+
+            <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">
+                Contact
+            </a>
+
+            <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">
+                About
+            </a>
+
+            <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">
+                Pricing
+            </a>
+
+            <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">
+                Blog
+            </a>
+
+            <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">
+                Albums
+            </a>
         </div>
     `;
     $(`#${div}`).append(newNavbar);
