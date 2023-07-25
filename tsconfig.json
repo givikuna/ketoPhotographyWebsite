@@ -18,7 +18,10 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
         "useUnknownInCatchVariables": true,
-        "allowUmdGlobalAccess": true
+        "allowUmdGlobalAccess": true,
+        "noImplicitThis": true,
+        "noImplicitOverride": true,
+        "strictBindCallApply": true
     },
     "files": [
         "cgi/img.ts",

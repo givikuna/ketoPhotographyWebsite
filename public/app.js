@@ -366,8 +366,13 @@ async function fetchComponent(component) {
 }
 
 function hamburgerClick(from) {
-    const navbar = document.getElementById(`hamburger-navbar-for-${from}`);
-    navbar.style.display = navbar.style.display === "none" ? "block" : "none";
+    const currentNavbarID = `hamburger-navbar-for-${from}`;
+    $(`#${currentNavbarID}`).toggle();
+    if (!$(`#${currentNavbarID}`).is(":hidden")) {
+        $("#homepage-navbar-div").css("margin-top", "300px");
+    } else {
+        $("#homepage-navbar-div").css("margin-top", "100px");
+    }
 }
 
 function buildHamburger(div) {
@@ -424,9 +429,13 @@ function changeNavbarForSmallDisplays() {
         showDiv("homepage-navbar-div-phone");
         hideDiv("homepagenavbar-container");
         showDiv("homepage-navbar-div");
+        $("#homepage-navbar-div").css("height", "200px");
+        $("#homepage-navbar-div").css("margin-top", "100px");
     } else {
         showDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
+        hideDiv("homepagenavbar-container");
+        hideDiv("homepage-navbar-div");
     }
 }
 
@@ -441,6 +450,8 @@ function windowSizeCheck() {
         changeNavbarForSmallDisplays();
         return true;
     } else {
+        $("#homepage-navbar-div").css("height", "100%");
+        $("#homepage-navbar-div").css("margin-top", "0%");
         hideDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
         if (getPage() === "home") {
