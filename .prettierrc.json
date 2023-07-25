@@ -4,8 +4,8 @@
     "semi": true,
     "trailingComma": "all",
     "bracketSpacing": true,
-    "bracketSameLine": false,
-    "arrowParens": "always",
+    "arrowParens": "avoid",
     "embeddedLanguageFormatting": "auto",
-    "singleAttributePerLine": true
+    "singleAttributePerLine": true,
+    "bracketSameLine": true
 }

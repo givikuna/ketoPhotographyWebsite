@@ -87,7 +87,7 @@ async function fetchWelcomeImageData() {
 
 async function buildNavBar() {
     document.getElementById("navbar-div").innerHTML = await fetchComponent("navbar");
-    document.getElementById("homepage-navbar-div").innerHTML = await fetchComponent("homepagenavbar");
+    document.getElementById("homepage-navbar-div").innerHTML += await fetchComponent("homepagenavbar");
 }
 
 function navbar(callingFromWindowSizeCheck = false) {
@@ -321,7 +321,7 @@ async function buildAlbum(currentPage) {
 }
 
 async function updateApp() {
-    navbar();
+    navbar(true);
     const currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
     for (let i = 0; i < pages.length; i++) {
         if (currentPage === pages[i]) {
@@ -366,23 +366,45 @@ async function fetchComponent(component) {
 }
 
 function hamburgerClick(from) {
-    alert(`clicked on the hamburger from ${from}`);
+    const currentNavbarID = `hamburger-navbar-for-${from}`;
+    $(`#${currentNavbarID}`).toggle();
+    if (!$(`#${currentNavbarID}`).is(":hidden")) {
+        $("#homepage-navbar-div").css("margin-top", "300px");
+    } else {
+        $("#homepage-navbar-div").css("margin-top", "100px");
+    }
 }
 
 function buildHamburger(div) {
     const newNavbar = /*HTML*/ `
-        <div class="hamburger-navbar" id="inside-${div}">
-            <div class="navbar">
-                <div id="inside-hamburger-wrapper-for-${div}">
-                    <a id="navbar-home-option" href="#home">Home</a>
-                    <a id="navbar-contact-option" href="#contact">Contact</a>
-                    <a id="navbar-about-option" href="#about">About</a>
-                    <a id="navbar-pricing-option" href="#pricing">Pricing</a>
-                    <a id="navbar-blog-option" href="#blog">Blog</a>
-                    <a id="navbar-albums-option" href="#albums">Albums</a>
-                </div>
-                <div class="hamburger" onclick="hamburgerClick('${div}')">&#9776;</div>
-            </div>
+        <div class="hamburger-button" onclick="hamburgerClick('${div}')" id="inside-${div}">
+            &#9776;
+        </div>
+        <!-- Hamburger Navbar -->
+        <div class="hamburger-navbar" id="hamburger-navbar-for-${div}">
+            <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">
+                Home
+            </a>
+
+            <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">
+                Contact
+            </a>
+
+            <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">
+                About
+            </a>
+
+            <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">
+                Pricing
+            </a>
+
+            <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">
+                Blog
+            </a>
+
+            <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">
+                Albums
+            </a>
         </div>
     `;
     $(`#${div}`).append(newNavbar);
@@ -399,17 +421,21 @@ function buildHamburger(div) {
     }
 }
 
-function resizeNavBar() {
-    const navbars = ["navbar-div", "homepage-navbar-div"];
-    for (let i = 0; i < navbars.length; i++) {
-        $(`#${navbars[i]}`).hide();
-    }
+function changeNavbarForSmallDisplays() {
+    $("#navbar").hide();
+
     if (getPage() === "home") {
         hideDiv("navbar-div-phone");
         showDiv("homepage-navbar-div-phone");
+        hideDiv("homepagenavbar-container");
+        showDiv("homepage-navbar-div");
+        $("#homepage-navbar-div").css("height", "200px");
+        $("#homepage-navbar-div").css("margin-top", "100px");
     } else {
         showDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
+        hideDiv("homepagenavbar-container");
+        hideDiv("homepage-navbar-div");
     }
 }
 
@@ -417,17 +443,19 @@ async function buildComponent(component) {
     let componentDiv = document.getElementById(component ? component : "ERROR");
     componentDiv.innerHTML = await fetchComponent(component);
     return componentDiv;
-    windowSizeCheck;
 }
 
 function windowSizeCheck() {
     if (window.innerWidth <= 768) {
-        resizeNavBar();
+        changeNavbarForSmallDisplays();
         return true;
     } else {
+        $("#homepage-navbar-div").css("height", "100%");
+        $("#homepage-navbar-div").css("margin-top", "0%");
         hideDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
         if (getPage() === "home") {
+            showDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
         } else {
             showDiv("navbar-div");

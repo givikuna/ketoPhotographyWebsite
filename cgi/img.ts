@@ -105,7 +105,7 @@ function readAlbumData(): Album[] {
         readFileSync(findPath(["img"], "info.json"), {
             encoding: "utf8",
             flag: "r",
-        })
+        }),
     ) as Album[];
 }
 
@@ -182,13 +182,37 @@ function wantsWelcomeImage(url_info: ParsedUrlQuery): boolean {
     }
 }
 
+function wantsLogo(url_info: ParsedUrlQuery): boolean {
+    const _default: boolean = false;
+    try {
+        if ("type" in url_info && typeof url_info.type === "string" && url_info.type === "logo") {
+            return true;
+        }
+        return false;
+    } catch (e: unknown) {
+        console.log(e);
+        return _default;
+    }
+}
+
 function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
     try {
         const type_: string = "type" in url_info && typeof url_info.type === "string" ? (url_info.type as string) : "";
-        if (wantsIcon(url_info)) return findPath(["public", "assets", type_], `${url_info.img}.${getIconExtension(url_info.img as string)}`);
-        if (wantsWelcomeImage(url_info)) return findPath(["public", "assets", type_], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`);
-        if (wantsAlbumImage(url_info)) return findPath(["img", url_info.album as string], getAlbumImage(url_info));
-        if (wantsAlbumCover(url_info)) return findPath(["img", url_info.album as string], getAlbumCoverImage(url_info));
+        if (wantsIcon(url_info)) {
+            return findPath(["public", "assets", type_], `${url_info.img}.${getIconExtension(url_info.img as string)}`);
+        }
+        if (wantsWelcomeImage(url_info)) {
+            return findPath(["public", "assets", type_], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`);
+        }
+        if (wantsAlbumImage(url_info)) {
+            return findPath(["img", url_info.album as string], getAlbumImage(url_info));
+        }
+        if (wantsAlbumCover(url_info)) {
+            return findPath(["img", url_info.album as string], getAlbumCoverImage(url_info));
+        }
+        if (wantsLogo(url_info)) {
+            return findPath(["public", "assets", "logo"], "logo.png");
+        }
 
         return undefined;
     } catch (e: unknown) {
