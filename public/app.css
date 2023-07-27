@@ -51,6 +51,8 @@ footer p a:hover {
     background-position: center;
     z-index: 1;
     margin-top: 100px;
+    clear: none;
+    align-items: center;
 }
 
 #homepage-navbar-div-phone {
@@ -143,36 +145,6 @@ footer p a:hover {
     filter: blur(0px);
 }
 
-.SocialMediaIcon {
-    width: 50px;
-    height: 50px;
-    transition:
-        transform 0.3s ease,
-        filter 0.2s ease;
-    -webkit-transition:
-        transform 0.3s ease,
-        filter 0.2s ease;
-    -moz-transition:
-        transform 0.3s ease,
-        filter 0.2s ease;
-    -ms-transition:
-        transform 0.3s ease,
-        filter 0.2s ease;
-    -o-transition:
-        transform 0.3s ease,
-        filter 0.2s ease;
-}
-
-.SocialMediaIcon:hover {
-    transform: scale(1.1);
-    filter: brightness(110%);
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    -o-transform: scale(1.1);
-    -webkit-filter: brightness(110%);
-}
-
 .contact-link {
     color: black;
     text-decoration: underline;
@@ -259,6 +231,38 @@ footer p a:hover {
     height: 200px;
     filter: brightness(200%);
     -webkit-filter: brightness(200%);
+    transition:
+        transform 1s ease,
+        filter 0.4s ease;
+    -webkit-transition:
+        transform 1s ease,
+        filter 0.4s ease;
+    -moz-transition:
+        transform 1s ease,
+        filter 0.4s ease;
+    -ms-transition:
+        transform 1s ease,
+        filter 0.4s ease;
+    -o-transition:
+        transform 1s ease,
+        filter 0.4s ease;
+}
+
+.navbar-logo:hover {
+    transform: scale(1.05);
+    filter: brightness(230%);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    -webkit-filter: brightness(225%);
+}
+
+.navbar-logo-phone {
+    width: 200px;
+    height: 100px;
+    filter: brightness(200%);
+    -webkit-filter: brightness(200%);
 }
 
 .navbar-logo-container {
@@ -275,6 +279,37 @@ footer p a:hover {
     width: auto;
     margin-left: 50%;
     margin-top: 1%;
+    clear: none;
+}
+
+.SocialMediaIcon {
+    width: 50px;
+    height: 50px;
+    transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -webkit-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -moz-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -ms-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -o-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+}
+
+.SocialMediaIcon:hover {
+    transform: scale(1.1);
+    filter: brightness(110%);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    -webkit-filter: brightness(110%);
 }
 
 @media (min-width: 800px) {

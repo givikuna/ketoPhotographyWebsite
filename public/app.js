@@ -426,6 +426,11 @@ function buildHamburger(div) {
                 Albums
             </a>
         </div>
+        <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-${div}">
+            <a href="#home">
+                <img src="@dynamiclink:8092/?type=logo" class="navbar-logo-phone" />
+            </a>
+        </div>
     `;
     $(`#${div}`).append(newNavbar);
     $(`#inside-hamburger-wrapper-for-${div}`).hide();
@@ -458,6 +463,7 @@ function changeNavbarForSmallDisplays() {
         hideDiv("homepage-navbar-div");
         $("#app").css("margin-top", "100px");
     }
+    hideDiv("homepage-navbar-logo-container");
 }
 
 async function buildComponent(component) {
@@ -478,6 +484,7 @@ function windowSizeCheck() {
         if (getPage() === "home") {
             showDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
+            showDiv("homepage-navbar-logo-container");
         } else {
             showDiv("navbar-div");
         }
@@ -498,8 +505,13 @@ function hashchange() {
             hideDiv("navbar-div");
             if (getPage() !== "home") {
                 hideDiv("homepage-navbar-div");
+                /*
+                // navbar-div-phone", "homepage-navbar-div-phone"
+                hideDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
+                */
             } else {
                 showDiv("homepage-navbar-div");
+                // showDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
                 $("#app").css("margin-top", "100px");
             }
         } else {
