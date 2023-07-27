@@ -2,7 +2,6 @@
 
 all: compile.json
 	cargo build
-	cargo install
 	npm install
 	npm run collect-images
 	npm run collect-compiler-information

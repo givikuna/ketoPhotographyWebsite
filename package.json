@@ -10,14 +10,13 @@
     "stop": "pm2 stop all",
     "list": "pm2 list",
     "save": "pm2 save",
-    "build-render": "./build_render",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "./cleaner",
     "rebuild": "./rebuild.sh",
     "collect-images": "ts-node imageCleaner && ts-node imageCollector",
     "collect-compiler-information": "ts-node buildCompilerFile.ts",
     "scramble-images": "ts-node scrambleImages.ts",
-    "deploy": "npm run build && npm run test && npm run start"
+    "deploy": "sudo chmod +x ./deploy.sh && ./deploy.sh"
   },
   "repository": {
     "type": "git",
