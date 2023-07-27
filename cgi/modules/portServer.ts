@@ -7,7 +7,7 @@ export function getPort(servername: string): number {
     const default_: number = 8080;
     try {
         return Ports[servername as keyof typeof Ports];
-    } catch (e: any) {
+    } catch (e: unknown) {
         return logErr(cFunc, e, default_, servername);
     }
 }

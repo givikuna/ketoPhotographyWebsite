@@ -228,7 +228,7 @@ subProcess.exec("npm run collect-images", (err: subProcess.ExecException | null,
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -237,7 +237,9 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
 
-        if (!("img" in url_info) && typeof url_info.img !== "string" && !("type" in url_info) && typeof url_info.type == "string") throw new Error("Invalid request");
+        if (!("img" in url_info) && typeof url_info.img !== "string" && !("type" in url_info) && typeof url_info.type == "string") {
+            throw new Error("Invalid request");
+        }
 
         const fpath: PathLike | undefined = getPath(url_info);
 

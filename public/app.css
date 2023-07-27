@@ -44,7 +44,9 @@ footer p a:hover {
     opacity: 0.97;
     background-repeat: no-repeat;
     height: 100%;
-    transition: background-image 0.5s ease, filter 0.5s ease;
+    transition:
+        background-image 0.5s ease,
+        filter 0.5s ease;
     filter: blur(0);
     background-position: center;
     z-index: 1;
@@ -163,11 +165,21 @@ footer p a:hover {
 .SocialMediaIcon {
     width: 50px;
     height: 50px;
-    transition: transform 0.3s ease, filter 0.2s ease;
-    -webkit-transition: transform 0.3s ease, filter 0.2s ease;
-    -moz-transition: transform 0.3s ease, filter 0.2s ease;
-    -ms-transition: transform 0.3s ease, filter 0.2s ease;
-    -o-transition: transform 0.3s ease, filter 0.2s ease;
+    transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -webkit-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -moz-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -ms-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
+    -o-transition:
+        transform 0.3s ease,
+        filter 0.2s ease;
 }
 
 .SocialMediaIcon:hover {
@@ -185,11 +197,21 @@ footer p a:hover {
     text-decoration: underline;
     cursor: pointer;
     font-size: 20px;
-    transition: font-size 0.2s ease, transform 0.2s ease;
-    -webkit-transition: font-size 0.2s ease, transform 0.2s ease;
-    -moz-transition: font-size 0.2s ease, transform 0.2s ease;
-    -ms-transition: font-size 0.2s ease, transform 0.2s ease;
-    -o-transition: font-size 0.2s ease, transform 0.2s ease;
+    transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -webkit-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -moz-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -ms-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -o-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
 }
 
 .contact-link:hover {
@@ -210,6 +232,7 @@ footer p a:hover {
     font-size: 24px;
     padding: 10px;
     cursor: pointer;
+    z-index: 9999;
 }
 
 /*
@@ -235,6 +258,7 @@ footer p a:hover {
     width: 100%;
     background-color: #3a3a3b;
     padding: 10px;
+    z-index: 9999;
 }
 
 .hamburger-navbar-option {

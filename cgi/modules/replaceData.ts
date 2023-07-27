@@ -8,10 +8,16 @@ import { Language } from "../types/types";
 import { supertrim } from "../extensions/syntax";
 
 export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { lang: "en" }): string {
-    return data
-        .replace(/@dynamiclink/g, getDynLink().toString())
-        .replace(/@language/g, getLang(url_info))
-        .replace(/@contactemail/g, getEmail({ arr: ["public", "data"], file: "contactemail.txt" }));
+    const _default: string = data;
+    try {
+        return data
+            .replace(/@dynamiclink/g, getDynLink().toString())
+            .replace(/@language/g, getLang(url_info))
+            .replace(/@contactemail/g, getEmail({ arr: ["public", "data"], file: "contactemail.txt" }));
+    } catch (e: unknown) {
+        console.log(e);
+        return _default;
+    }
 }
 
 export function getLang(url_info: ParsedUrlQuery | JSON): string {

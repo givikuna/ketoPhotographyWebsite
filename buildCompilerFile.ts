@@ -64,7 +64,10 @@ function traverseDirectories(dir: string = "./") {
                     compileables[j].files.push({
                         dir: dir.slice(2),
                         file: `${dir}${paths[i]}`,
-                        filename: paths[i].split("/").pop() as string,
+                        filename: ((): string => {
+                            const filename_: string | undefined = paths[i].split("/").pop();
+                            return typeof filename_ === "string" ? filename_ : "";
+                        })(),
                         compilesTo: ((): string => {
                             switch (fileExtension) {
                                 case "ts":

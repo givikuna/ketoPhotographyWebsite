@@ -24,8 +24,19 @@ function getSourceFileExtension(url_info: ParsedUrlQuery): string {
     }
 }
 
+function getPath(url_info: ParsedUrlQuery, requestsLibrary: boolean): PathLike {
+    const _default: PathLike = "../public/components/home.html";
+    try {
+        if (requestsLibrary) return findPath(["public", "lib"], `${url_info.type}.${getSourceFileExtension(url_info)}`);
+        return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
+    } catch (e: unknown) {
+        console.log(e);
+        return _default;
+    }
+}
+
 const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -34,10 +45,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
 
         const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
         const requestsLibrary: boolean = "type" in url_info && (url_info.type == "jQuery" || url_info.type == "Bootstrap");
-        const fpath: PathLike = ((): PathLike => {
-            if (requestsLibrary) return findPath(["public", "lib"], `${url_info.type}.${getSourceFileExtension(url_info)}`);
-            return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
-        })();
+        const fpath: PathLike = getPath(url_info, requestsLibrary);
         return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "");
     } catch (e: unknown) {
         console.log(e);

@@ -28,7 +28,7 @@ function getExt(url_info: ParsedUrlQuery): string {
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: unknown | string): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };

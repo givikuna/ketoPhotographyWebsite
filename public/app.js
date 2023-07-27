@@ -25,6 +25,17 @@ async function main(d = null, l = null, c = null) {
             for (let i = 0; i < navbars.length; i++) {
                 let _ = buildHamburger(navbars[i]);
             }
+        })
+        .then(() => {
+            if (inPhoneMode()) {
+                hideDiv("navbar-div");
+                hideDiv("homepagenavbar-container");
+                if (getPage() === "home") {
+                    showDiv("homepage-navbar-div");
+                } else {
+                    hideDiv("homepage-navbar-div");
+                }
+            }
         });
     if (builtNavBar && built) console.log("all loaded properly");
     else console.log("unknown errors found with loading");
@@ -103,7 +114,7 @@ function navbar(callingFromWindowSizeCheck = false) {
     }
 }
 
-const getLang = (lang) => (lang === "ru" ? lang : lang === "ge" ? lang : "en");
+const getLang = lang => (lang === "ru" ? lang : lang === "ge" ? lang : "en");
 
 async function nextHomepageImage() {
     let images = await populateHomepageWelcomeImages();
@@ -370,8 +381,17 @@ function hamburgerClick(from) {
     $(`#${currentNavbarID}`).toggle();
     if (!$(`#${currentNavbarID}`).is(":hidden")) {
         $("#homepage-navbar-div").css("margin-top", "300px");
+        if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
+            $(`#app`).css("margin-top", "300px");
+        }
     } else {
         $("#homepage-navbar-div").css("margin-top", "100px");
+        if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
+            $(`#${getPage()}`).css("margin-top", "100px");
+        }
+    }
+    if (getPage() !== "home") {
+        $("#app").css("margin-top", "100px");
     }
 }
 
@@ -422,7 +442,7 @@ function buildHamburger(div) {
 }
 
 function changeNavbarForSmallDisplays() {
-    $("#navbar").hide();
+    $("#navbar-div").hide();
 
     if (getPage() === "home") {
         hideDiv("navbar-div-phone");
@@ -436,6 +456,7 @@ function changeNavbarForSmallDisplays() {
         hideDiv("homepage-navbar-div-phone");
         hideDiv("homepagenavbar-container");
         hideDiv("homepage-navbar-div");
+        $("#app").css("margin-top", "100px");
     }
 }
 
@@ -460,11 +481,35 @@ function windowSizeCheck() {
         } else {
             showDiv("navbar-div");
         }
+        $("#app").css("margin-top", "0px");
         return false;
     }
 }
 
-window.addEventListener("hashchange", updateApp);
+function inPhoneMode() {
+    if (window.innerWidth <= 768) return true;
+    return false;
+}
+
+window.addEventListener("hashchange", () => {
+    updateApp();
+    if (inPhoneMode()) {
+        hideDiv("navbar-div");
+        if (getPage() !== "home") {
+            hideDiv("homepage-navbar-div");
+        } else {
+            showDiv("homepage-navbar-div");
+            $("#app").css("margin-top", "100px");
+        }
+    } else {
+        if (getPage() === "home") {
+            showDiv("homepagenavbar-container");
+        } else {
+            showDiv("navbar-div");
+        }
+        $("#app").css("margin-top", "0px");
+    }
+});
 
 setInterval(function () {
     if (getPage() === "home") nextHomepageImage();
