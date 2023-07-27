@@ -1,0 +1,59 @@
+{
+    "ApplicationAndData": [
+        "JavaScript",
+        "Python",
+        "jQuery",
+        "NodeJS",
+        "HTML5",
+        "PostgreSQL",
+        "TypeScript",
+        "Ubuntu",
+        "CSS3",
+        "Markdown",
+        "Rust",
+        "JSON",
+        "GNU Bash",
+        "Linode",
+        "SQL",
+        "ExpressJS"
+    ],
+    "Utilities": [
+        "GNU Make"
+    ],
+    "DevOps": [
+        "GitHub",
+        "Git",
+        "Docker",
+        "VSCode",
+        "npm",
+        "Prettier",
+        "MochaJS",
+        "ChaiJS",
+        "SinonJS",
+        "PM2"
+    ],
+    "BusinessTools": [
+        "drawio"
+    ],
+    "Packages": {
+        "npm": [
+            "@types/express@4.17.17",
+            "express@4.18.2",
+            "fs@0.0.1-security",
+            "hint@7.1.10",
+            "http@0.0.1-security",
+            "path@0.12.7",
+            "pm2@4.2.3",
+            "ts-node@10.9.1",
+            "@types/node@20.4.2",
+            "prettier@3.0.0",
+            "typescript@5.1.6"
+        ],
+        "cargo": [
+            "serde_json@1.0",
+            "lazy_static@1.4",
+            "serde@1.0",
+            "serde_derive@1.0"
+        ]
+    }
+}

@@ -97,7 +97,7 @@ async function fetchWelcomeImageData() {
 }
 
 async function buildNavBar() {
-    document.getElementById("navbar-div").innerHTML = await fetchComponent("navbar");
+    document.getElementById("navbar-div").innerHTML += await fetchComponent("navbar");
     document.getElementById("homepage-navbar-div").innerHTML += await fetchComponent("homepagenavbar");
 }
 
@@ -491,25 +491,29 @@ function inPhoneMode() {
     return false;
 }
 
-window.addEventListener("hashchange", () => {
-    updateApp();
-    if (inPhoneMode()) {
-        hideDiv("navbar-div");
-        if (getPage() !== "home") {
-            hideDiv("homepage-navbar-div");
+function hashchange() {
+    return () => {
+        updateApp();
+        if (inPhoneMode()) {
+            hideDiv("navbar-div");
+            if (getPage() !== "home") {
+                hideDiv("homepage-navbar-div");
+            } else {
+                showDiv("homepage-navbar-div");
+                $("#app").css("margin-top", "100px");
+            }
         } else {
-            showDiv("homepage-navbar-div");
-            $("#app").css("margin-top", "100px");
+            if (getPage() === "home") {
+                showDiv("homepagenavbar-container");
+            } else {
+                showDiv("navbar-div");
+            }
+            $("#app").css("margin-top", "0px");
         }
-    } else {
-        if (getPage() === "home") {
-            showDiv("homepagenavbar-container");
-        } else {
-            showDiv("navbar-div");
-        }
-        $("#app").css("margin-top", "0px");
-    }
-});
+    };
+}
+
+window.addEventListener("hashchange", hashchange());
 
 setInterval(function () {
     if (getPage() === "home") nextHomepageImage();
