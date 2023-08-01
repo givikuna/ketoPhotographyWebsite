@@ -1,11 +1,13 @@
 const pages = [];
 const builtAlbums = [];
 let iterated = 0;
+let previousPage = "";
 
 async function main(d = null, l = null, c = null) {
     const dynamiclink = d ? d : "ketojibladze.com";
     const language = l ? getLang(l) : "en";
     const contactemail = c ? c : "givitsvariani@proton.me";
+    previousPage = getPage();
 
     changeLang(language);
     navbar();
@@ -235,6 +237,7 @@ async function buildPage(page) {
                         <img
                             src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}"
                             onclick="window.location.href='#album_${albumData[i].album}'"
+                            class="albumCoverImage"
                             alt="Image ${i}"
                             id="${albumData[i].album}AlbumCoverForHome"
                         >
@@ -506,7 +509,7 @@ function hashchange() {
             if (getPage() !== "home") {
                 hideDiv("homepage-navbar-div");
                 /*
-                // navbar-div-phone", "homepage-navbar-div-phone"
+                navbar-div-phone", "homepage-navbar-div-phone"
                 hideDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
                 */
             } else {
@@ -522,6 +525,7 @@ function hashchange() {
             }
             $("#app").css("margin-top", "0px");
         }
+        previousPage = getPage();
     };
 }
 
