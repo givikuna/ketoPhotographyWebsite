@@ -379,9 +379,43 @@ async function fetchComponent(component) {
     }
 }
 
+function toggleCurrentHamburgerNavbar(currentNavbarID) {
+    const $navbarDiv = $(`#${currentNavbarID}`);
+    const isHidden = $navbarDiv.is(":hidden");
+
+    if (isHidden) {
+        $navbarDiv.css("margin-top", "40px");
+        $navbarDiv.slideDown("fast");
+    } else {
+        $navbarDiv.css("margin-top", "0");
+        $navbarDiv.toggle();
+    }
+}
+
+/*
+
+function toggleCurrentHamburgerNavbar(currentNavbarID) {
+    const $navbarDiv = $(`#${currentNavbarID}`);
+    const isHidden = $navbarDiv.is(":hidden");
+
+    if (isHidden) {
+        $navbarDiv.css("margin-top", "40px");
+        // Slide down the navbar with animation and set margin-top
+        $navbarDiv.slideDown("fast", function () {
+            //
+        });
+    } else {
+        $navbarDiv.css("margin-top", "0");
+        // Slide up the navbar with animation and reset margin-top
+        $navbarDiv.slideUp("fast", function () {});
+    }
+}
+
+*/
+
 function hamburgerClick(from) {
     const currentNavbarID = `hamburger-navbar-for-${from}`;
-    $(`#${currentNavbarID}`).toggle();
+    toggleCurrentHamburgerNavbar(currentNavbarID);
     if (!$(`#${currentNavbarID}`).is(":hidden")) {
         $("#homepage-navbar-div").css("margin-top", "300px");
         if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {

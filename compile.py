@@ -8,6 +8,7 @@ def run(command: str) -> None:
 
 print("cleaning up previously compiled data..")
 run("python3 compilercleaner.py")
+
 print("collecting data for the compilation to begin...")
 run("ts-node buildCompilerFile")
 

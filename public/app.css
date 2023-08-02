@@ -23,6 +23,10 @@ footer p a {
 
 footer p a:hover {
     transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
 }
 
 .plain-button {
@@ -53,6 +57,7 @@ footer p a:hover {
     margin-top: 100px;
     clear: none;
     align-items: center;
+    -webkit-filter: blur(0);
 }
 
 #homepage-navbar-div-phone {
@@ -61,11 +66,14 @@ footer p a:hover {
 
 #homepage-navbar-div.blur {
     filter: blur(10px);
+    -webkit-filter: blur(10px);
 }
 
 .navbar {
     overflow: hidden;
-    background-color: #3a3a3b;
+    background-color: #3f3f3f;
+    filter: opacity(30%);
+    -webkit-filter: opacity(30%);
 }
 
 #navbar-home-option {
@@ -79,6 +87,8 @@ footer p a:hover {
     text-align: center;
     padding: 14px 24px;
     font-size: 17px;
+    filter: opacity(100%) brightness(1.5);
+    -webkit-filter: opacity(100%) brightness(1.5);
 }
 
 .navbar a:hover {
@@ -97,12 +107,20 @@ footer p a:hover {
     filter: brightness(1.2) blur(0.05px);
     transition: all 0.3s ease;
     -webkit-filter: brightness(1.2) blur(0.05px);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
 }
 
 .albumImage:hover {
     transform: scale(1.01);
     filter: brightness(1.2) blur(0px);
     -webkit-filter: brightness(1.2) blur(0px);
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    -o-transform: scale(1.01);
 }
 
 .albumCoverImage {
@@ -214,28 +232,13 @@ footer p a:hover {
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: #3a3a3b;
-    color: white;
+    background-color: #c1c1c1;
+    color: black;
     font-size: 24px;
     padding: 10px;
     cursor: pointer;
     z-index: 9999;
 }
-
-/*
-
-.hamburger-navbar {
-    display: none;
-    position: fixed;
-    top: 74px;
-    right: 20px;
-    background-color: #3a3a3b;
-    padding: 10px;
-    max-width: calc(100% - 100px);
-    text-align: right;
-}
-
-*/
 
 .hamburger-navbar {
     display: none;
@@ -243,16 +246,20 @@ footer p a:hover {
     top: 64px;
     left: 0;
     width: 100%;
-    background-color: #3a3a3b;
-    padding: 10px;
+    background-color: #c1c1c1;
+    /* padding: 10px; */
     z-index: 9999;
 }
 
 .hamburger-navbar-option {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(150, 150, 150);
     display: block;
-    color: white;
+    color: rgb(35, 35, 35);
     text-decoration: none;
     padding: 8px 16px;
+    margin: -1px;
     text-align: left;
 }
 
@@ -289,7 +296,7 @@ footer p a:hover {
     -moz-transform: scale(1.05);
     -ms-transform: scale(1.05);
     -o-transform: scale(1.05);
-    -webkit-filter: brightness(225%);
+    -webkit-filter: brightness(230%);
 }
 
 .navbar-logo-phone {
@@ -356,4 +363,41 @@ footer p a:hover {
     .navbar-container {
         margin-left: 60%;
     }
+}
+
+.contactFormDiv {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.contact-form-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+}
+.contact-form-input,
+.contact-form-large-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+}
+.contact-form-input:focus,
+.contact-form-large-input:focus {
+    outline: none;
+    border-color: #363636;
+}
+.formSubmitButtonClass {
+    background-color: #363636;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.formSubmitButtonClass:hover {
+    background-color: #363636;
 }
