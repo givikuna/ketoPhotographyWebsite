@@ -7,28 +7,6 @@ body {
     box-sizing: border-box;
 }
 
-footer {
-    text-align: center;
-    margin-top: 20px;
-}
-
-footer p {
-    margin-top: 10px;
-    font-size: 18px;
-}
-
-footer p a {
-    transition: transform 0.2s;
-}
-
-footer p a:hover {
-    transform: scale(1.05);
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    -o-transform: scale(1.05);
-}
-
 .plain-button {
     background: none;
     border: none;
@@ -38,65 +16,6 @@ footer p a:hover {
     font-size: 120%;
     color: inherit;
     cursor: pointer;
-}
-
-#homepage-navbar-div {
-    position: relative;
-    background-image: url("@dynamiclink:8092/?type=welcome&img=1");
-    display: none;
-    width: 100%;
-    opacity: 0.97;
-    background-repeat: no-repeat;
-    height: 100%;
-    transition:
-        background-image 0.5s ease,
-        filter 0.5s ease;
-    filter: blur(0);
-    background-position: center;
-    z-index: 1;
-    margin-top: 100px;
-    clear: none;
-    align-items: center;
-    -webkit-filter: blur(0);
-}
-
-#homepage-navbar-div-phone {
-    z-index: 2;
-}
-
-#homepage-navbar-div.blur {
-    filter: blur(10px);
-    -webkit-filter: blur(10px);
-}
-
-.navbar {
-    overflow: hidden;
-    background-color: #3f3f3f;
-    filter: opacity(30%);
-    -webkit-filter: opacity(30%);
-}
-
-#navbar-home-option {
-    font-size: 17.5px;
-}
-
-.navbar a {
-    text-decoration: none;
-    float: left;
-    color: white;
-    text-align: center;
-    padding: 14px 24px;
-    font-size: 17px;
-    filter: opacity(100%) brightness(1.5);
-    -webkit-filter: opacity(100%) brightness(1.5);
-}
-
-.navbar a:hover {
-    background-color: gray;
-}
-
-.contactFormDiv {
-    text-align: center;
 }
 
 .albumImage {
@@ -197,36 +116,9 @@ footer p a:hover {
     -webkit-filter: blur(0px) grayscale(0%) brightness(1);
 }
 
-.contact-link {
-    color: black;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 20px;
-    transition:
-        font-size 0.2s ease,
-        transform 0.2s ease;
-    -webkit-transition:
-        font-size 0.2s ease,
-        transform 0.2s ease;
-    -moz-transition:
-        font-size 0.2s ease,
-        transform 0.2s ease;
-    -ms-transition:
-        font-size 0.2s ease,
-        transform 0.2s ease;
-    -o-transition:
-        font-size 0.2s ease,
-        transform 0.2s ease;
-}
+/* #################################################################################################################### */
 
-.contact-link:hover {
-    font-size: 22px;
-    transform: rotate(20deg);
-    -webkit-transform: rotate(20deg);
-    -moz-transform: rotate(20deg);
-    -ms-transform: rotate(20deg);
-    -o-transform: rotate(20deg);
-}
+/* Navbar */
 
 .hamburger-button {
     position: fixed;
@@ -323,6 +215,134 @@ footer p a:hover {
     clear: none;
 }
 
+@media (min-width: 800px) {
+    .navbar-container {
+        margin-left: 10%;
+    }
+}
+
+@media (min-width: 1640px) {
+    .navbar-container {
+        margin-left: 60%;
+    }
+}
+
+#homepage-navbar-div {
+    position: relative;
+    background-image: url("@dynamiclink:8092/?type=welcome&img=1");
+    display: none;
+    width: 100%;
+    opacity: 0.97;
+    background-repeat: no-repeat;
+    height: 100%;
+    transition:
+        background-image 0.5s ease,
+        filter 0.5s ease;
+    filter: blur(0);
+    background-position: center;
+    z-index: 1;
+    margin-top: 100px;
+    clear: none;
+    align-items: center;
+    -webkit-filter: blur(0);
+}
+
+#homepage-navbar-div-phone {
+    z-index: 2;
+}
+
+#homepage-navbar-div.blur {
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #3f3f3f;
+    filter: opacity(30%);
+}
+
+homepage-navbar-back {
+    filter: opacity(30%);
+    -webkit-filter: opacity(30%);
+}
+
+.navbar a {
+    text-decoration: none;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 24px;
+    font-size: 17px;
+    filter: opacity(100%) brightness(1.5);
+    -webkit-filter: opacity(100%) brightness(1.5);
+}
+
+.navbar a:hover {
+    background-color: gray;
+}
+
+#navbar-home-option {
+    font-size: 17.5px;
+}
+
+/* #################################################################################################################### */
+
+/* Footer */
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer p {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+footer p a {
+    transition: transform 0.2s;
+}
+
+footer p a:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+}
+
+.contact-link {
+    color: black;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 20px;
+    transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -webkit-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -moz-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -ms-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+    -o-transition:
+        font-size 0.2s ease,
+        transform 0.2s ease;
+}
+
+.contact-link:hover {
+    font-size: 22px;
+    transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+    -moz-transform: rotate(20deg);
+    -ms-transform: rotate(20deg);
+    -o-transform: rotate(20deg);
+}
+
 .SocialMediaIcon {
     width: 50px;
     height: 50px;
@@ -353,17 +373,9 @@ footer p a:hover {
     -webkit-filter: brightness(110%);
 }
 
-@media (min-width: 800px) {
-    .navbar-container {
-        margin-left: 10%;
-    }
-}
+/* #################################################################################################################### */
 
-@media (min-width: 1640px) {
-    .navbar-container {
-        margin-left: 60%;
-    }
-}
+/* Contact Form */
 
 .contactFormDiv {
     max-width: 600px;
@@ -373,11 +385,13 @@ footer p a:hover {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .contact-form-label {
     font-size: 14px;
     font-weight: bold;
     color: #333333;
 }
+
 .contact-form-input,
 .contact-form-large-input {
     width: 100%;
@@ -385,11 +399,13 @@ footer p a:hover {
     border: 1px solid #dddddd;
     border-radius: 4px;
 }
+
 .contact-form-input:focus,
 .contact-form-large-input:focus {
     outline: none;
     border-color: #363636;
 }
+
 .formSubmitButtonClass {
     background-color: #363636;
     color: #ffffff;
@@ -398,6 +414,11 @@ footer p a:hover {
     border-radius: 4px;
     cursor: pointer;
 }
+
 .formSubmitButtonClass:hover {
     background-color: #363636;
+}
+
+.contactFormDiv {
+    text-align: center;
 }
