@@ -115,8 +115,8 @@ function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
         const albumImagesData: Album[] | unknown = readAlbumData();
         if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
         for (let i: number = 0; i < albumImagesData.length; i++) {
-            if (albumImagesData[i].album === (url_info.album as string)) {
-                return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0];
+            if (albumImagesData[i].album === (url_info["album"] as string)) {
+                return albumImagesData[i].images[isNumeric(url_info["img"] as string) ? Number(url_info["img"]) : 0];
             }
         }
         return "";
@@ -131,7 +131,7 @@ function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
         const albumImagesData: Album[] | unknown = readAlbumData();
         if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
         for (let i: number = 0; i < albumImagesData.length; i++) {
-            if (albumImagesData[i].album === url_info.album) return albumImagesData[i].coverImage;
+            if (albumImagesData[i].album === url_info["album"]) return albumImagesData[i].coverImage;
         }
         return "";
     } catch (e: unknown) {
@@ -143,7 +143,7 @@ function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
 function wantsIcon(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        const type_: string = "type" in url_info ? (url_info.type as string) : "";
+        const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return type_ === "icons" && "img" in url_info;
     } catch (e: unknown) {
         console.log(e);
@@ -154,8 +154,8 @@ function wantsIcon(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsAlbumCover(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        const type_: string = "type" in url_info ? (url_info.type as string) : "";
-        return type_ === "cover" && "album" in url_info && typeof url_info.album === "string";
+        const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
+        return type_ === "cover" && "album" in url_info && typeof url_info["album"] === "string";
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -165,8 +165,8 @@ function wantsAlbumCover(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        const type_: string = "type" in url_info ? (url_info.type as string) : "";
-        return type_ === "album" && "album" in url_info && "img" in url_info && typeof url_info.img === "string";
+        const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
+        return type_ === "album" && "album" in url_info && "img" in url_info && typeof url_info["img"] === "string";
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -176,8 +176,8 @@ function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        const type_: string = "type" in url_info ? (url_info.type as string) : "";
-        return type_ === "welcome" && "img" in url_info && isNumeric(url_info.img as string);
+        const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
+        return type_ === "welcome" && "img" in url_info && isNumeric(url_info["img"] as string);
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -187,7 +187,7 @@ function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        return "type" in url_info && typeof url_info.type === "string" && url_info.type === "logo";
+        return "type" in url_info && typeof url_info["type"] === "string" && url_info["type"] === "logo";
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -196,18 +196,18 @@ function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
 
 function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
     try {
-        const type_: string = "type" in url_info && typeof url_info.type === "string" ? (url_info.type as string) : "";
+        const type_: string = "type" in url_info && typeof url_info["type"] === "string" ? (url_info["type"] as string) : "";
         if (wantsIcon(url_info)) {
-            return findPath(["public", "assets", type_], `${url_info.img}.${getIconExtension(url_info.img as string)}`);
+            return findPath(["public", "assets", type_], `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`);
         }
         if (wantsWelcomeImage(url_info)) {
-            return findPath(["public", "assets", type_], `${url_info.img}.${getWelcomeImageExtension(url_info.img as string).toString()}`);
+            return findPath(["public", "assets", type_], `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`);
         }
         if (wantsAlbumImage(url_info)) {
-            return findPath(["img", url_info.album as string], getAlbumImage(url_info));
+            return findPath(["img", url_info["album"] as string], getAlbumImage(url_info));
         }
         if (wantsAlbumCover(url_info)) {
-            return findPath(["img", url_info.album as string], getAlbumCoverImage(url_info));
+            return findPath(["img", url_info["album"] as string], getAlbumCoverImage(url_info));
         }
         if (wantsLogo(url_info)) {
             return findPath(["public", "assets", "logo"], "logo.png");
@@ -227,7 +227,7 @@ subProcess.exec("npm run collect-images", (err: subProcess.ExecException | null,
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -236,7 +236,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
-        if (!("img" in url_info) && typeof url_info.img !== "string" && !("type" in url_info) && typeof url_info.type == "string") {
+        if (!("img" in url_info) && typeof url_info["img"] !== "string" && !("type" in url_info) && typeof url_info["type"] == "string") {
             throw new Error("Invalid request");
         }
 

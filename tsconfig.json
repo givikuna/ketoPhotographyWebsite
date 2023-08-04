@@ -10,7 +10,7 @@
         "exactOptionalPropertyTypes": true,
         "noImplicitAny": true,
         "noImplicitReturns": true,
-        "noPropertyAccessFromIndexSignature": false,
+        "noPropertyAccessFromIndexSignature": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "strictFunctionTypes": true,

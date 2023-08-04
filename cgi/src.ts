@@ -16,7 +16,7 @@ const port = getPort(filename); // 8093
 function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: string = "js";
     try {
-        const m_type: string = url_info.type as string;
+        const m_type: string = url_info["type"] as string;
         return m_type === "style" || m_type === "css" ? "css" : "js";
     } catch (e: unknown) {
         console.log(e);
@@ -27,7 +27,7 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
 function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): PathLike {
     const _default: PathLike = "../public/components/home.html";
     try {
-        if (requestsLibrary) return findPath(["public", "lib"], `${url_info.type}.${getSourceFileExtension(url_info)}`);
+        if (requestsLibrary) return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
     } catch (e: unknown) {
         console.log(e);
@@ -36,7 +36,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
 }
 
 const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -44,7 +44,7 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
         if (!req.url) return w("");
 
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-        const requestsLibrary: Readonly<boolean> = "type" in url_info && (url_info.type == "jQuery" || url_info.type == "Bootstrap");
+        const requestsLibrary: Readonly<boolean> = "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
         const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
         return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "");
     } catch (e: unknown) {

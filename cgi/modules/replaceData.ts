@@ -23,7 +23,7 @@ export function replaceData(data: string, url_info: Readonly<ParsedUrlQuery | JS
 export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     const _default: string = "en";
     try {
-        return "lang" in url_info && typeof url_info.lang === "string" && getLangs().includes(url_info.lang) ? String(url_info.lang) : "en";
+        return "lang" in url_info && typeof url_info["lang"] === "string" && getLangs().includes(url_info["lang"]) ? String(url_info["lang"]) : "en";
     } catch (e: unknown) {
         console.log(e);
         return _default;

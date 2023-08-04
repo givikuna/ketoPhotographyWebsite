@@ -16,7 +16,7 @@ const port: number = getPort(filename); // 8094
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -24,19 +24,19 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         if (!req.url) return w("");
 
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-        if (!("data" in url_info) || typeof url_info.data !== "string") return w("");
+        if (!("data" in url_info) || typeof url_info["data"] !== "string") return w("");
 
         let write: string = "";
 
-        const givenData: string = url_info.data;
+        const givenData: string = url_info["data"];
 
         switch (givenData) {
             case "languages":
             case "pages":
-                write = String(readFileSync(findPath(["public", "data"], `${url_info.data}.json`), { encoding: "utf8", flag: "r" }));
+                write = String(readFileSync(findPath(["public", "data"], `${url_info["data"]}.json`), { encoding: "utf8", flag: "r" }));
                 break;
             case "welcome":
-                write = String(readFileSync(findPath(["public", "assets", url_info.data], "info.json"), { encoding: "utf8", flag: "r" }));
+                write = String(readFileSync(findPath(["public", "assets", url_info["data"]], "info.json"), { encoding: "utf8", flag: "r" }));
                 break;
             case "albumData":
                 write = String(readFileSync(findPath(["img"], "info.json"), { encoding: "utf8", flag: "r" }));
@@ -46,7 +46,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         }
 
         return w(write);
-    } catch (e) {
+    } catch (e: unknown) {
         console.log(e);
         return w("");
     }

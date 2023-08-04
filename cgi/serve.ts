@@ -19,7 +19,7 @@ const port = getPort(filename); // 8095
 function getExt(url_info: ParsedUrlQuery): string {
     const _default: string = "html";
     try {
-        return "t" in url_info ? (url_info.t as string) : _default;
+        return "t" in url_info ? (url_info["t"] as string) : _default;
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -28,7 +28,7 @@ function getExt(url_info: ParsedUrlQuery): string {
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: unknown | string = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -39,7 +39,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         if (Object.keys(url_info).length === 0 || !("c" in url_info)) throw new Error("Wrong input");
 
-        const fpath: PathLike = findPath(["public", "components"], `${url_info.c}.${getExt(url_info)}`);
+        const fpath: PathLike = findPath(["public", "components"], `${url_info["c"]}.${getExt(url_info)}`);
 
         if (existsSync(fpath)) return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
 

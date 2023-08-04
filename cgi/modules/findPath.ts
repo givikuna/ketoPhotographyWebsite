@@ -35,7 +35,7 @@ export function findPath(folders: string[], req: string, reqFrom: string = "inde
     }
 }
 
-export function logErr(cFunc: string, e: any | unknown, default_: any = "", filename: string): any {
+export function logErr(cFunc: string, e: unknown, default_: any = "", filename: string): any {
     console.log(`${filename} ${cFunc}() ERROR: ${e}`);
     return default_;
 }

@@ -10,7 +10,7 @@ export function isJSON(obj: Readonly<string>): boolean {
             return true;
         }
         return false;
-    } catch (e) {
+    } catch (e: unknown) {
         return false;
     }
 }
