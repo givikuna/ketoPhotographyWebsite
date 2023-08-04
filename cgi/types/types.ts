@@ -40,3 +40,5 @@ export type Album = {
     images: string[];
     display: string;
 };
+
+export const undefinedOptions = [[], {}, "", null, undefined];

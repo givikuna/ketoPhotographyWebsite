@@ -18,7 +18,7 @@ const app: express.Application = express();
 const filename: string = "img";
 const port: number = getPort(filename); // 8092
 
-function getIcons(): SocialMediaIcon[] {
+function getIcons(): SocialMediaIcon[] | unknown {
     const _default: SocialMediaIcon[] = [
         {
             icon: "facebook",
@@ -54,10 +54,11 @@ function getIcons(): SocialMediaIcon[] {
     }
 }
 
-function getIconExtension(icon: string): string {
+function getIconExtension(icon: Readonly<string>): string {
     const _default: string = "png";
     try {
-        const icons: SocialMediaIcon[] = getIcons();
+        const icons: SocialMediaIcon[] | unknown = getIcons();
+        if (!Array.isArray(icons)) throw new Error("Icons couldn't be fetched");
         for (let i: number = 0; i < icons.length; i++) if (icons[i].icon === icon) return `${icons[i].extension}`;
         return _default;
     } catch (e: unknown) {
@@ -66,7 +67,7 @@ function getIconExtension(icon: string): string {
     }
 }
 
-function getWelcomeImageExtension(img: string): string {
+function getWelcomeImageExtension(img: Readonly<string>): string {
     const _default: string = "jpeg";
     try {
         const welcomeImages: WelcomeImage[] = getWelcomeImageData();
@@ -100,7 +101,7 @@ function getWelcomeImageData(): WelcomeImage[] {
     }
 }
 
-function readAlbumData(): Album[] {
+function readAlbumData(): Album[] | unknown {
     return JSON.parse(
         readFileSync(findPath(["img"], "info.json"), {
             encoding: "utf8",
@@ -109,9 +110,10 @@ function readAlbumData(): Album[] {
     ) as Album[];
 }
 
-function getAlbumImage(url_info: ParsedUrlQuery): string {
+function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
     try {
-        const albumImagesData: Album[] = readAlbumData();
+        const albumImagesData: Album[] | unknown = readAlbumData();
+        if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === (url_info.album as string)) {
                 return albumImagesData[i].images[isNumeric(url_info.img as string) ? Number(url_info.img) : 0];
@@ -124,10 +126,10 @@ function getAlbumImage(url_info: ParsedUrlQuery): string {
     }
 }
 
-function getAlbumCoverImage(url_info: ParsedUrlQuery): string {
+function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
     try {
-        const albumImagesData: Album[] = readAlbumData();
-        console.log(albumImagesData);
+        const albumImagesData: Album[] | unknown = readAlbumData();
+        if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === url_info.album) return albumImagesData[i].coverImage;
         }
@@ -138,7 +140,7 @@ function getAlbumCoverImage(url_info: ParsedUrlQuery): string {
     }
 }
 
-function wantsIcon(url_info: ParsedUrlQuery): boolean {
+function wantsIcon(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
         const type_: string = "type" in url_info ? (url_info.type as string) : "";
@@ -149,7 +151,7 @@ function wantsIcon(url_info: ParsedUrlQuery): boolean {
     }
 }
 
-function wantsAlbumCover(url_info: ParsedUrlQuery): boolean {
+function wantsAlbumCover(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
         const type_: string = "type" in url_info ? (url_info.type as string) : "";
@@ -160,7 +162,7 @@ function wantsAlbumCover(url_info: ParsedUrlQuery): boolean {
     }
 }
 
-function wantsAlbumImage(url_info: ParsedUrlQuery): boolean {
+function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
         const type_: string = "type" in url_info ? (url_info.type as string) : "";
@@ -171,7 +173,7 @@ function wantsAlbumImage(url_info: ParsedUrlQuery): boolean {
     }
 }
 
-function wantsWelcomeImage(url_info: ParsedUrlQuery): boolean {
+function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
         const type_: string = "type" in url_info ? (url_info.type as string) : "";
@@ -182,20 +184,17 @@ function wantsWelcomeImage(url_info: ParsedUrlQuery): boolean {
     }
 }
 
-function wantsLogo(url_info: ParsedUrlQuery): boolean {
+function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: boolean = false;
     try {
-        if ("type" in url_info && typeof url_info.type === "string" && url_info.type === "logo") {
-            return true;
-        }
-        return false;
+        return "type" in url_info && typeof url_info.type === "string" && url_info.type === "logo";
     } catch (e: unknown) {
         console.log(e);
         return _default;
     }
 }
 
-function getPath(url_info: ParsedUrlQuery): PathLike | undefined {
+function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
     try {
         const type_: string = "type" in url_info && typeof url_info.type === "string" ? (url_info.type as string) : "";
         if (wantsIcon(url_info)) {
@@ -235,7 +234,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
     try {
         if (!req.url) return w("");
 
-        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
+        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
         if (!("img" in url_info) && typeof url_info.img !== "string" && !("type" in url_info) && typeof url_info.type == "string") {
             throw new Error("Invalid request");
@@ -243,7 +242,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         const fpath: PathLike | undefined = getPath(url_info);
 
-        return fpath !== undefined && existsSync(fpath) ? w(readFileSync(fpath)) : w("");
+        return fpath !== undefined && fpath !== null && existsSync(fpath) ? w(readFileSync(fpath)) : w("");
     } catch (e: unknown) {
         console.log(e);
         return w("");

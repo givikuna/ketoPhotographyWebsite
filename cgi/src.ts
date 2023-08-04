@@ -13,7 +13,7 @@ import { getDynLink } from "./modules/dynamicLinkGetter";
 const filename = "src";
 const port = getPort(filename); // 8093
 
-function getSourceFileExtension(url_info: ParsedUrlQuery): string {
+function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: string = "js";
     try {
         const m_type: string = url_info.type as string;
@@ -24,7 +24,7 @@ function getSourceFileExtension(url_info: ParsedUrlQuery): string {
     }
 }
 
-function getPath(url_info: ParsedUrlQuery, requestsLibrary: boolean): PathLike {
+function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): PathLike {
     const _default: PathLike = "../public/components/home.html";
     try {
         if (requestsLibrary) return findPath(["public", "lib"], `${url_info.type}.${getSourceFileExtension(url_info)}`);
@@ -43,9 +43,9 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
     try {
         if (!req.url) return w("");
 
-        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
-        const requestsLibrary: boolean = "type" in url_info && (url_info.type == "jQuery" || url_info.type == "Bootstrap");
-        const fpath: PathLike = getPath(url_info, requestsLibrary);
+        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
+        const requestsLibrary: Readonly<boolean> = "type" in url_info && (url_info.type == "jQuery" || url_info.type == "Bootstrap");
+        const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
         return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "");
     } catch (e: unknown) {
         console.log(e);

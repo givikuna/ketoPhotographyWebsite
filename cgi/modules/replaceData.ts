@@ -7,7 +7,7 @@ import { ParsedUrlQuery } from "querystring";
 import { Language } from "../types/types";
 import { supertrim } from "../extensions/syntax";
 
-export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { lang: "en" }): string {
+export function replaceData(data: string, url_info: Readonly<ParsedUrlQuery | JSON> = { lang: "en" }): string {
     const _default: string = data;
     try {
         return data
@@ -20,7 +20,7 @@ export function replaceData(data: string, url_info: ParsedUrlQuery | JSON = { la
     }
 }
 
-export function getLang(url_info: ParsedUrlQuery | JSON): string {
+export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     const _default: string = "en";
     try {
         return "lang" in url_info && typeof url_info.lang === "string" && getLangs().includes(url_info.lang) ? String(url_info.lang) : "en";
@@ -42,7 +42,7 @@ export function getLangs(): string[] {
     }
 }
 
-export function getEmail(data: JSON | object): string {
+export function getEmail(data: Readonly<JSON | object>): string {
     const _default: string = "givitsvariani@proton.me";
     try {
         const fpath: PathLike = findPath("arr" in data ? (data.arr as string[]) : [], "file" in data ? (data.file as string) : "");

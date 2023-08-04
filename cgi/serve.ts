@@ -35,7 +35,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
     try {
         if (!req.url) return w("");
 
-        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
+        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
         if (Object.keys(url_info).length === 0 || !("c" in url_info)) throw new Error("Wrong input");
 

@@ -23,7 +23,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
     try {
         if (!req.url) return w("");
 
-        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
+        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
         if (!("data" in url_info) || typeof url_info.data !== "string") return w("");
 
         let write: string = "";

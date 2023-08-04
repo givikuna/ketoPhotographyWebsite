@@ -2,7 +2,7 @@ import { logErr } from "./findPath";
 
 import { Ports } from "../constants/constants";
 
-export function getPort(servername: string): number {
+export function getPort(servername: Readonly<string>): number {
     const cFunc: string = "getPort";
     const default_: number = 8080;
     try {

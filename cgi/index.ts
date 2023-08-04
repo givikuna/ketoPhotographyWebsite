@@ -24,7 +24,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
     try {
         if (!req.url) return w("");
 
-        const url_info: ParsedUrlQuery = url.parse(req.url as string, true).query;
+        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
         const fpath: PathLike = findPath(["public"], "index.html");
         return existsSync(fpath) ? w(replaceData(String(readFileSync(fpath)), url_info)) : w("");
     } catch (e: unknown) {

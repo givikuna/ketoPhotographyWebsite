@@ -204,29 +204,6 @@ body {
     justify-content: flex-start;
 }
 
-.navbar-container {
-    position: absolute;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: auto;
-    margin-left: 50%;
-    margin-top: 1%;
-    clear: none;
-}
-
-@media (min-width: 800px) {
-    .navbar-container {
-        margin-left: 10%;
-    }
-}
-
-@media (min-width: 1640px) {
-    .navbar-container {
-        margin-left: 60%;
-    }
-}
-
 #homepage-navbar-div {
     position: relative;
     background-image: url("@dynamiclink:8092/?type=welcome&img=1");
@@ -258,13 +235,47 @@ body {
 
 .navbar {
     overflow: hidden;
-    background-color: #3f3f3f;
-    filter: opacity(30%);
 }
 
-homepage-navbar-back {
-    filter: opacity(30%);
-    -webkit-filter: opacity(30%);
+.generic-navbar {
+    background-color: #3f3f3f;
+}
+
+#homepagenavbar-container {
+    position: relative;
+}
+
+.navbar-container {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    margin-left: 50%;
+    margin-top: 1%;
+    clear: none;
+}
+
+@media (min-width: 800px) {
+    .navbar-container {
+        margin-left: 40%;
+    }
+}
+
+@media (min-width: 1640px) {
+    .navbar-container {
+        margin-left: 60%;
+    }
+}
+
+.homepage-navbar-div-options {
+    background-color: #94949436;
+    border: #333333;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
 }
 
 .navbar a {
@@ -278,8 +289,10 @@ homepage-navbar-back {
     -webkit-filter: opacity(100%) brightness(1.5);
 }
 
-.navbar a:hover {
+.navbar a:hover,
+.navbar-options-div a:hover {
     background-color: gray;
+    color: black;
 }
 
 #navbar-home-option {

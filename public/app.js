@@ -90,10 +90,6 @@ async function fetchWelcomeImageData() {
                 img: "5.jpeg",
                 extension: "jpeg",
             },
-            {
-                img: "6.jpeg",
-                extension: "jpeg",
-            },
         ];
     }
 }

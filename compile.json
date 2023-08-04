@@ -95,6 +95,12 @@
         "files": [
             {
                 "dir": "",
+                "file": "./deploy.sh",
+                "filename": "deploy.sh",
+                "compilesTo": ""
+            },
+            {
+                "dir": "",
                 "file": "./rebuild.sh",
                 "filename": "rebuild.sh",
                 "compilesTo": ""
