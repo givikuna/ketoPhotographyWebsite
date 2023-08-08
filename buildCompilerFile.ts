@@ -36,7 +36,13 @@ type ProgrammingLanguage = {
 
 const compileables: LanguageToCompile[] = [];
 
-const compilerSettings: CompilerSettings = JSON.parse(fs.readFileSync("./compilerSettings.json", { encoding: "utf8", flag: "r" })) as CompilerSettings;
+const compilerSettings: CompilerSettings = JSON.parse(
+    fs.readFileSync("./compilerSettings.json", {
+        encoding: "utf8",
+        flag: "r",
+    }),
+) as CompilerSettings;
+
 const approvedFileExtensions: string[] = compilerSettings.compile.languages.map((programmingLanguage: ProgrammingLanguage): string => programmingLanguage.extension);
 
 for (let i: number = 0; i < compilerSettings.compile.languages.length; i++) {
@@ -68,8 +74,8 @@ function traverseDirectories(dir: string = "./") {
                             const filename_: string | undefined = paths[i].split("/").pop();
                             return typeof filename_ === "string" ? filename_ : "";
                         })(),
-                        compilesTo: ((): string => {
-                            switch (fileExtension) {
+                        compilesTo: ((ext: string): string => {
+                            switch (ext) {
                                 case "ts":
                                     return `${dir}${paths[i].slice(0, -2)}js`;
                                 case "rs":
@@ -77,7 +83,7 @@ function traverseDirectories(dir: string = "./") {
                                 default:
                                     return "";
                             }
-                        })(),
+                        })(fileExtension),
                     });
                 }
             }

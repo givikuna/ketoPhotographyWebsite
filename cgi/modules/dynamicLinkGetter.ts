@@ -6,7 +6,7 @@ import { supertrim } from "../extensions/syntax";
 import { findPath } from "./findPath";
 
 export function getDynLink(): PathLike {
-    const _default: string = "http://127.0.0.1";
+    const _default: ReturnType<typeof getDynLink> = "http://127.0.0.1";
     try {
         const fpath: Readonly<PathLike> = findPath(["public", "data"], "dynamicLink.txt");
         if (existsSync(fpath)) return supertrim(readFileSync(fpath).toString());

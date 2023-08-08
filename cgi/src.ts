@@ -10,11 +10,11 @@ import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
 import { getDynLink } from "./modules/dynamicLinkGetter";
 
-const filename = "src";
-const port = getPort(filename); // 8093
+const filename: string = "src";
+const port: number = getPort(filename); // 8093
 
 function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
-    const _default: string = "js";
+    const _default: ReturnType<typeof getSourceFileExtension> = "js";
     try {
         const m_type: string = url_info["type"] as string;
         return m_type === "style" || m_type === "css" ? "css" : "js";
@@ -25,7 +25,7 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
 }
 
 function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): PathLike {
-    const _default: PathLike = "../public/components/home.html";
+    const _default: ReturnType<typeof getPath> = "../public/components/home.html";
     try {
         if (requestsLibrary) return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
@@ -36,7 +36,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
 }
 
 const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };

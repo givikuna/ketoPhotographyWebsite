@@ -7,5 +7,6 @@
     "arrowParens": "avoid",
     "embeddedLanguageFormatting": "auto",
     "singleAttributePerLine": true,
-    "bracketSameLine": true
+    "bracketSameLine": true,
+    "quoteProps": "as-needed"
 }

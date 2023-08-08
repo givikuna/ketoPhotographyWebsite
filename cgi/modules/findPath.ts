@@ -4,7 +4,7 @@ import { existsSync, PathLike } from "fs";
 
 export function findPath(folders: string[], req: string, reqFrom: string = "index"): string | PathLike {
     const cFunc: string = "findPath";
-    const _default: string = "";
+    const _default: ReturnType<typeof findPath> = "";
     try {
         let fPath: string = "";
         let foundDir: boolean = false;

@@ -4,7 +4,7 @@ import { Ports } from "../constants/constants";
 
 export function getPort(servername: Readonly<string>): number {
     const cFunc: string = "getPort";
-    const default_: number = 8080;
+    const default_: ReturnType<typeof getPort> = 8080;
     try {
         return Ports[servername as keyof typeof Ports];
     } catch (e: unknown) {

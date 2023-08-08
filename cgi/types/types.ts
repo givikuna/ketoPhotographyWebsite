@@ -42,3 +42,28 @@ export type Album = {
 };
 
 export const undefinedOptions = [[], {}, "", null, undefined];
+
+export type CATEGORY = {
+    UID: number;
+    SESSION_UID: number;
+    NAME: string;
+};
+
+export type CUSTOMER = {
+    UID: number;
+    NAME: string;
+    DESCRIPTION: string;
+};
+
+export type SESSION = {
+    UID: number;
+    CUSTOMER_UID: number;
+    CATEGORY_UID: number;
+    SESSION_DATE: string;
+};
+
+export type STILL = {
+    UID: number;
+    SESSION_UID: number;
+    NAME: string;
+};

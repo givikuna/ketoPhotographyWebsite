@@ -17,12 +17,14 @@ const filename: string = "index";
 const port: number = getPort(filename); // 8091
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
     try {
-        if (!req.url) return w("");
+        if (!req.url) {
+            return w("");
+        }
 
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
         const fpath: PathLike = findPath(["public"], "index.html");

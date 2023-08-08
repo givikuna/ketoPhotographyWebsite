@@ -13,11 +13,11 @@ import { replaceData } from "./modules/replaceData";
 
 const app: express.Application = express();
 
-const filename = "serve";
-const port = getPort(filename); // 8095
+const filename: string = "serve";
+const port: number = getPort(filename); // 8095
 
-function getExt(url_info: ParsedUrlQuery): string {
-    const _default: string = "html";
+function getExt(url_info: Readonly<ParsedUrlQuery>): string {
+    const _default: ReturnType<typeof getExt> = "html";
     try {
         return "t" in url_info ? (url_info["t"] as string) : _default;
     } catch (e: unknown) {
@@ -28,7 +28,7 @@ function getExt(url_info: ParsedUrlQuery): string {
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: Readonly<unknown | string> = ""): ServerResponse<IncomingMessage> => {
+    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
         res.write(data);
         return res.end();
     };
@@ -37,11 +37,15 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
-        if (Object.keys(url_info).length === 0 || !("c" in url_info)) throw new Error("Wrong input");
+        if (Object.keys(url_info).length === 0 || !("c" in url_info)) {
+            throw new Error("Wrong input");
+        }
 
         const fpath: PathLike = findPath(["public", "components"], `${url_info["c"]}.${getExt(url_info)}`);
 
-        if (existsSync(fpath)) return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
+        if (existsSync(fpath)) {
+            return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
+        }
 
         throw new Error("Wrong input");
     } catch (e: unknown) {

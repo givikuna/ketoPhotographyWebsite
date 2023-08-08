@@ -30,7 +30,7 @@
   "homepage": "https://github.com/givikuna/ketoPhotographyWebsite#readme",
   "devDependencies": {
     "@types/node": "^20.4.2",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.1",
     "typescript": "^5.1.6"
   },
   "dependencies": {
