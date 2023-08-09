@@ -2,6 +2,7 @@ import * as express from "express";
 import * as url from "url";
 
 import { existsSync, readFileSync } from "fs";
+const { print } = require("lsse");
 
 import { PathLike } from "fs";
 import { ParsedUrlQuery } from "querystring";
@@ -30,9 +31,9 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         const fpath: PathLike = findPath(["public"], "index.html");
         return existsSync(fpath) ? w(replaceData(String(readFileSync(fpath)), url_info)) : w("");
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return w("");
     }
 }).listen(port, (): void => {
-    console.log(`Server is running on http://localhost:${port}/`);
+    print(`Server is running on http://localhost:${port}/`);
 });

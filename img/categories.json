@@ -1,0 +1,26 @@
+[
+    {
+        "UID": 1,
+        "NAME": "newborns"
+    },
+    {
+        "UID": 2,
+        "NAME": "families"
+    },
+    {
+        "UID": 3,
+        "NAME": "advertisements"
+    },
+    {
+        "UID": 4,
+        "NAME": "portraits"
+    },
+    {
+        "UID": 5,
+        "NAME": "weddings"
+    },
+    {
+        "UID": 6,
+        "NAME": "business"
+    }
+]

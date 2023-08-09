@@ -2,6 +2,7 @@ import { readFileSync, PathLike, existsSync } from "fs";
 
 import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
+const { print } = require("lsse");
 
 import { ParsedUrlQuery } from "querystring";
 import { Language } from "../types/types";
@@ -72,7 +73,7 @@ export function getEmail(data: Readonly<JSON | object>): string {
 
         throw new Error("contact email not found");
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return _default;
     }
 }

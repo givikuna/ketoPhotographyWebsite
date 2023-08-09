@@ -181,6 +181,10 @@ body {
         filter 0.4s ease;
 }
 
+#homepage-navbar-logo-container {
+    margin-bottom: 20px;
+}
+
 .navbar-logo:hover {
     transform: scale(1.05);
     filter: brightness(230%);

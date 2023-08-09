@@ -1,6 +1,7 @@
 import * as url from "url";
 
 import { readFileSync, existsSync } from "fs";
+const { print } = require("lsse");
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse, Server, createServer } from "http";
@@ -55,12 +56,12 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
                     : "",
             );
         } catch (e: unknown) {
-            console.log(e);
+            print(e);
             return w("");
         }
     },
 );
 
 server.listen(port, (): void => {
-    console.log(`Server is running on http://localhost:${port}/`);
+    print(`Server is running on http://localhost:${port}/`);
 });

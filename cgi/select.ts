@@ -4,6 +4,7 @@ import * as url from "url";
 const app: express.Application = express();
 
 import { readFileSync } from "fs";
+const { print } = require("lsse");
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
@@ -66,11 +67,11 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         return w(write);
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return w("");
     }
 });
 
 app.listen(port, (): void => {
-    console.log(`Server is running on http://localhost:${port}/`);
+    print(`Server is running on http://localhost:${port}/`);
 });

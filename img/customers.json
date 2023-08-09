@@ -1,0 +1,17 @@
+[
+    {
+        "UID": 1,
+        "NAME": "John Doe",
+        "DESCRIPTION": "Some random customer"
+    },
+    {
+        "UID": 2,
+        "NAME": "Jane Doe",
+        "DESCRIPTION": "Some random customer"
+    },
+    {
+        "UID": 3,
+        "NAME": "Jack Sparrow",
+        "DESCRIPTION": "Some random customer"
+    }
+]

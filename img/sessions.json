@@ -1,0 +1,32 @@
+[
+    {
+        "UID": 1,
+        "CUSTOMER_UID": 1,
+        "CATEGORY_UID": "SESSION_DATE"
+    },
+    {
+        "UID": 2,
+        "CUSTOMER_UID": 2,
+        "CATEGORY_UID": "SESSION_DATE"
+    },
+    {
+        "UID": 3,
+        "CUSTOMER_UID": 2,
+        "CATEGORY_UID": "SESSION_DATE"
+    },
+    {
+        "UID": 4,
+        "CUSTOMER_UID": 3,
+        "CATEGORY_UID": "SESSION_DATE"
+    },
+    {
+        "UID": 5,
+        "CUSTOMER_UID": 1,
+        "CATEGORY_UID": "SESSION_DATE"
+    },
+    {
+        "UID": 6,
+        "CUSTOMER_UID": 2,
+        "CATEGORY_UID": "SESSION_DATE"
+    }
+]

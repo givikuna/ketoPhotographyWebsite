@@ -19,7 +19,8 @@
         "reqs",
         "subpages",
         "supertrim",
-        "Tsvariani"
+        "Tsvariani",
+        "lsse"
     ],
     "editor.tokenColorCustomizations": {
         "textMateRules": [{

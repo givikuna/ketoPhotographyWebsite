@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 
 import { PathLike } from "fs";
+const { print } = require("lsse");
 
 import { supertrim } from "../extensions/syntax";
 import { findPath } from "./findPath";
@@ -12,7 +13,7 @@ export function getDynLink(): PathLike {
         if (existsSync(fpath)) return supertrim(readFileSync(fpath).toString());
         throw new Error("dynamic link not found");
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return _default;
     }
 }

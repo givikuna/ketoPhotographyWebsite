@@ -2,6 +2,7 @@ import * as express from "express";
 import * as url from "url";
 
 import { existsSync, readFileSync } from "fs";
+const { print } = require("lsse");
 
 import { PathLike } from "fs";
 import { ParsedUrlQuery } from "querystring";
@@ -33,8 +34,9 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         return res.end();
     };
     try {
-        if (!req.url) return w("");
-
+        if (!req.url) {
+            return w("");
+        }
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
         if (Object.keys(url_info).length === 0 || !("c" in url_info)) {
@@ -49,11 +51,11 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
 
         throw new Error("Wrong input");
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return w("");
     }
 });
 
 app.listen(port, (): void => {
-    console.log(`Server is running on http://localhost:${port}/`);
+    print(`Server is running on http://localhost:${port}/`);
 });
