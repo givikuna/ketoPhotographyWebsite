@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as prettier from "prettier";
 
 import { getFileExtension } from "./cgi/extensions/syntax";
 
@@ -43,7 +44,9 @@ const compilerSettings: CompilerSettings = JSON.parse(
     }),
 ) as CompilerSettings;
 
-const approvedFileExtensions: string[] = compilerSettings.compile.languages.map((programmingLanguage: ProgrammingLanguage): string => programmingLanguage.extension);
+const approvedFileExtensions: string[] = compilerSettings.compile.languages.map(
+    (programmingLanguage: ProgrammingLanguage): string => programmingLanguage.extension,
+);
 
 for (let i: number = 0; i < compilerSettings.compile.languages.length; i++) {
     compileables.push({
@@ -56,7 +59,10 @@ for (let i: number = 0; i < compilerSettings.compile.languages.length; i++) {
 function traverseDirectories(dir: string = "./") {
     const paths: string[] = fs.readdirSync(dir);
     for (let i: number = 0; i < paths.length; i++) {
-        if (!compilerSettings.compilerIgnore.directories.includes(paths[i]) && fs.statSync(`${dir}${paths[i]}`).isDirectory()) {
+        if (
+            !compilerSettings.compilerIgnore.directories.includes(paths[i]) &&
+            fs.statSync(`${dir}${paths[i]}`).isDirectory()
+        ) {
             traverseDirectories(`${dir}${paths[i]}/`);
         }
         if (
@@ -93,4 +99,13 @@ function traverseDirectories(dir: string = "./") {
 
 traverseDirectories();
 
-fs.writeFileSync("./compile.json", JSON.stringify(compileables), "utf-8");
+fs.writeFileSync(
+    "./compile.json",
+    await ((): Promise<string> => {
+        return prettier.format(JSON.stringify(compileables), {
+            parser: "json",
+            ...require(".prettierrc.json"),
+        });
+    })(),
+    "utf-8",
+);

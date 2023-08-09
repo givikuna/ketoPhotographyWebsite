@@ -27,7 +27,8 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
 function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): PathLike {
     const _default: ReturnType<typeof getPath> = "../public/components/home.html";
     try {
-        if (requestsLibrary) return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
+        if (requestsLibrary)
+            return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
     } catch (e: unknown) {
         console.log(e);
@@ -35,23 +36,30 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
     }
 }
 
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer((req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
-        res.write(data);
-        return res.end();
-    };
-    try {
-        if (!req.url) return w("");
+const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer(
+    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
+        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
+            res.write(data);
+            return res.end();
+        };
+        try {
+            if (!req.url) return w("");
 
-        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-        const requestsLibrary: Readonly<boolean> = "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
-        const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
-        return w(existsSync(fpath) ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString())) : "");
-    } catch (e: unknown) {
-        console.log(e);
-        return w("");
-    }
-});
+            const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
+            const requestsLibrary: Readonly<boolean> =
+                "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
+            const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
+            return w(
+                existsSync(fpath)
+                    ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString()))
+                    : "",
+            );
+        } catch (e: unknown) {
+            console.log(e);
+            return w("");
+        }
+    },
+);
 
 server.listen(port, (): void => {
     console.log(`Server is running on http://localhost:${port}/`);

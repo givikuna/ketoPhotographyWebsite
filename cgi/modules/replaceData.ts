@@ -34,7 +34,9 @@ export function replaceData(
 export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     const _default: ReturnType<typeof getLang> = "en";
     try {
-        return "lang" in url_info && typeof url_info["lang"] === "string" && getLangs().includes(url_info["lang"]) ? String(url_info["lang"]) : "en";
+        return "lang" in url_info && typeof url_info["lang"] === "string" && getLangs().includes(url_info["lang"])
+            ? String(url_info["lang"])
+            : "en";
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -59,7 +61,10 @@ export function getLangs(): string[] {
 export function getEmail(data: Readonly<JSON | object>): string {
     const _default: ReturnType<typeof getEmail> = "givitsvariani@proton.me" as const;
     try {
-        const fpath: PathLike = findPath("arr" in data ? (data.arr as string[]) : [], "file" in data ? (data.file as string) : "");
+        const fpath: PathLike = findPath(
+            "arr" in data ? (data.arr as string[]) : [],
+            "file" in data ? (data.file as string) : "",
+        );
 
         if (existsSync(fpath)) {
             return supertrim(String(readFileSync(fpath)));

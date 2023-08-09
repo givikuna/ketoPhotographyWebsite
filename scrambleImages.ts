@@ -25,7 +25,9 @@ function scrambleImages(arr: Image[]): Image[] {
 }
 
 for (let o: number = 0; o < 20; o++) {
-    for (let i: number = 0; i < albumData.length; i++) albumData[i].images = scrambleImages(albumData[i].images);
+    for (let i: number = 0; i < albumData.length; i++) {
+        albumData[i].images = scrambleImages(albumData[i].images);
+    }
 }
 
 fs.writeFileSync(

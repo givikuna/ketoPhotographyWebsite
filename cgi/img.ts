@@ -210,12 +210,19 @@ function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
 function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
     const _default: ReturnType<typeof getPath> = undefined;
     try {
-        const type_: string = "type" in url_info && typeof url_info["type"] === "string" ? (url_info["type"] as string) : "";
+        const type_: string =
+            "type" in url_info && typeof url_info["type"] === "string" ? (url_info["type"] as string) : "";
         if (wantsIcon(url_info)) {
-            return findPath(["public", "assets", type_], `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`);
+            return findPath(
+                ["public", "assets", type_],
+                `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`,
+            );
         }
         if (wantsWelcomeImage(url_info)) {
-            return findPath(["public", "assets", type_], `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`);
+            return findPath(
+                ["public", "assets", type_],
+                `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`,
+            );
         }
         if (wantsAlbumImage(url_info)) {
             return findPath(["img", url_info["album"] as string], getAlbumImage(url_info));
@@ -253,7 +260,12 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
         }
         const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
 
-        if (!("img" in url_info) && typeof url_info["img"] !== "string" && !("type" in url_info) && typeof url_info["type"] == "string") {
+        if (
+            !("img" in url_info) &&
+            typeof url_info["img"] !== "string" &&
+            !("type" in url_info) &&
+            typeof url_info["type"] == "string"
+        ) {
             throw new Error("Invalid request");
         }
 

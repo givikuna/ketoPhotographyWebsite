@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as prettier from "prettier";
 
 import { Album, ImageExtension, imageExtensions } from "./cgi/types/types";
 import { findPath } from "./cgi/modules/findPath";
@@ -23,16 +24,27 @@ const albumData: Album[] = JSON.parse(
     }),
 ) as Album[];
 
-const albumDirectories: string[] = fs.readdirSync(dir).filter((item: string): boolean => fs.statSync(`${dir}/${item}`).isDirectory());
+const albumDirectories: string[] = fs
+    .readdirSync(dir)
+    .filter((item: string): boolean => fs.statSync(`${dir}/${item}`).isDirectory());
 
 if (albumDirectories.length <= 0) process.exit();
 
 for (let i: number = 0; i < albumDirectories.length; i++) {
     for (let o: number = 0; o < albumData.length; o++) {
         if (albumData[o].album === albumDirectories[i]) {
-            albumData[o].images = fs.readdirSync(`${dir}/${albumDirectories[i]}`).filter((item: string): boolean => isImage(item));
+            albumData[o].images = fs
+                .readdirSync(`${dir}/${albumDirectories[i]}`)
+                .filter((item: string): boolean => isImage(item));
         }
     }
 }
 
-fs.writeFileSync(findPath(["img"], "info.json"), JSON.stringify(albumData), "utf8");
+fs.writeFileSync(
+    findPath(["img"], "info.json"),
+    await prettier.format(JSON.stringify(albumData), {
+        parser: "json",
+        ...require(".prettierrc.json"),
+    }),
+    "utf8",
+);
