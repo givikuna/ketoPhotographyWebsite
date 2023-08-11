@@ -44,7 +44,9 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
             return res.end();
         };
         try {
-            if (!req.url) return w("");
+            if (!req.url) {
+                return w("");
+            }
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
             const requestsLibrary: Readonly<boolean> =

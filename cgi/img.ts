@@ -180,7 +180,7 @@ function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: ReturnType<typeof wantsAlbumImage> = false;
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
-        return type_ === "album" && "album" in url_info && "img" in url_info && typeof url_info["img"] === "string";
+        return type_ === "album" && "img" in url_info && typeof url_info["img"] === "string";
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -226,7 +226,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
             );
         }
         if (wantsAlbumImage(url_info)) {
-            return findPath(["img", url_info["album"] as string], getAlbumImage(url_info));
+            return findPath(["img", "img"], url_info["img"] as string); // findPath(["img"]);
         }
         if (wantsAlbumCover(url_info)) {
             return findPath(["img", url_info["album"] as string], getAlbumCoverImage(url_info));

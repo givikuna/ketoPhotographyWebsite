@@ -3,7 +3,7 @@ import * as url from "url";
 
 const app: express.Application = express();
 
-import { readFileSync } from "fs";
+import { PathLike, readFileSync } from "fs";
 const { print } = require("lsse");
 
 import { ParsedUrlQuery } from "querystring";
@@ -14,6 +14,54 @@ import { findPath } from "./modules/findPath";
 
 const filename: string = "select";
 const port: number = getPort(filename); // 8094
+
+function getDataToReturn(givenData: string, url_info: ParsedUrlQuery): string {
+    const _default: ReturnType<typeof getDataToReturn> = "";
+    try {
+        let write: string = "";
+        let pathArray: string[] = [];
+        let dataFile: string = "";
+
+        switch (givenData) {
+            case "languages":
+            case "pages":
+                break;
+            case "welcome":
+                pathArray = ["public", "assets", `${url_info["data"]}`];
+                dataFile = "info.json";
+                break;
+            case "albumData":
+                pathArray = ["img"];
+                dataFile = "info.json";
+                break;
+            case "categories":
+                pathArray = ["img"];
+                dataFile = "categories.json";
+                break;
+            case "sessions":
+                pathArray = ["img"];
+                dataFile = "sessions.json";
+                break;
+            case "stills":
+                pathArray = ["img"];
+                dataFile = "stills.json";
+                break;
+            default:
+                write = "";
+        }
+
+        write = String(
+            readFileSync(findPath(pathArray, dataFile), {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        );
+
+        return write;
+    } catch (e: unknown) {
+        return _default;
+    }
+}
 
 app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
@@ -31,41 +79,7 @@ app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): Serve
             return w("");
         }
 
-        let write: string = "";
-
-        const givenData: string = url_info["data"];
-
-        switch (givenData) {
-            case "languages":
-            case "pages":
-                write = String(
-                    readFileSync(findPath(["public", "data"], `${url_info["data"]}.json`), {
-                        encoding: "utf8",
-                        flag: "r",
-                    }),
-                );
-                break;
-            case "welcome":
-                write = String(
-                    readFileSync(findPath(["public", "assets", url_info["data"]], "info.json"), {
-                        encoding: "utf8",
-                        flag: "r",
-                    }),
-                );
-                break;
-            case "albumData":
-                write = String(
-                    readFileSync(findPath(["img"], "info.json"), {
-                        encoding: "utf8",
-                        flag: "r",
-                    }),
-                );
-                break;
-            default:
-                write = "";
-        }
-
-        return w(write);
+        return w(getDataToReturn(url_info["data"], url_info));
     } catch (e: unknown) {
         print(e);
         return w("");
