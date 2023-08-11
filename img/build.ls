@@ -12,9 +12,9 @@
 (categories = require './categories.json')
 (customers = require './customers.json')
 (sessions = require './sessions.json')
-(stills = require './stills')
 
 (main = do ->
+    (stills = [])
     (images = read-dir './img')
     (count = 1)
     (for image in images
@@ -24,7 +24,7 @@
                     UID: count
                     SESSION_UID: (do ->
                         (Math.random!
-                            |>  (* 9)
+                            |>  (* (len sessions))
                             |> floor
                             |> (+ 1)))
                     NAME: img
@@ -35,5 +35,6 @@
         JSON.stringify do
             stills
             null
-            4)
+            4
+        'utf-8')
     (return))

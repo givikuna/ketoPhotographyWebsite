@@ -2,31 +2,37 @@
     {
         "UID": 1,
         "CUSTOMER_UID": 1,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER_IMAGE_UID": ""
     },
     {
         "UID": 2,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER": ""
     },
     {
         "UID": 3,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER": ""
     },
     {
         "UID": 4,
         "CUSTOMER_UID": 3,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER": ""
     },
     {
         "UID": 5,
         "CUSTOMER_UID": 1,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER": ""
     },
     {
         "UID": 6,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE"
+        "CATEGORY_UID": "SESSION_DATE",
+        "COVER": ""
     }
 ]
