@@ -3,11 +3,7 @@ import * as path from "path";
 import { existsSync, PathLike } from "fs";
 import { print } from "lsse";
 
-export function findPath(
-    folders: string[],
-    req: string,
-    reqFrom: string = "index",
-): string | PathLike {
+export function findPath(folders: string[], req: string, reqFrom: string = "index"): string | PathLike {
     const cFunc: string = "findPath";
     const _default: ReturnType<typeof findPath> = "";
     try {

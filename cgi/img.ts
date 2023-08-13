@@ -1,20 +1,13 @@
 import * as express from "express";
 import * as url from "url";
+import * as fs from "fs";
 // import * as subProcess from "child_process";
 
-import { readdirSync, readFileSync, existsSync } from "fs";
 import { print } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import {
-    SocialMediaIcon,
-    WelcomeImage,
-    ImageExtension,
-    imageExtensions,
-    Album,
-} from "./types/types";
-import { PathLike } from "fs";
+import { SocialMediaIcon, WelcomeImage, ImageExtension, imageExtensions, Album } from "./types/types";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
@@ -54,9 +47,7 @@ function getIcons(): SocialMediaIcon[] | unknown {
         },
     ] as const;
     try {
-        return JSON.parse(
-            readFileSync(findPath(["public", "assets", "icons"], "icons.json"), "utf-8"),
-        );
+        return JSON.parse(fs.readFileSync(findPath(["public", "assets", "icons"], "icons.json"), "utf-8"));
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -101,7 +92,7 @@ function getWelcomeImageExtension(img: Readonly<string>): ImageExtension {
 function getWelcomeImageData(): WelcomeImage[] {
     const images: ReturnType<typeof getWelcomeImageData> = [];
     try {
-        const files: string[] = readdirSync("public/assets/welcome");
+        const files: string[] = fs.readdirSync("public/assets/welcome");
         for (let i: number = 0; i < files.length; i++) {
             for (let j: number = 0; j < imageExtensions.length; j++) {
                 if (files[i].endsWith(imageExtensions[j])) {
@@ -121,7 +112,7 @@ function getWelcomeImageData(): WelcomeImage[] {
 
 function readAlbumData(): Album[] | unknown {
     return JSON.parse(
-        readFileSync(findPath(["img"], "info.json"), {
+        fs.readFileSync(findPath(["img"], "info.json"), {
             encoding: "utf8",
             flag: "r",
         }),
@@ -129,10 +120,14 @@ function readAlbumData(): Album[] | unknown {
 }
 
 function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
-    const _default: ReturnType<typeof getAlbumCoverImage> = "";
+    const _default: ReturnType<typeof getAlbumImage> = "";
     try {
         const albumImagesData: Album[] | unknown = readAlbumData();
-        if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
+
+        if (!Array.isArray(albumImagesData)) {
+            throw new Error("ERROR: unable to read album data");
+        }
+
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === (url_info["album"] as string)) {
                 return albumImagesData[i].images[
@@ -140,6 +135,7 @@ function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
                 ];
             }
         }
+
         return "";
     } catch (e: unknown) {
         console.log(e);
@@ -211,24 +207,19 @@ function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: ReturnType<typeof wantsLogo> = false;
     try {
-        return (
-            "type" in url_info &&
-            typeof url_info["type"] === "string" &&
-            url_info["type"] === "logo"
-        );
+        return "type" in url_info && typeof url_info["type"] === "string" && url_info["type"] === "logo";
     } catch (e: unknown) {
         console.log(e);
         return _default;
     }
 }
 
-function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
+function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
     const _default: ReturnType<typeof getPath> = undefined;
     try {
         const type_: string =
-            "type" in url_info && typeof url_info["type"] === "string"
-                ? (url_info["type"] as string)
-                : "";
+            "type" in url_info && typeof url_info["type"] === "string" ? (url_info["type"] as string) : "";
+
         if (wantsIcon(url_info)) {
             return findPath(
                 ["public", "assets", type_],
@@ -238,9 +229,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
         if (wantsWelcomeImage(url_info)) {
             return findPath(
                 ["public", "assets", type_],
-                `${url_info["img"]}.${getWelcomeImageExtension(
-                    url_info["img"] as string,
-                ).toString()}`,
+                `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`,
             );
         }
         if (wantsAlbumImage(url_info)) {
@@ -269,10 +258,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
 
 app.get(
     "/",
-    (
-        req: IncomingMessage,
-        res: ServerResponse<IncomingMessage>,
-    ): ServerResponse<IncomingMessage> => {
+    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
         res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
         const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
             res.write(data);
@@ -293,10 +279,10 @@ app.get(
                 throw new Error("Invalid request");
             }
 
-            const fpath: PathLike | undefined = getPath(url_info);
+            const fpath: fs.PathLike | undefined = getPath(url_info);
 
-            return fpath !== undefined && fpath !== null && existsSync(fpath)
-                ? w(readFileSync(fpath))
+            return fpath !== undefined && fpath !== null && fs.existsSync(fpath)
+                ? w(fs.readFileSync(fpath))
                 : w("");
         } catch (e: unknown) {
             print(e);

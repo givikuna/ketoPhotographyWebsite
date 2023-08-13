@@ -1,11 +1,10 @@
 import * as url from "url";
+import * as fs from "fs";
+import * as http from "http";
 
-import { readFileSync, existsSync } from "fs";
 import { print } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
-import { IncomingMessage, ServerResponse, Server, createServer } from "http";
-import { PathLike } from "fs";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
@@ -25,14 +24,11 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     }
 }
 
-function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): PathLike {
+function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): fs.PathLike {
     const _default: ReturnType<typeof getPath> = "../public/components/home.html";
     try {
         if (requestsLibrary)
-            return findPath(
-                ["public", "lib"],
-                `${url_info["type"]}.${getSourceFileExtension(url_info)}`,
-            );
+            return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
     } catch (e: unknown) {
         console.log(e);
@@ -40,12 +36,12 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
     }
 }
 
-const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer(
+const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(
     (
-        req: IncomingMessage,
-        res: ServerResponse<IncomingMessage>,
-    ): ServerResponse<IncomingMessage> => {
-        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
+        req: http.IncomingMessage,
+        res: http.ServerResponse<http.IncomingMessage>,
+    ): http.ServerResponse<http.IncomingMessage> => {
+        const w: Function = (data: Readonly<unknown> = ""): http.ServerResponse<http.IncomingMessage> => {
             res.write(data);
             return res.end();
         };
@@ -56,16 +52,12 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
             const requestsLibrary: Readonly<boolean> =
-                "type" in url_info &&
-                (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
-            const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
+                "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
+            const fpath: Readonly<fs.PathLike> = getPath(url_info, requestsLibrary);
             return w(
-                existsSync(fpath)
+                fs.existsSync(fpath)
                     ? String(
-                          readFileSync(fpath, "utf-8").replace(
-                              /@dynamiclink/g,
-                              getDynLink().toString(),
-                          ),
+                          fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString()),
                       )
                     : "",
             );

@@ -56,7 +56,6 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.python"
     },
-    "python.formatting.provider": "none",
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer"
     }

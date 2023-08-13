@@ -1,10 +1,9 @@
 import * as express from "express";
 import * as url from "url";
+import * as fs from "fs";
 
-import { existsSync, readFileSync } from "fs";
 import { print } from "lsse";
 
-import { PathLike } from "fs";
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
 
@@ -29,10 +28,7 @@ function getExt(url_info: Readonly<ParsedUrlQuery>): string {
 
 app.get(
     "/",
-    (
-        req: IncomingMessage,
-        res: ServerResponse<IncomingMessage>,
-    ): ServerResponse<IncomingMessage> => {
+    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
         res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
         const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
             res.write(data);
@@ -48,13 +44,13 @@ app.get(
                 throw new Error("Wrong input");
             }
 
-            const fpath: PathLike = findPath(
+            const fpath: fs.PathLike = findPath(
                 ["public", "components"],
                 `${url_info["c"]}.${getExt(url_info)}`,
             );
 
-            if (existsSync(fpath)) {
-                return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
+            if (fs.existsSync(fpath)) {
+                return w(replaceData(String(fs.readFileSync(fpath, "utf-8")), url_info));
             }
 
             throw new Error("Wrong input");

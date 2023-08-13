@@ -1,9 +1,7 @@
 import * as express from "express";
 import * as url from "url";
+import * as fs from "fs";
 
-const app: express.Application = express();
-
-import { readFileSync } from "fs";
 import { print, len, lower } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
@@ -12,6 +10,8 @@ import { CATEGORY, SESSION, STILL } from "./types/types";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
+
+const app: express.Application = express();
 
 const filename: string = "select";
 const port: number = getPort(filename); // 8094
@@ -27,9 +27,7 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
                 const categoryDataType: string = typeof categoryData;
-                const categories: CATEGORY[] = JSON.parse(
-                    getDataToReturn("categories", {}),
-                ) as CATEGORY[];
+                const categories: CATEGORY[] = JSON.parse(getDataToReturn("categories", {})) as CATEGORY[];
                 if (categoryDataType === "string") {
                     for (let i: number = 0; i < len(categoryData as string); i++) {
                         if (categoryData === categories[i].NAME) {
@@ -55,9 +53,7 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
             typeof url_info["session"] === "number"
         ) {
             const session_UID: number = ((session_uid: number): number => {
-                const sessions: SESSION[] = JSON.parse(
-                    getDataToReturn("sessions", {}),
-                ) as SESSION[];
+                const sessions: SESSION[] = JSON.parse(getDataToReturn("sessions", {})) as SESSION[];
                 for (let i: number = 0; i < len(sessions); i++) {
                     if (session_uid === sessions[i].UID) {
                         return session_uid;
@@ -120,7 +116,7 @@ function getDataToReturn(givenData: string, url_info: Readonly<ParsedUrlQuery>):
         }
 
         write = String(
-            readFileSync(findPath(pathArray, dataFile), {
+            fs.readFileSync(findPath(pathArray, dataFile), {
                 encoding: "utf8",
                 flag: "r",
             }),
@@ -135,10 +131,7 @@ function getDataToReturn(givenData: string, url_info: Readonly<ParsedUrlQuery>):
 
 app.get(
     "/",
-    (
-        req: IncomingMessage,
-        res: ServerResponse<IncomingMessage>,
-    ): ServerResponse<IncomingMessage> => {
+    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
         res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
         const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
             res.write(data);

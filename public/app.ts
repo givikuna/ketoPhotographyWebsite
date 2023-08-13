@@ -76,7 +76,7 @@ async function populateHomepageWelcomeImages(): Promise<string[]> {
     try {
         const m_images: string[] = [];
         const gottenImages: FrontPageCoverImage[] = await fetchWelcomeImageData();
-        for (let i = 1; i <= gottenImages.length; i++) {
+        for (let i: number = 1; i <= gottenImages?.length; i++) {
             if (i === 3) {
                 let temp: string = m_images[0];
                 m_images[0] = m_images[1];
@@ -85,7 +85,7 @@ async function populateHomepageWelcomeImages(): Promise<string[]> {
             m_images.push(`@dynamiclink:8092/?type=welcome&img=${i}`);
         }
         return m_images;
-    } catch (e) {
+    } catch (e: unknown) {
         console.error(e);
         return _default;
     }
@@ -162,8 +162,7 @@ function getLang(lang: string): string {
 
 async function nextHomepageImage(): Promise<void> {
     let images: string[] = await populateHomepageWelcomeImages();
-    const homepage_navbar_div: HTMLDivElement | null =
-        document.querySelector("#homepage-navbar-div");
+    const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
 
     if (homepage_navbar_div == null) {
         return;
@@ -294,21 +293,33 @@ async function buildApp(): Promise<boolean> {
     try {
         const data: PageData[] = await getPages();
         for (let i: number = 0; i < data.length; i++) {
+            /*
             let pageDiv: HTMLDivElement = document.createElement("div");
             pageDiv.setAttribute("id", data[i].page ? data[i].page : "ERROR");
             pageDiv.setAttribute(
                 "class",
-                (() => {
-                    const pageID: string = data[i].page ? data[i].page : "ERROR";
-                    if (pageID.startsWith("album_")) {
-                        return "albumPage";
-                    }
-                    return "webPage";
+                ((): string => {
+                    return (data[i].page ? data[i].page : "ERROR").startsWith("album_")
+                        ? "albumPage"
+                        : "webPage";
                 })(),
             );
-            let _: JQuery<HTMLElement> = $("#app").append(pageDiv);
+            */
+            const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
+                .attr("id", data[i].page ? data[i].page : "ERROR")
+                .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
+
+            $("#app").append(pageDiv);
+
             pages.push(data[i].page);
-            let _2: HTMLElement | null = await buildComponent(pageDiv.id);
+            await buildComponent(
+                ((div_id: string | undefined): string => {
+                    if (div_id == undefined && typeof div_id !== "undefined") {
+                        return "";
+                    }
+                    return pageDiv.attr("id") as string;
+                })(pageDiv.attr("id")),
+            );
 
             updateApp();
         }
@@ -324,15 +335,25 @@ async function buildApp(): Promise<boolean> {
     }
 }
 
+/*
+            (await fetchComponent("inAlbum")) +
+            `
+            <div class="inAlbumImages" id="${album}Gallery"> </div>
+            `;
+*/
+
 async function createAlbum(album: string): Promise<void> {
     try {
+        /*
         const albumDiv: HTMLDivElement = document.createElement("div");
         albumDiv.setAttribute("id", `album_${album}`);
         albumDiv.innerHTML +=
-            (await fetchComponent("inAlbum")) +
-            /*HTML*/ `
+        */
+        const albumDiv: JQuery<Element> = $("<div>")
+            .attr("id", `album_${album}`)
+            .append(await fetchComponent("inAlbum")).append(/*HTML*/ `
                 <div class="inAlbumImages" id="${album}Gallery"> </div>
-            `;
+            `);
 
         let _: JQuery<HTMLElement> = $("#app").append(albumDiv);
     } catch (e: unknown) {
@@ -344,9 +365,9 @@ async function buildPage(page: string): Promise<void> {
     try {
         switch (page) {
             case "home":
-                const albumData = await fetchAlbumData();
-                for (let i = 0; i < albumData.length; i++) {
-                    const element = /*HTML*/ `
+                const albumData: AlbumData[] = await fetchAlbumData();
+                for (let i: number = 0; i < albumData.length; i++) {
+                    const element: string = /*HTML*/ `
                         <div class="imageContainer">
                             <img
                                 src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}"
@@ -360,6 +381,7 @@ async function buildPage(page: string): Promise<void> {
                             </span>
                         </div>
                     `;
+
                     let _: JQuery<HTMLElement> = $("#album-gallery").append(element);
 
                     await createAlbum(albumData[i].album);
@@ -437,8 +459,7 @@ async function buildAlbum(currentPage: string): Promise<void> {
         const currentAlbum: string = currentPage.replace(/album_/g, "");
         const albumImages: AlbumData = await getAlbum(currentAlbum);
         for (let i = 0; i < albumImages.images.length; i++) {
-            let _: JQuery<HTMLElement> = $(`#${currentPage.replace(/album_/g, "")}Gallery`)
-                .append(/*HTML*/ `
+            let _: JQuery<HTMLElement> = $(`#${currentPage.replace(/album_/g, "")}Gallery`).append(/*HTML*/ `
                     <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
                     &nbsp;
                     &nbsp;
@@ -461,8 +482,8 @@ async function buildAlbum(currentPage: string): Promise<void> {
 async function updateApp(): Promise<void> {
     try {
         navbar(true);
-        const currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
-        for (let i = 0; i < pages.length; i++) {
+        const currentPage: string = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
+        for (let i: number = 0; i < pages.length; i++) {
             if (currentPage === pages[i]) {
                 showDiv(pages[i]);
             } else {
@@ -530,11 +551,9 @@ function toggleCurrentHamburgerNavbar(currentNavbarID: string): void {
         const isHidden: boolean = $navbarDiv.is(":hidden");
 
         if (isHidden) {
-            $navbarDiv.css("margin-top", "40px");
-            $navbarDiv.slideDown("fast");
+            $navbarDiv.css("margin-top", "40px").slideDown("fast");
         } else {
-            $navbarDiv.css("margin-top", "0");
-            $navbarDiv.toggle();
+            $navbarDiv.css("margin-top", "0").toggle();
         }
     } catch (e: unknown) {
         console.error(e);
@@ -580,7 +599,7 @@ function hamburgerClick(from: string): void {
         }
 
         if (getPage() !== "home") {
-            $("#app").css("margin-top", "100px");
+            let _: JQuery<HTMLElement> = $("#app").css("margin-top", "100px");
         }
     } catch (e: unknown) {
         console.error(e);
@@ -670,9 +689,7 @@ function changeNavbarForSmallDisplays(): void {
 async function buildComponent(component: string): Promise<HTMLElement | null> {
     const _default: Unpromisify<ReturnType<typeof buildComponent>> = null;
     try {
-        let componentDiv: HTMLElement | null = document.getElementById(
-            component ? component : "ERROR",
-        );
+        let componentDiv: HTMLElement | null = document.getElementById(component ? component : "ERROR");
 
         if (componentDiv !== null) {
             componentDiv.innerHTML = await fetchComponent(component);
@@ -713,7 +730,7 @@ function windowSizeCheck(): boolean {
     }
 }
 
-function inPhoneMode() {
+function inPhoneMode(): boolean {
     if (window.innerWidth <= 768) {
         return true;
     }
@@ -753,7 +770,9 @@ function hashchange(): () => void {
 window.addEventListener("hashchange", hashchange());
 
 setInterval(function () {
-    if (getPage() === "home") nextHomepageImage();
+    if (getPage() === "home") {
+        nextHomepageImage();
+    }
 }, 10000);
 
 window.addEventListener("resize", windowSizeCheck);
