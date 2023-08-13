@@ -1,7 +1,7 @@
 import * as url from "url";
 
 import { readFileSync, existsSync } from "fs";
-const { print } = require("lsse");
+import { print } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse, Server, createServer } from "http";
@@ -29,7 +29,10 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
     const _default: ReturnType<typeof getPath> = "../public/components/home.html";
     try {
         if (requestsLibrary)
-            return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
+            return findPath(
+                ["public", "lib"],
+                `${url_info["type"]}.${getSourceFileExtension(url_info)}`,
+            );
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
     } catch (e: unknown) {
         console.log(e);
@@ -38,7 +41,10 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<b
 }
 
 const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServer(
-    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
+    (
+        req: IncomingMessage,
+        res: ServerResponse<IncomingMessage>,
+    ): ServerResponse<IncomingMessage> => {
         const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
             res.write(data);
             return res.end();
@@ -50,11 +56,17 @@ const server: Server<typeof IncomingMessage, typeof ServerResponse> = createServ
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
             const requestsLibrary: Readonly<boolean> =
-                "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
+                "type" in url_info &&
+                (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
             const fpath: Readonly<PathLike> = getPath(url_info, requestsLibrary);
             return w(
                 existsSync(fpath)
-                    ? String(readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString()))
+                    ? String(
+                          readFileSync(fpath, "utf-8").replace(
+                              /@dynamiclink/g,
+                              getDynLink().toString(),
+                          ),
+                      )
                     : "",
             );
         } catch (e: unknown) {

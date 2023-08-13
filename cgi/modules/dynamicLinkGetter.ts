@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 
 import { PathLike } from "fs";
-const { print } = require("lsse");
+import { print } from "lsse";
 
 import { supertrim } from "../extensions/syntax";
 import { findPath } from "./findPath";

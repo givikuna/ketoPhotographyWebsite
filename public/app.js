@@ -96,7 +96,9 @@ async function fetchWelcomeImageData() {
 
 async function buildNavBar() {
     document.getElementById("navbar-div").innerHTML += await fetchComponent("navbar");
-    document.getElementById("homepage-navbar-div").innerHTML += await fetchComponent("homepagenavbar");
+    document.getElementById("homepage-navbar-div").innerHTML += await fetchComponent(
+        "homepagenavbar",
+    );
 }
 
 function navbar(callingFromWindowSizeCheck = false) {
@@ -118,9 +120,13 @@ async function nextHomepageImage() {
     let images = await populateHomepageWelcomeImages();
     if (iterated === images.length) {
         iterated = 0;
-        document.querySelector("#homepage-navbar-div").style.backgroundImage = `url(${images[iterated++]})`;
+        document.querySelector("#homepage-navbar-div").style.backgroundImage = `url(${
+            images[iterated++]
+        })`;
     } else {
-        document.querySelector("#homepage-navbar-div").style.backgroundImage = `url(${images[iterated++]})`;
+        document.querySelector("#homepage-navbar-div").style.backgroundImage = `url(${
+            images[iterated++]
+        })`;
     }
 }
 
@@ -307,9 +313,13 @@ async function fetchAlbumData() {
 }
 
 async function buildAlbum(currentPage) {
-    if (!currentPage.startsWith("album_")) return;
+    if (!currentPage.startsWith("album_")) {
+        return;
+    }
 
-    if (builtAlbums.includes(currentPage)) return;
+    if (builtAlbums.includes(currentPage)) {
+        return;
+    }
 
     const currentAlbum = currentPage.replace(/album_/g, "");
     const albumImages = await getAlbum(currentAlbum);
@@ -527,7 +537,9 @@ function windowSizeCheck() {
 }
 
 function inPhoneMode() {
-    if (window.innerWidth <= 768) return true;
+    if (window.innerWidth <= 768) {
+        return true;
+    }
     return false;
 }
 

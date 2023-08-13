@@ -10,6 +10,8 @@
         "Givi",
         "homepagenavbar",
         "ketophotographywebsite",
+        "livescript",
+        "lsse",
         "navbars",
         "Parens",
         "pfrd",
@@ -19,8 +21,7 @@
         "reqs",
         "subpages",
         "supertrim",
-        "Tsvariani",
-        "lsse"
+        "Tsvariani"
     ],
     "editor.tokenColorCustomizations": {
         "textMateRules": [{
@@ -54,5 +55,8 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.python"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    }
 }

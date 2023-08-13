@@ -31,18 +31,20 @@
   "devDependencies": {
     "@types/node": "^20.4.2",
     "prettier": "^3.0.1",
+    "prettier-plugin-sql": "^0.15.1",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "@types/express": "^4.17.17",
+    "@types/lodash": "^4.14.197",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "hint": "^7.1.10",
     "http": "^0.0.1-security",
     "livescript": "^1.6.0",
-    "lsse": "^1.0.1",
+    "lsse": "^1.0.2",
     "path": "^0.12.7",
-    "pm2": "^4.2.3",
+    "pm2": "^5.3.0",
     "prelude-ls": "^1.2.1",
     "ts-node": "^10.9.1"
   }

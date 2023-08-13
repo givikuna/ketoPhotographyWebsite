@@ -1,12 +1,13 @@
 {
     "tabWidth": 4,
-    "printWidth": 120,
+    "printWidth": 100,
     "semi": true,
     "trailingComma": "all",
     "bracketSpacing": true,
-    "arrowParens": "avoid",
+    "arrowParens": "always",
     "embeddedLanguageFormatting": "auto",
     "singleAttributePerLine": true,
-    "bracketSameLine": true,
-    "quoteProps": "as-needed"
+    "bracketSameLine": false,
+    "quoteProps": "as-needed",
+    "endOfLine": "lf"
 }

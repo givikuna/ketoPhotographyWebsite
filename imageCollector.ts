@@ -11,7 +11,9 @@ function isImage(img: string | ImageExtension) {
     }
     const imgExtension: string | undefined = getFileExtension(img);
     if (typeof imgExtension === "string") {
-        return imageExtensions.map((extension: ImageExtension) => extension as string).includes(imgExtension);
+        return imageExtensions
+            .map((extension: ImageExtension) => extension as string)
+            .includes(imgExtension);
     }
     return false;
 }

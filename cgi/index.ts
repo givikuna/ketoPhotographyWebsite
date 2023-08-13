@@ -2,7 +2,7 @@ import * as express from "express";
 import * as url from "url";
 
 import { existsSync, readFileSync } from "fs";
-const { print } = require("lsse");
+import { print } from "lsse";
 
 import { PathLike } from "fs";
 import { ParsedUrlQuery } from "querystring";

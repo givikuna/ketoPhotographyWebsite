@@ -3,11 +3,17 @@ import * as url from "url";
 // import * as subProcess from "child_process";
 
 import { readdirSync, readFileSync, existsSync } from "fs";
-const { print } = require("lsse");
+import { print } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { SocialMediaIcon, WelcomeImage, ImageExtension, imageExtensions, Album } from "./types/types";
+import {
+    SocialMediaIcon,
+    WelcomeImage,
+    ImageExtension,
+    imageExtensions,
+    Album,
+} from "./types/types";
 import { PathLike } from "fs";
 
 import { findPath } from "./modules/findPath";
@@ -48,7 +54,9 @@ function getIcons(): SocialMediaIcon[] | unknown {
         },
     ] as const;
     try {
-        return JSON.parse(readFileSync(findPath(["public", "assets", "icons"], "icons.json"), "utf-8"));
+        return JSON.parse(
+            readFileSync(findPath(["public", "assets", "icons"], "icons.json"), "utf-8"),
+        );
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -127,7 +135,9 @@ function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
         if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === (url_info["album"] as string)) {
-                return albumImagesData[i].images[isNumeric(url_info["img"] as string) ? Number(url_info["img"]) : 0];
+                return albumImagesData[i].images[
+                    isNumeric(url_info["img"] as string) ? Number(url_info["img"]) : 0
+                ];
             }
         }
         return "";
@@ -201,7 +211,11 @@ function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
 function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
     const _default: ReturnType<typeof wantsLogo> = false;
     try {
-        return "type" in url_info && typeof url_info["type"] === "string" && url_info["type"] === "logo";
+        return (
+            "type" in url_info &&
+            typeof url_info["type"] === "string" &&
+            url_info["type"] === "logo"
+        );
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -212,7 +226,9 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
     const _default: ReturnType<typeof getPath> = undefined;
     try {
         const type_: string =
-            "type" in url_info && typeof url_info["type"] === "string" ? (url_info["type"] as string) : "";
+            "type" in url_info && typeof url_info["type"] === "string"
+                ? (url_info["type"] as string)
+                : "";
         if (wantsIcon(url_info)) {
             return findPath(
                 ["public", "assets", type_],
@@ -222,7 +238,9 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
         if (wantsWelcomeImage(url_info)) {
             return findPath(
                 ["public", "assets", type_],
-                `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`,
+                `${url_info["img"]}.${getWelcomeImageExtension(
+                    url_info["img"] as string,
+                ).toString()}`,
             );
         }
         if (wantsAlbumImage(url_info)) {
@@ -249,35 +267,43 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): PathLike | undefined {
     });
 */
 
-app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
-        res.write(data);
-        return res.end();
-    };
-    try {
-        if (!req.url) {
+app.get(
+    "/",
+    (
+        req: IncomingMessage,
+        res: ServerResponse<IncomingMessage>,
+    ): ServerResponse<IncomingMessage> => {
+        res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
+        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
+            res.write(data);
+            return res.end();
+        };
+        try {
+            if (!req.url) {
+                return w("");
+            }
+            const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
+
+            if (
+                !("img" in url_info) &&
+                typeof url_info["img"] !== "string" &&
+                !("type" in url_info) &&
+                typeof url_info["type"] == "string"
+            ) {
+                throw new Error("Invalid request");
+            }
+
+            const fpath: PathLike | undefined = getPath(url_info);
+
+            return fpath !== undefined && fpath !== null && existsSync(fpath)
+                ? w(readFileSync(fpath))
+                : w("");
+        } catch (e: unknown) {
+            print(e);
             return w("");
         }
-        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-
-        if (
-            !("img" in url_info) &&
-            typeof url_info["img"] !== "string" &&
-            !("type" in url_info) &&
-            typeof url_info["type"] == "string"
-        ) {
-            throw new Error("Invalid request");
-        }
-
-        const fpath: PathLike | undefined = getPath(url_info);
-
-        return fpath !== undefined && fpath !== null && existsSync(fpath) ? w(readFileSync(fpath)) : w("");
-    } catch (e: unknown) {
-        print(e);
-        return w("");
-    }
-});
+    },
+);
 
 app.listen(port, (): void => {
     print(`Server is running on http://localhost:${port}/`);

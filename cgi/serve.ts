@@ -2,7 +2,7 @@ import * as express from "express";
 import * as url from "url";
 
 import { existsSync, readFileSync } from "fs";
-const { print } = require("lsse");
+import { print } from "lsse";
 
 import { PathLike } from "fs";
 import { ParsedUrlQuery } from "querystring";
@@ -27,34 +27,43 @@ function getExt(url_info: Readonly<ParsedUrlQuery>): string {
     }
 }
 
-app.get("/", (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
-    res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
-    const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
-        res.write(data);
-        return res.end();
-    };
-    try {
-        if (!req.url) {
+app.get(
+    "/",
+    (
+        req: IncomingMessage,
+        res: ServerResponse<IncomingMessage>,
+    ): ServerResponse<IncomingMessage> => {
+        res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
+        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
+            res.write(data);
+            return res.end();
+        };
+        try {
+            if (!req.url) {
+                return w("");
+            }
+            const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
+
+            if (Object.keys(url_info).length === 0 || !("c" in url_info)) {
+                throw new Error("Wrong input");
+            }
+
+            const fpath: PathLike = findPath(
+                ["public", "components"],
+                `${url_info["c"]}.${getExt(url_info)}`,
+            );
+
+            if (existsSync(fpath)) {
+                return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
+            }
+
+            throw new Error("Wrong input");
+        } catch (e: unknown) {
+            print(e);
             return w("");
         }
-        const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-
-        if (Object.keys(url_info).length === 0 || !("c" in url_info)) {
-            throw new Error("Wrong input");
-        }
-
-        const fpath: PathLike = findPath(["public", "components"], `${url_info["c"]}.${getExt(url_info)}`);
-
-        if (existsSync(fpath)) {
-            return w(replaceData(String(readFileSync(fpath, "utf-8")), url_info));
-        }
-
-        throw new Error("Wrong input");
-    } catch (e: unknown) {
-        print(e);
-        return w("");
-    }
-});
+    },
+);
 
 app.listen(port, (): void => {
     print(`Server is running on http://localhost:${port}/`);

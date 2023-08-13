@@ -2,7 +2,7 @@ import { readFileSync, PathLike, existsSync } from "fs";
 
 import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
-const { print } = require("lsse");
+import { print, str } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { Language } from "../types/types";
@@ -27,7 +27,7 @@ export function replaceData(
                 }),
             );
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return _default;
     }
 }
@@ -35,11 +35,13 @@ export function replaceData(
 export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     const _default: ReturnType<typeof getLang> = "en";
     try {
-        return "lang" in url_info && typeof url_info["lang"] === "string" && getLangs().includes(url_info["lang"])
-            ? String(url_info["lang"])
+        return "lang" in url_info &&
+            typeof url_info["lang"] === "string" &&
+            getLangs().includes(url_info["lang"])
+            ? str(url_info["lang"])
             : "en";
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return _default;
     }
 }
@@ -47,14 +49,16 @@ export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
 export function getLangs(): string[] {
     const _default: ReturnType<typeof getLangs> = [];
     try {
-        const data: Language[] = JSON.parse(String(readFileSync(findPath(["public", "data"], "languages.json"))));
+        const data: Language[] = JSON.parse(
+            String(readFileSync(findPath(["public", "data"], "languages.json"))),
+        );
         const langs: string[] = [];
         for (let i: number = 0; i < 0; i++) {
             langs.push(data[i].lang);
         }
         return langs;
     } catch (e: unknown) {
-        console.log(e);
+        print(e);
         return _default;
     }
 }
