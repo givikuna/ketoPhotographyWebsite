@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "python3 compile.py",
     "build": "python3 build.py",
-    "start": "pm2 start pm2.config.js",
+    "start": "tsc ./public/app.ts && pm2 start pm2.config.js",
     "stop": "pm2 stop all",
     "list": "pm2 list",
     "save": "pm2 save",
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/givikuna/ketoPhotographyWebsite#readme",
   "devDependencies": {
+    "@types/jquery": "^3.5.16",
     "@types/node": "^20.4.2",
     "prettier": "^3.0.1",
     "prettier-plugin-sql": "^0.15.1",

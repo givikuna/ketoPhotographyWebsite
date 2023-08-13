@@ -3,16 +3,15 @@ import * as url from "url";
 
 const app: express.Application = express();
 
-import { PathLike, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import { print, len, lower } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
+import { CATEGORY, SESSION, STILL } from "./types/types";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
-
-import { CATEGORY, SESSION, STILL } from "./types/types";
 
 const filename: string = "select";
 const port: number = getPort(filename); // 8094

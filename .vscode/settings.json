@@ -21,7 +21,8 @@
         "reqs",
         "subpages",
         "supertrim",
-        "Tsvariani"
+        "Tsvariani",
+        "Unpromisify"
     ],
     "editor.tokenColorCustomizations": {
         "textMateRules": [{

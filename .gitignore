@@ -76,3 +76,4 @@ public/data/.DS_Store
 public/lib/.DS_Store
 public/components/.DS_Store
 tests/.DS_Store
+public/app.js
