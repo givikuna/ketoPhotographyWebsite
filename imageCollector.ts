@@ -9,22 +9,22 @@ function isImage(img: string | ImageExtension) {
     if (img == undefined || img == null) {
         return false;
     }
+
     const imgExtension: string | undefined = getFileExtension(img);
+
     if (typeof imgExtension === "string") {
         return imageExtensions
-            .map((extension: ImageExtension) => extension as string)
+            .map((extension: ImageExtension): string => {
+                return extension as string;
+            })
             .includes(imgExtension);
     }
+
     return false;
 }
 
 const dir: string = "./img";
-const albumData: Album[] = JSON.parse(
-    fs.readFileSync(findPath(["img"], "info.json"), {
-        encoding: "utf8",
-        flag: "r",
-    }),
-) as Album[];
+const albumData: Album[] = require("./img/info.json") as Album[];
 
 const albumDirectories: string[] = fs
     .readdirSync(dir)
@@ -37,16 +37,20 @@ for (let i: number = 0; i < albumDirectories.length; i++) {
         if (albumData[o].album === albumDirectories[i]) {
             albumData[o].images = fs
                 .readdirSync(`${dir}/${albumDirectories[i]}`)
-                .filter((item: string): boolean => isImage(item));
+                .filter((item: string): boolean => {
+                    return isImage(item);
+                });
         }
     }
 }
 
-fs.writeFileSync(
-    findPath(["img"], "info.json"),
-    await prettier.format(JSON.stringify(albumData), {
-        parser: "json",
-        ...require(".prettierrc.json"),
-    }),
-    "utf8",
-);
+(async (): Promise<void> => {
+    fs.writeFileSync(
+        findPath(["img"], "info.json"),
+        await prettier.format(JSON.stringify(albumData), {
+            parser: "json",
+            ...require("./.prettierrc.json"),
+        }),
+        "utf8",
+    );
+})();

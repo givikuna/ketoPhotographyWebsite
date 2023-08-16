@@ -2,31 +2,37 @@
     {
         "UID": 1,
         "NAME": "newborns",
-        "COVER_STILL_UID": 48
+        "COVER_STILL_UID": 48,
+        "DESCRIPTION": ""
     },
     {
         "UID": 2,
         "NAME": "families",
-        "COVER_STILL_UID": 2
+        "COVER_STILL_UID": 2,
+        "DESCRIPTION": ""
     },
     {
         "UID": 3,
         "NAME": "advertisements",
-        "COVER_STILL_UID": 83
+        "COVER_STILL_UID": 83,
+        "DESCRIPTION": ""
     },
     {
         "UID": 4,
         "NAME": "portraits",
-        "COVER_STILL_UID": 76
+        "COVER_STILL_UID": 76,
+        "DESCRIPTION": ""
     },
     {
         "UID": 5,
         "NAME": "weddings",
-        "COVER_STILL_UID": 22
+        "COVER_STILL_UID": 22,
+        "DESCRIPTION": ""
     },
     {
         "UID": 6,
         "NAME": "business",
-        "COVER_STILL_UID": 82
+        "COVER_STILL_UID": 82,
+        "DESCRIPTION": ""
     }
 ]

@@ -22,7 +22,8 @@
         "subpages",
         "supertrim",
         "Tsvariani",
-        "Unpromisify"
+        "Unpromisify",
+        "Unreadonly"
     ],
     "editor.tokenColorCustomizations": {
         "textMateRules": [{
@@ -58,5 +59,6 @@
     },
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer"
-    }
+    },
+    "compile-hero.disable-compile-files-on-did-save-code": false
 }

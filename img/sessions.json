@@ -2,37 +2,85 @@
     {
         "UID": 1,
         "CUSTOMER_UID": 1,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER_IMAGE_UID": ""
+        "CATEGORY_UID": 4,
+        "COVER_IMAGE_UID": 65,
+        "DESCRIPTION": ""
     },
     {
         "UID": 2,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER": ""
+        "CATEGORY_UID": 3,
+        "COVER_STILL_UID": 11,
+        "DESCRIPTION": ""
     },
     {
         "UID": 3,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER": ""
+        "CATEGORY_UID": 1,
+        "COVER_STILL_UID": 1,
+        "DESCRIPTION": ""
     },
     {
         "UID": 4,
         "CUSTOMER_UID": 3,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER": ""
+        "CATEGORY_UID": 6,
+        "COVER_STILL_UID": 58,
+        "DESCRIPTION": ""
     },
     {
         "UID": 5,
         "CUSTOMER_UID": 1,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER": ""
+        "CATEGORY_UID": 2,
+        "COVER_STILL_UID": 2,
+        "DESCRIPTION": ""
     },
     {
         "UID": 6,
         "CUSTOMER_UID": 2,
-        "CATEGORY_UID": "SESSION_DATE",
-        "COVER": ""
+        "CATEGORY_UID": 3,
+        "COVER_STILL_UID": 16,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 7,
+        "CUSTOMER_UID": 2,
+        "CATEGORY_UID": 5,
+        "COVER_STILL_UID": 22,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 8,
+        "CUSTOMER_UID": 3,
+        "CATEGORY_UID": 3,
+        "COVER_STILL_UID": 53,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 9,
+        "CUSTOMER_UID": 3,
+        "CATEGORY_UID": 3,
+        "COVER_STILL_UID": 50,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 10,
+        "CUSTOMER_UID": 1,
+        "CATEGORY_UID": 6,
+        "COVER_STILL_UID": 77,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 11,
+        "CUSTOMER_UID": 2,
+        "CATEGORY_UID": 4,
+        "COVER_STILL_UID": 89,
+        "DESCRIPTION": ""
+    },
+    {
+        "UID": 12,
+        "CUSTOMER_UID": 3,
+        "CATEGORY_UID": 1,
+        "COVER_STILL_UID": 7,
+        "DESCRIPTION": ""
     }
 ]

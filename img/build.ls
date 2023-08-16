@@ -5,6 +5,7 @@
     read-dir
     random
     defun
+    lambda
 } = require 'lsse')
 ({
     floor
@@ -25,7 +26,9 @@
                     UID: count
                     SESSION_UID: (do ->
                         (Math.random!
-                            |> (* (len sessions))
+                            |> (* (sessions
+                                |> len
+                                |> (- 1)))
                             |> floor
                             |> (+ 1)))
                     NAME: img
@@ -38,4 +41,6 @@
             null
             4
         'utf-8')
-    (return))!
+    (return))
+
+main!

@@ -2,7 +2,7 @@ import * as url from "url";
 import * as fs from "fs";
 import * as http from "http";
 
-import { print } from "lsse";
+import { print, str } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 
@@ -24,11 +24,13 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     }
 }
 
-function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: Readonly<boolean>): fs.PathLike {
+function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: boolean): fs.PathLike {
     const _default: ReturnType<typeof getPath> = "../public/components/home.html";
     try {
-        if (requestsLibrary)
+        if (requestsLibrary) {
             return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
+        }
+
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
     } catch (e: unknown) {
         console.log(e);
@@ -51,14 +53,13 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
             }
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
-            const requestsLibrary: Readonly<boolean> =
+            const requestsLibrary: boolean =
                 "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
             const fpath: Readonly<fs.PathLike> = getPath(url_info, requestsLibrary);
+
             return w(
                 fs.existsSync(fpath)
-                    ? String(
-                          fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink().toString()),
-                      )
+                    ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, str(getDynLink())))
                     : "",
             );
         } catch (e: unknown) {

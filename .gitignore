@@ -77,3 +77,7 @@ public/lib/.DS_Store
 public/components/.DS_Store
 tests/.DS_Store
 public/app.js
+buildCompilerFile.js
+imageCleaner.js
+scrambleImages.js
+public/dist

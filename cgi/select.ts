@@ -16,7 +16,18 @@ const app: express.Application = express();
 const filename: string = "select";
 const port: number = getPort(filename); // 8094
 
-function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>): string {
+type RequestOption =
+    | "categorySessions"
+    | "sessionImages"
+    | "languages"
+    | "pages"
+    | "welcome"
+    | "albumData"
+    | "categories"
+    | "stills"
+    | "sessions";
+
+function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getSpecificData> = "";
     try {
         let write: string = "";
@@ -27,7 +38,10 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
                 const categoryDataType: string = typeof categoryData;
-                const categories: CATEGORY[] = JSON.parse(getDataToReturn("categories", {})) as CATEGORY[];
+                const categories: Readonly<CATEGORY[]> = JSON.parse(
+                    getDataToReturn("categories", {}),
+                ) as CATEGORY[];
+
                 if (categoryDataType === "string") {
                     for (let i: number = 0; i < len(categoryData as string); i++) {
                         if (categoryData === categories[i].NAME) {
@@ -35,14 +49,16 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
                         }
                     }
                 }
+
                 if (categoryDataType === "number") {
                     return categoryData as number;
                 }
+
                 return 0;
             })(url_info["category"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("sessions", {})) as SESSION[]).filter(
+                (JSON.parse(getDataToReturn("sessions", {})) as Readonly<SESSION[]>).filter(
                     (session) => session.CATEGORY_UID === category_UID,
                 ),
             );
@@ -53,17 +69,21 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
             typeof url_info["session"] === "number"
         ) {
             const session_UID: number = ((session_uid: number): number => {
-                const sessions: SESSION[] = JSON.parse(getDataToReturn("sessions", {})) as SESSION[];
-                for (let i: number = 0; i < len(sessions); i++) {
+                const sessions: Readonly<SESSION[]> = JSON.parse(
+                    getDataToReturn("sessions", {}),
+                ) as SESSION[];
+
+                for (let i: number = 0; i < sessions.length; i++) {
                     if (session_uid === sessions[i].UID) {
                         return session_uid;
                     }
                 }
+
                 return 0;
             })(url_info["session"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("stills", {})) as STILL[]).filter(
+                (JSON.parse(getDataToReturn("stills", {})) as Readonly<STILL[]>).filter(
                     (still) => still.SESSION_UID === session_UID,
                 ),
             );
@@ -76,12 +96,13 @@ function getSpecificData(givenData: string, url_info: Readonly<ParsedUrlQuery>):
     }
 }
 
-function getDataToReturn(givenData: string, url_info: Readonly<ParsedUrlQuery>): string {
+function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getDataToReturn> = "";
     try {
         if (givenData in ["categorySessions", "sessionImages"]) {
             return getSpecificData(givenData, url_info);
         }
+
         let write: string = "";
         let pathArray: string[] = [];
         let dataFile: string = "";
@@ -147,7 +168,7 @@ app.get(
                 return w("");
             }
 
-            return w(getDataToReturn(url_info["data"], url_info));
+            return w(getDataToReturn(url_info["data"] as RequestOption, url_info));
         } catch (e: unknown) {
             print(e);
             return w("");

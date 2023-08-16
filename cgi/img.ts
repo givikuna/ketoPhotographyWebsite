@@ -7,7 +7,14 @@ import { print } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { SocialMediaIcon, WelcomeImage, ImageExtension, imageExtensions, Album } from "./types/types";
+import {
+    SocialMediaIcon,
+    WelcomeImage,
+    ImageExtension,
+    imageExtensions,
+    Album,
+    Unreadonly,
+} from "./types/types";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
@@ -18,7 +25,7 @@ const app: express.Application = express();
 const filename: string = "img";
 const port: number = getPort(filename); // 8092
 
-function getIcons(): SocialMediaIcon[] | unknown {
+function getIcons(): Readonly<SocialMediaIcon[]> | Readonly<unknown> {
     const _default: ReturnType<typeof getIcons> = [
         {
             icon: "facebook",
@@ -47,14 +54,14 @@ function getIcons(): SocialMediaIcon[] | unknown {
         },
     ] as const;
     try {
-        return JSON.parse(fs.readFileSync(findPath(["public", "assets", "icons"], "icons.json"), "utf-8"));
+        return require("../public/assets/icons/icons.json") as Readonly<SocialMediaIcon[]>;
     } catch (e: unknown) {
         console.log(e);
         return _default;
     }
 }
 
-function getIconExtension(icon: Readonly<string>): string {
+function getIconExtension(icon: string): string {
     const _default: ReturnType<typeof getIconExtension> = "png";
     try {
         const icons: SocialMediaIcon[] | unknown = getIcons();
@@ -73,15 +80,16 @@ function getIconExtension(icon: Readonly<string>): string {
     }
 }
 
-function getWelcomeImageExtension(img: Readonly<string>): ImageExtension {
+function getWelcomeImageExtension(img: string): ImageExtension {
     const _default: ReturnType<typeof getWelcomeImageExtension> = "jpeg";
     try {
-        const welcomeImages: WelcomeImage[] = getWelcomeImageData();
+        const welcomeImages: Readonly<WelcomeImage[]> = getWelcomeImageData();
         for (let i: number = 0; i < welcomeImages.length; i++) {
             if (welcomeImages[i].img === img) {
                 return welcomeImages[i].extension;
             }
         }
+
         return _default;
     } catch (e: unknown) {
         console.log(e);
@@ -89,9 +97,10 @@ function getWelcomeImageExtension(img: Readonly<string>): ImageExtension {
     }
 }
 
-function getWelcomeImageData(): WelcomeImage[] {
-    const images: ReturnType<typeof getWelcomeImageData> = [];
+function getWelcomeImageData(): Readonly<WelcomeImage[]> {
+    const _default: ReturnType<typeof getWelcomeImageData> = [];
     try {
+        const images: Unreadonly<ReturnType<typeof getWelcomeImageData>> = [];
         const files: string[] = fs.readdirSync("public/assets/welcome");
         for (let i: number = 0; i < files.length; i++) {
             for (let j: number = 0; j < imageExtensions.length; j++) {
@@ -103,22 +112,28 @@ function getWelcomeImageData(): WelcomeImage[] {
                 }
             }
         }
-        return images;
+        return images as Readonly<typeof images>;
     } catch (e: unknown) {
         console.log(e);
-        return images;
+        return _default;
     }
 }
 
-function readAlbumData(): Album[] | unknown {
-    return JSON.parse(
-        fs.readFileSync(findPath(["img"], "info.json"), {
-            encoding: "utf8",
-            flag: "r",
-        }),
-    ) as Album[];
+function readAlbumData(): Readonly<Album[]> | Readonly<unknown> {
+    const _default: Readonly<ReturnType<typeof readAlbumData>> = [];
+    try {
+        return JSON.parse(
+            fs.readFileSync(findPath(["img"], "info.json"), {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        ) as Album[];
+    } catch (e: unknown) {
+        console.log(e);
+        return _default;
+    }
 }
-
+/*
 function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getAlbumImage> = "";
     try {
@@ -142,17 +157,23 @@ function getAlbumImage(url_info: Readonly<ParsedUrlQuery>): string {
         return _default;
     }
 }
+*/
 
 function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getAlbumCoverImage> = "";
     try {
         const albumImagesData: Album[] | unknown = readAlbumData();
-        if (!Array.isArray(albumImagesData)) throw new Error("ERROR: unable to read album data");
+
+        if (!Array.isArray(albumImagesData)) {
+            throw new Error("ERROR: unable to read album data");
+        }
+
         for (let i: number = 0; i < albumImagesData.length; i++) {
             if (albumImagesData[i].album === url_info["album"]) {
                 return albumImagesData[i].coverImage;
             }
         }
+
         return "";
     } catch (e: unknown) {
         console.log(e);
@@ -236,7 +257,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
             return findPath(["img", "img"], url_info["img"] as string); // findPath(["img"]);
         }
         if (wantsAlbumCover(url_info)) {
-            return findPath(["img", url_info["album"] as string], getAlbumCoverImage(url_info));
+            return findPath(["img", "img"], getAlbumCoverImage(url_info));
         }
         if (wantsLogo(url_info)) {
             return findPath(["public", "assets", "logo"], "logo.png");

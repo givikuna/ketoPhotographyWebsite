@@ -4,22 +4,21 @@ import * as prettier from "prettier";
 import { Album } from "./cgi/types/types";
 import { findPath } from "./cgi/modules/findPath";
 
-const albumData: Album[] = JSON.parse(
-    fs.readFileSync(findPath(["img"], "info.json"), {
-        encoding: "utf8",
-        flag: "r",
-    }),
-) as Album[];
+const albumData: Album[] = require("./img/info.json") as Album[];
 
 for (let i: number = 0; i < albumData.length; i++) {
     albumData[i].images = [];
 }
 
-fs.writeFileSync(
-    findPath(["img"], "info.json"),
-    await prettier.format(JSON.stringify(albumData), {
-        parser: "json",
-        ...require(".prettierrc.json"),
-    }),
-    "utf8",
-);
+(async (): Promise<void> => {
+    fs.writeFileSync(
+        findPath(["img"], "info.json"),
+        await ((_albumData: Readonly<Album[]>): Promise<string> => {
+            return prettier.format(JSON.stringify(_albumData), {
+                parser: "json",
+                ...require("./.prettierrc.json"),
+            });
+        })(albumData as Readonly<typeof albumData>),
+        "utf8",
+    );
+})();

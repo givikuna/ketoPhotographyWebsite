@@ -35,17 +35,15 @@ type ProgrammingLanguage = {
     files: string[];
 };
 
-const compileables: LanguageToCompile[] = [];
+const compileables: Readonly<LanguageToCompile>[] = [];
 
-const compilerSettings: CompilerSettings = JSON.parse(
-    fs.readFileSync("./compilerSettings.json", {
-        encoding: "utf8",
-        flag: "r",
-    }),
-) as CompilerSettings;
+const compilerSettings: Readonly<CompilerSettings> =
+    require("./compilerSettings.json") as Readonly<CompilerSettings>;
 
 const approvedFileExtensions: string[] = compilerSettings.compile.languages.map(
-    (programmingLanguage: ProgrammingLanguage): string => programmingLanguage.extension,
+    (programmingLanguage: ProgrammingLanguage): string => {
+        return programmingLanguage.extension;
+    },
 );
 
 for (let i: number = 0; i < compilerSettings.compile.languages.length; i++) {
@@ -53,7 +51,7 @@ for (let i: number = 0; i < compilerSettings.compile.languages.length; i++) {
         type_: compilerSettings.compile.languages[i].extension,
         command: compilerSettings.compile.languages[i].command,
         files: [],
-    } as LanguageToCompile);
+    } as Readonly<LanguageToCompile>);
 }
 
 function traverseDirectories(dir: string = "./") {
@@ -65,6 +63,7 @@ function traverseDirectories(dir: string = "./") {
         ) {
             traverseDirectories(`${dir}${paths[i]}/`);
         }
+
         if (
             !fs.statSync(`${dir}${paths[i]}`).isDirectory() &&
             approvedFileExtensions.includes(getFileExtension(paths[i]) as string) &&
@@ -76,20 +75,20 @@ function traverseDirectories(dir: string = "./") {
                     compileables[j].files.push({
                         dir: dir.slice(2),
                         file: `${dir}${paths[i]}`,
-                        filename: ((): string => {
-                            const filename_: string | undefined = paths[i].split("/").pop();
+                        filename: ((_paths: Readonly<string[]>): string => {
+                            const filename_: string | undefined = _paths[i].split("/").pop();
                             return typeof filename_ === "string" ? filename_ : "";
-                        })(),
-                        compilesTo: ((ext: string): string => {
+                        })(paths),
+                        compilesTo: ((ext: string, _dir: string, _paths: Readonly<string[]>): string => {
                             switch (ext) {
                                 case "ts":
-                                    return `${dir}${paths[i].slice(0, -2)}js`;
+                                    return `${_dir}${_paths[i].slice(0, -2)}js`;
                                 case "rs":
-                                    return `${dir}${[paths[i]]}`.slice(0, -3);
+                                    return `${_dir}${[_paths[i]]}`.slice(0, -3);
                                 default:
                                     return "";
                             }
-                        })(fileExtension),
+                        })(fileExtension, dir, paths as Readonly<typeof paths>),
                     });
                 }
             }
@@ -99,13 +98,15 @@ function traverseDirectories(dir: string = "./") {
 
 traverseDirectories();
 
-fs.writeFileSync(
-    "./compile.json",
-    await ((): Promise<string> => {
-        return prettier.format(JSON.stringify(compileables), {
-            parser: "json",
-            ...require(".prettierrc.json"),
-        });
-    })(),
-    "utf-8",
-);
+(async (): Promise<void> => {
+    fs.writeFileSync(
+        "./compile.json",
+        await ((_compileables: Readonly<Readonly<LanguageToCompile>[]>): Promise<string> => {
+            return prettier.format(JSON.stringify(_compileables), {
+                parser: "json",
+                ...require("./.prettierrc.json"),
+            });
+        })(compileables as Readonly<typeof compileables>),
+        "utf-8",
+    );
+})();

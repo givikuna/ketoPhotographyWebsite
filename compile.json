@@ -2,14 +2,7 @@
     {
         "type_": "rs",
         "command": "cargo build --bin",
-        "files": [
-            {
-                "dir": "",
-                "file": "./cleaner.rs",
-                "filename": "cleaner.rs",
-                "compilesTo": "./cleaner"
-            }
-        ]
+        "files": [{ "dir": "", "file": "./cleaner.rs", "filename": "cleaner.rs", "compilesTo": "./cleaner" }]
     },
     {
         "type_": "ts",
@@ -27,12 +20,7 @@
                 "filename": "syntax.ts",
                 "compilesTo": "./cgi/extensions/syntax.js"
             },
-            {
-                "dir": "cgi/",
-                "file": "./cgi/img.ts",
-                "filename": "img.ts",
-                "compilesTo": "./cgi/img.js"
-            },
+            { "dir": "cgi/", "file": "./cgi/img.ts", "filename": "img.ts", "compilesTo": "./cgi/img.js" },
             {
                 "dir": "cgi/",
                 "file": "./cgi/index.ts",
@@ -75,17 +63,18 @@
                 "filename": "serve.ts",
                 "compilesTo": "./cgi/serve.js"
             },
-            {
-                "dir": "cgi/",
-                "file": "./cgi/src.ts",
-                "filename": "src.ts",
-                "compilesTo": "./cgi/src.js"
-            },
+            { "dir": "cgi/", "file": "./cgi/src.ts", "filename": "src.ts", "compilesTo": "./cgi/src.js" },
             {
                 "dir": "cgi/types/",
                 "file": "./cgi/types/types.ts",
                 "filename": "types.ts",
                 "compilesTo": "./cgi/types/types.js"
+            },
+            {
+                "dir": "public/",
+                "file": "./public/app.ts",
+                "filename": "app.ts",
+                "compilesTo": "./public/app.js"
             }
         ]
     },
@@ -93,18 +82,8 @@
         "type_": "sh",
         "command": "sudo chmod +x",
         "files": [
-            {
-                "dir": "",
-                "file": "./deploy.sh",
-                "filename": "deploy.sh",
-                "compilesTo": ""
-            },
-            {
-                "dir": "",
-                "file": "./rebuild.sh",
-                "filename": "rebuild.sh",
-                "compilesTo": ""
-            }
+            { "dir": "", "file": "./deploy.sh", "filename": "deploy.sh", "compilesTo": "" },
+            { "dir": "", "file": "./rebuild.sh", "filename": "rebuild.sh", "compilesTo": "" }
         ]
     }
 ]

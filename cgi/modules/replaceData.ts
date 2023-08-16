@@ -46,8 +46,8 @@ export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     }
 }
 
-export function getLangs(): string[] {
-    const _default: ReturnType<typeof getLangs> = [];
+export function getLangs(): Readonly<string[]> {
+    const _default: Readonly<ReturnType<typeof getLangs>> = [];
     try {
         const data: Language[] = JSON.parse(
             String(readFileSync(findPath(["public", "data"], "languages.json"))),
@@ -56,7 +56,7 @@ export function getLangs(): string[] {
         for (let i: number = 0; i < 0; i++) {
             langs.push(data[i].lang);
         }
-        return langs;
+        return langs as Readonly<typeof langs>;
     } catch (e: unknown) {
         print(e);
         return _default;

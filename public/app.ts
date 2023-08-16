@@ -7,53 +7,63 @@ type PageData = {
     type: string;
     page: string;
     display: string;
-    subpages: (PageData | string)[];
-    components: string[];
-};
-
-type AlbumData = {
-    album: string;
-    coverImage: string;
-    images: string[];
-    display: string;
+    subpages: Array<PageData | string> | ReadonlyArray<PageData | string>;
+    components: Array<string> | ReadonlyArray<string>;
 };
 
 type Unpromisify<T> = T extends Promise<infer U> ? U : T;
 
-const pages: string[] = [];
-const builtAlbums: string[] = [];
+type CATEGORY = {
+    UID: number;
+    NAME: string;
+    COVER_STILL_UID: number;
+    DESCRIPTION: string;
+};
+
+const pages: Array<string> = [];
+const builtAlbums: Array<string> = [];
 let iterated: number = 0;
 let previousPage: string = "";
 
 async function main(
-    d: Readonly<string | null> = null,
-    l: Readonly<string | null> = null,
-    c: Readonly<string | null> = null,
+    d: string | null = null,
+    l: string | null = null,
+    c: string | null = null,
 ): Promise<void> {
-    const dynamiclink: Readonly<typeof d> = d ? d : "ketojibladze.com";
-    const language: Readonly<typeof l> = l ? getLang(l) : "en";
-    const contactemail: Readonly<typeof c> = c ? c : "givitsvariani@proton.me";
+    const dynamiclink: typeof d = d ? d : "ketojibladze.com";
+    const language: typeof l = l ? getLang(l) : "en";
+    const contactemail: typeof c = c ? c : "givitsvariani@proton.me";
     try {
         previousPage = getPage();
 
         changeLang(language);
-        navbar();
+        updateNavbar();
 
-        let _: void = await buildNavBar()
-            .then(buildApp)
-            .then(updateApp)
-            .then(makeFooter)
-            .then(() => {
-                navbar();
+        let _: void = await buildNavBar(dynamiclink)
+            .then((): void => {
+                buildApp(dynamiclink);
             })
             .then(updateApp)
-            .then(() => {
+            .then((): void => {
+                makeFooter(dynamiclink);
+            })
+            .then((): void => {
+                updateNavbar();
+                // keep this like this
+                // it'll throw an error if you pass it in as as a variable directly
+                // i'm not sure why
+                // just trust me
+                // me to future me
+            })
+            .then(updateApp)
+            .then((): void => {
                 const navbars: string[] = ["navbar-div-phone", "homepage-navbar-div-phone"];
+
                 for (let i: number = 0; i < navbars.length; i++) {
-                    let _ = buildHamburger(navbars[i]);
+                    let _: void = buildHamburger(navbars[i], dynamiclink);
                 }
             })
-            .then(() => {
+            .then((): void => {
                 if (inPhoneMode()) {
                     hideDiv("navbar-div");
                     hideDiv("homepagenavbar-container");
@@ -71,164 +81,59 @@ async function main(
     }
 }
 
-async function populateHomepageWelcomeImages(): Promise<string[]> {
-    const _default: Unpromisify<ReturnType<typeof populateHomepageWelcomeImages>> = [];
+function makeFooter(dynamiclink: string): void {
     try {
-        const m_images: string[] = [];
-        const gottenImages: FrontPageCoverImage[] = await fetchWelcomeImageData();
-        for (let i: number = 1; i <= gottenImages?.length; i++) {
-            if (i === 3) {
-                let temp: string = m_images[0];
-                m_images[0] = m_images[1];
-                m_images[1] = temp;
-            }
-            m_images.push(`@dynamiclink:8092/?type=welcome&img=${i}`);
-        }
-        return m_images;
-    } catch (e: unknown) {
-        console.error(e);
-        return _default;
-    }
-}
+        $("#footer-div").show().append(/*HTML*/ `
+            <footer>
+                <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.youtube.com"><img src="@${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
+                        class="SocialMediaIcon"></a>
 
-async function fetchWelcomeImageData(): Promise<FrontPageCoverImage[]> {
-    const _default: Unpromisify<ReturnType<typeof fetchWelcomeImageData>> = [
-        {
-            img: "1.jpeg",
-            extension: "jpeg",
-        },
-        {
-            img: "2.jpeg",
-            extension: "jpeg",
-        },
-        {
-            img: "3.jpeg",
-            extension: "jpeg",
-        },
-        {
-            img: "4.jpeg",
-            extension: "jpeg",
-        },
-        {
-            img: "5.jpeg",
-            extension: "jpeg",
-        },
-    ];
-    try {
-        const url: string = "@dynamiclink:8094/?data=welcome";
-        const response: Response = await fetch(url);
+                <br>
+                <br>
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: FrontPageCoverImage[] = (await response.json()) as FrontPageCoverImage[];
-        return data;
-    } catch (e: unknown) {
-        console.error("An error occurred while fetching dynamic data:", e);
-        return _default;
-    }
-}
-
-async function buildNavBar(): Promise<void> {
-    const navbar_div: HTMLElement | null = document.getElementById("navbar-div");
-    const homepage_navbar_div: HTMLElement | null = document.getElementById("homepage-navbar-div");
-
-    if (navbar_div == null || homepage_navbar_div == null) {
-        return;
-    }
-
-    navbar_div.innerHTML += await fetchComponent("navbar");
-    homepage_navbar_div.innerHTML += await fetchComponent("homepagenavbar");
-}
-
-function navbar(callingFromWindowSizeCheck: boolean = false): void {
-    if (callingFromWindowSizeCheck === false && windowSizeCheck() === true) {
-        return;
-    }
-
-    if (getPage() === "home") {
-        hideDiv("navbar-div");
-        showDiv("homepage-navbar-div");
-    } else {
-        hideDiv("homepage-navbar-div");
-        showDiv("navbar-div");
-    }
-}
-
-function getLang(lang: string): string {
-    return lang === "ru" ? lang : lang === "ge" ? lang : "en";
-}
-
-async function nextHomepageImage(): Promise<void> {
-    let images: string[] = await populateHomepageWelcomeImages();
-    const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
-
-    if (homepage_navbar_div == null) {
-        return;
-    }
-
-    if (iterated === images.length) {
-        iterated = 0;
-        homepage_navbar_div.style.backgroundImage = `url(${images[iterated++]})`;
-    } else {
-        homepage_navbar_div.style.backgroundImage = `url(${images[iterated++]})`;
-    }
-}
-
-function changeLang(lang: string): boolean {
-    const _default: ReturnType<typeof changeLang> = false;
-    try {
-        return true;
-    } catch (e: unknown) {
-        console.error(e);
-        return _default;
-    }
-}
-
-function makeFooter(): void {
-    const footerHTML: string = /*HTML*/ `
-        <footer>
-            <a href="https://www.facebook.com"><img src="@dynamiclink:8092/?type=icons&img=facebook" alt="Facebook"
-                    class="SocialMediaIcon"></a>
-            <a href="https://www.flickr.com"><img src="@dynamiclink:8092/?type=icons&img=flickr" alt="Flickr"
-                    class="SocialMediaIcon"></a>
-            <a href="https://www.instagram.com"><img src="@dynamiclink:8092/?type=icons&img=instagram" alt="Instagram"
-                    class="SocialMediaIcon"></a>
-            <a href="https://www.pinterest.com"><img src="@dynamiclink:8092/?type=icons&img=pinterest" alt="Pinterest"
-                    class="SocialMediaIcon"></a>
-            <a href="https://www.youtube.com"><img src="@dynamiclink:8092/?type=icons&img=youtube" alt="YouTube"
-                    class="SocialMediaIcon"></a>
-
-            <br>
-            <br>
-
-            <div>
-                <p>
-                    <a href="#contact" class="contact-link">
-                        Contact Me
+                <div>
+                    <p>
+                        <a href="#contact" class="contact-link">
+                            Contact Me
+                        </a>
+                    </p>
+                    <p>
+                    <a href="#home" class="contact-link">
+                        Home
                     </a>
                 </p>
-                <p>
-                <a href="#home" class="contact-link">
-                    Home
-                </a>
-            </p>
-            </div>
-        </footer>
+                </div>
+            </footer>
 
-        <br>
-        <br>
-    `;
-    $("#footer-div").show().append(footerHTML);
+            <br>
+            <br>
+        `);
+    } catch (e: unknown) {
+        console.error(e);
+    }
 }
 
 function getPage(): string {
-    const page: string = window.location.hash.slice(1);
-    return page !== "" || pages.includes(page) ? page : "home";
+    const _default: ReturnType<typeof getPage> = "home";
+
+    try {
+        const page: string = window.location.hash.slice(1);
+        return page !== "" || pages.includes(page) ? page : "home";
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
 }
 
-async function getPages(): Promise<PageData[]> {
+async function getPages(dynamiclink: string): Promise<ReadonlyArray<PageData>> {
     const _default: Unpromisify<ReturnType<typeof getPages>> = [
         {
             type: "page",
@@ -272,15 +177,17 @@ async function getPages(): Promise<PageData[]> {
             subpages: [],
             components: [],
         },
-    ];
+    ] as const;
+
     try {
-        const url = "@dynamiclink:8094/?data=pages";
-        const response: Response = await fetch(url);
+        const url = `${dynamiclink}:8094/?data=pages`;
+        const response: Readonly<Response> = await fetch(url);
+
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: PageData[] = (await response.json()) as PageData[];
+        const data: ReadonlyArray<PageData> = (await response.json()) as ReadonlyArray<PageData>;
         return data;
     } catch (error: unknown) {
         console.error("An error occurred while fetching dynamic data:", error);
@@ -288,23 +195,32 @@ async function getPages(): Promise<PageData[]> {
     }
 }
 
-async function buildApp(): Promise<boolean> {
-    const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
+async function createAlbum(album: string, dynamiclink: string): Promise<void> {
     try {
-        const data: PageData[] = await getPages();
+        const albumDiv: JQuery<Element> = $(/*HTML*/ `<div>`)
+            .attr("id", `album_${album}`)
+            .append(await fetchComponent("inAlbum", dynamiclink)).append(/*HTML*/ `
+                <div
+                    class="inAlbumImages"
+                    id="${album}Gallery"
+                > </div>
+            `);
+
+        $("#app").append(albumDiv);
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+// --------------------------------------------------------------------------------------- Build functions:
+
+async function buildApp(dynamiclink: string): Promise<boolean> {
+    const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
+
+    try {
+        const data: ReadonlyArray<PageData> = (await getPages(dynamiclink)) as ReadonlyArray<PageData>;
+
         for (let i: number = 0; i < data.length; i++) {
-            /*
-            let pageDiv: HTMLDivElement = document.createElement("div");
-            pageDiv.setAttribute("id", data[i].page ? data[i].page : "ERROR");
-            pageDiv.setAttribute(
-                "class",
-                ((): string => {
-                    return (data[i].page ? data[i].page : "ERROR").startsWith("album_")
-                        ? "albumPage"
-                        : "webPage";
-                })(),
-            );
-            */
             const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
                 .attr("id", data[i].page ? data[i].page : "ERROR")
                 .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
@@ -312,6 +228,7 @@ async function buildApp(): Promise<boolean> {
             $("#app").append(pageDiv);
 
             pages.push(data[i].page);
+
             await buildComponent(
                 ((div_id: string | undefined): string => {
                     if (div_id == undefined && typeof div_id !== "undefined") {
@@ -319,13 +236,14 @@ async function buildApp(): Promise<boolean> {
                     }
                     return pageDiv.attr("id") as string;
                 })(pageDiv.attr("id")),
+                dynamiclink,
             );
 
             updateApp();
         }
 
         for (let i: number = 0; i < data.length; i++) {
-            let _: void = await buildPage(data[i].page);
+            await buildPage(data[i].page, dynamiclink);
         }
 
         return true;
@@ -335,59 +253,37 @@ async function buildApp(): Promise<boolean> {
     }
 }
 
-/*
-            (await fetchComponent("inAlbum")) +
-            `
-            <div class="inAlbumImages" id="${album}Gallery"> </div>
-            `;
-*/
-
-async function createAlbum(album: string): Promise<void> {
-    try {
-        /*
-        const albumDiv: HTMLDivElement = document.createElement("div");
-        albumDiv.setAttribute("id", `album_${album}`);
-        albumDiv.innerHTML +=
-        */
-        const albumDiv: JQuery<Element> = $("<div>")
-            .attr("id", `album_${album}`)
-            .append(await fetchComponent("inAlbum")).append(/*HTML*/ `
-                <div class="inAlbumImages" id="${album}Gallery"> </div>
-            `);
-
-        let _: JQuery<HTMLElement> = $("#app").append(albumDiv);
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-async function buildPage(page: string): Promise<void> {
+async function buildPage(page: string, dynamiclink: string): Promise<void> {
     try {
         switch (page) {
             case "home":
-                const albumData: AlbumData[] = await fetchAlbumData();
-                for (let i: number = 0; i < albumData.length; i++) {
+                const categories: ReadonlyArray<CATEGORY> = (await fetchCategories(
+                    dynamiclink,
+                )) as ReadonlyArray<CATEGORY>;
+
+                for (let i: number = 0; i < categories.length; i++) {
                     const element: string = /*HTML*/ `
                         <div class="imageContainer">
                             <img
-                                src="@dynamiclink:8092/?type=cover&album=${albumData[i].album}"
-                                onclick="window.location.href='#album_${albumData[i].album}'"
+                                src="${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}"
+                                onclick="window.location.href='#album_${categories[i].NAME}'"
                                 class="albumCoverImage"
                                 alt="Image ${i}"
-                                id="${albumData[i].album}AlbumCoverForHome"
+                                id="${categories[i].NAME}AlbumCoverForHome"
                             >
-                            <span id="${albumData[i].album}AlbumCoverForHomeSpan">
-                                ${albumData[i].album}
+                            <span id="${categories[i].NAME}AlbumCoverForHomeSpan">
+                                ${categories[i].NAME}
                             </span>
                         </div>
                     `;
 
-                    let _: JQuery<HTMLElement> = $("#album-gallery").append(element);
+                    $("#album-gallery").append(element);
 
-                    await createAlbum(albumData[i].album);
+                    await createAlbum(categories[i].NAME, dynamiclink);
 
-                    pages.push(`album_${albumData[i].album}`);
+                    pages.push(`album_${categories[i].NAME}`);
                 }
+
                 break;
         }
     } catch (e: unknown) {
@@ -395,218 +291,105 @@ async function buildPage(page: string): Promise<void> {
     }
 }
 
-async function fetchAlbumData(): Promise<AlbumData[]> {
-    const _default: Unpromisify<ReturnType<typeof fetchAlbumData>> = [
-        {
-            album: "newborns",
-            coverImage: "294546948_760020545155998_2532217280930973580_n.jpeg",
-            images: [],
-            display: "Newborns",
-        },
-        {
-            album: "families",
-            coverImage: "119904284_176645870748396_1710356227522994443_n.jpeg",
-            images: [],
-            display: "Families",
-        },
-        {
-            album: "advertisements",
-            coverImage: "326988248_695766632214878_1398532937315296194_n.jpeg",
-            images: [],
-            display: "Advertisements",
-        },
-        {
-            album: "portraits",
-            coverImage: "313259401_838576830633702_7727858395197320125_n.jpeg",
-            images: [],
-            display: "Portraits",
-        },
-        {
-            album: "weddings",
-            coverImage: "275321951_506245004455146_138720927218083306_n.jpeg",
-            images: [],
-            display: "Weddings",
-        },
-        {
-            album: "business",
-            coverImage: "323284989_1161493651165139_5280267032390652084_n.jpeg",
-            images: [],
-            display: "Business",
-        },
-    ];
+async function getHomepageCoverImages(dynamiclink: string): Promise<ReadonlyArray<string>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImages>> = [];
 
     try {
-        const url: string = "@dynamiclink:8094/?data=albumData";
-        const response: Response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        const m_images: string[] = [];
+        const gottenImages: ReadonlyArray<FrontPageCoverImage> = (await (async (
+            _dynamiclink: typeof dynamiclink,
+        ): Promise<ReadonlyArray<FrontPageCoverImage>> => {
+            // fetchWelcomeImageData()
+            const _default2: ReadonlyArray<FrontPageCoverImage> = [
+                {
+                    img: "1.jpeg",
+                    extension: "jpeg",
+                },
+                {
+                    img: "2.jpeg",
+                    extension: "jpeg",
+                },
+                {
+                    img: "3.jpeg",
+                    extension: "jpeg",
+                },
+                {
+                    img: "4.jpeg",
+                    extension: "jpeg",
+                },
+                {
+                    img: "5.jpeg",
+                    extension: "jpeg",
+                },
+            ] as const;
+
+            try {
+                const url: string = `${_dynamiclink}:8094/?data=welcome`;
+                const response: Readonly<Response> = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data: ReadonlyArray<FrontPageCoverImage> =
+                    (await response.json()) as ReadonlyArray<FrontPageCoverImage>;
+
+                return data;
+            } catch (e2: unknown) {
+                console.error("An error occurred while fetching dynamic data:", e2);
+                return _default2;
+            }
+        })(dynamiclink)) as ReadonlyArray<FrontPageCoverImage>;
+
+        for (let i: number = 1; i <= gottenImages?.length; i++) {
+            if (i === 3) {
+                [m_images[0], m_images[1]] = [m_images[1], m_images[0]];
+            }
+            m_images.push(`${dynamiclink}:8092/?type=welcome&img=${i}`);
         }
 
-        const data: AlbumData[] = (await response.json()) as AlbumData[];
-        return data;
+        return m_images;
     } catch (e: unknown) {
-        console.error("An error occurred while fetching dynamic data:", e);
+        console.error(e);
         return _default;
     }
 }
 
-async function buildAlbum(currentPage: string): Promise<void> {
+async function buildNavBar(dynamiclink: string): Promise<void> {
     try {
-        if (!currentPage.startsWith("album_") || builtAlbums.includes(currentPage)) {
+        const navbar_div: HTMLElement | null = document.getElementById("navbar-div");
+        const homepage_navbar_div: HTMLElement | null = document.getElementById("homepage-navbar-div");
+
+        if (navbar_div == null || homepage_navbar_div == null) {
             return;
         }
 
-        const currentAlbum: string = currentPage.replace(/album_/g, "");
-        const albumImages: AlbumData = await getAlbum(currentAlbum);
-        for (let i = 0; i < albumImages.images.length; i++) {
-            let _: JQuery<HTMLElement> = $(`#${currentPage.replace(/album_/g, "")}Gallery`).append(/*HTML*/ `
-                    <img class="albumImage" id="${currentAlbum}Image${i}" src="@dynamiclink:8092/?type=album&img=${i}&album=${currentAlbum}">
-                    &nbsp;
-                    &nbsp;
-                    &nbsp;
-                    &nbsp;
-                `);
-        }
-        builtAlbums.push(currentPage);
-
-        let _: JQuery<HTMLElement> = $(`#${currentPage}`).append(`
-            <br>
-            <br>
-            <br>
-        `);
+        navbar_div.innerHTML += await fetchComponent("navbar", dynamiclink);
+        homepage_navbar_div.innerHTML += await fetchComponent("homepagenavbar", dynamiclink);
     } catch (e: unknown) {
         console.error(e);
     }
 }
 
-async function updateApp(): Promise<void> {
+function updateNavbar(callingFromWindowSizeCheck: boolean = false): void {
     try {
-        navbar(true);
-        const currentPage: string = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
-        for (let i: number = 0; i < pages.length; i++) {
-            if (currentPage === pages[i]) {
-                showDiv(pages[i]);
-            } else {
-                hideDiv(pages[i]);
-            }
+        if (callingFromWindowSizeCheck === false && windowSizeCheck() === true) {
+            return;
         }
 
-        await buildAlbum(currentPage);
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-async function getAlbum(currentAlbum: string): Promise<AlbumData> {
-    const _default: Unpromisify<ReturnType<typeof getAlbum>> = {
-        album: "newborns",
-        coverImage: "294546948_760020545155998_2532217280930973580_n.jpeg",
-        images: [],
-        display: "Newborns",
-    };
-    try {
-        const albumData: AlbumData[] = await fetchAlbumData();
-        for (let i: number = 0; i < albumData.length; i++) {
-            if (albumData[i].album === currentAlbum) {
-                return albumData[i];
-            }
-        }
-
-        return albumData[0];
-    } catch (e: unknown) {
-        console.error(e);
-        return _default;
-    }
-}
-
-function hideDiv(div: string): JQuery<HTMLElement> {
-    return $(`#${div}`).hide();
-}
-
-function showDiv(div: string): JQuery<HTMLElement> {
-    return $(`#${div}`).show();
-}
-
-async function fetchComponent(component: string): Promise<string> {
-    const _default: Unpromisify<ReturnType<typeof fetchComponent>> = "";
-    try {
-        const url: string = `@dynamiclink:8095/?c=${component}`;
-        const response: Response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data: string = await response.text();
-        return data;
-    } catch (e: unknown) {
-        console.error("Error:", e);
-        return _default;
-    }
-}
-
-function toggleCurrentHamburgerNavbar(currentNavbarID: string): void {
-    try {
-        const $navbarDiv: JQuery<HTMLElement> = $(`#${currentNavbarID}`);
-        const isHidden: boolean = $navbarDiv.is(":hidden");
-
-        if (isHidden) {
-            $navbarDiv.css("margin-top", "40px").slideDown("fast");
+        if (getPage() === "home") {
+            hideDiv("navbar-div");
+            showDiv("homepage-navbar-div");
         } else {
-            $navbarDiv.css("margin-top", "0").toggle();
+            hideDiv("homepage-navbar-div");
+            showDiv("navbar-div");
         }
     } catch (e: unknown) {
         console.error(e);
     }
 }
 
-/*
-
-function toggleCurrentHamburgerNavbar(currentNavbarID) {
-    const $navbarDiv = $(`#${currentNavbarID}`);
-    const isHidden = $navbarDiv.is(":hidden");
-
-    if (isHidden) {
-        $navbarDiv.css("margin-top", "40px");
-        // Slide down the navbar with animation and set margin-top
-        $navbarDiv.slideDown("fast", function () {
-            //
-        });
-    } else {
-        $navbarDiv.css("margin-top", "0");
-        // Slide up the navbar with animation and reset margin-top
-        $navbarDiv.slideUp("fast", function () {});
-    }
-}
-
-*/
-
-function hamburgerClick(from: string): void {
-    try {
-        const currentNavbarID: string = `hamburger-navbar-for-${from}`;
-        toggleCurrentHamburgerNavbar(currentNavbarID);
-
-        if (!$(`#${currentNavbarID}`).is(":hidden")) {
-            let _: JQuery<HTMLElement> = $("#homepage-navbar-div").css("margin-top", "300px");
-            if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
-                let _2: JQuery<HTMLElement> = $(`#app`).css("margin-top", "300px");
-            }
-        } else {
-            let _: JQuery<HTMLElement> = $("#homepage-navbar-div").css("margin-top", "100px");
-            if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
-                let _2: JQuery<HTMLElement> = $(`#${getPage()}`).css("margin-top", "100px");
-            }
-        }
-
-        if (getPage() !== "home") {
-            let _: JQuery<HTMLElement> = $("#app").css("margin-top", "100px");
-        }
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-function buildHamburger(div: string): void {
+function buildHamburger(div: string, dynamiclink: string): void {
     try {
         const newNavbar: string = /*HTML*/ `
             <div class="hamburger-button" onclick="hamburgerClick('${div}')" id="inside-${div}">
@@ -640,15 +423,16 @@ function buildHamburger(div: string): void {
             </div>
             <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-${div}">
                 <a href="#home">
-                    <img src="@dynamiclink:8092/?type=logo" class="navbar-logo-phone" />
+                    <img src="${dynamiclink}:8092/?type=logo" class="navbar-logo-phone" />
                 </a>
             </div>
         `;
 
-        let _: JQuery<HTMLElement> = $(`#${div}`).append(newNavbar);
-        let _2: JQuery<HTMLElement> = $(`#inside-hamburger-wrapper-for-${div}`).hide();
+        $(`#${div}`).append(newNavbar);
+        $(`#inside-hamburger-wrapper-for-${div}`).hide();
+
         if (div === "navbar-div-phone") {
-            let _3: JQuery<HTMLElement> = $(`#${div}`).append(/*HTML*/ `
+            $(`#${div}`).append(/*HTML*/ `
                 <br>
                 <br>
                 <br>
@@ -662,37 +446,24 @@ function buildHamburger(div: string): void {
     }
 }
 
-function changeNavbarForSmallDisplays(): void {
-    try {
-        let _: JQuery<HTMLElement> = $("#navbar-div").hide();
-
-        if (getPage() === "home") {
-            hideDiv("navbar-div-phone");
-            showDiv("homepage-navbar-div-phone");
-            hideDiv("homepagenavbar-container");
-            showDiv("homepage-navbar-div");
-            let _2: JQuery<HTMLElement> = $("#homepage-navbar-div").css("height", "200px");
-            let _3: JQuery<HTMLElement> = $("#homepage-navbar-div").css("margin-top", "100px");
-        } else {
-            showDiv("navbar-div-phone");
-            hideDiv("homepage-navbar-div-phone");
-            hideDiv("homepagenavbar-container");
-            hideDiv("homepage-navbar-div");
-            let _2: JQuery<HTMLElement> = $("#app").css("margin-top", "100px");
-        }
-        hideDiv("homepage-navbar-logo-container");
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-async function buildComponent(component: string): Promise<HTMLElement | null> {
+async function buildComponent(component: string, dynamiclink: string): Promise<HTMLElement | null> {
     const _default: Unpromisify<ReturnType<typeof buildComponent>> = null;
+
     try {
-        let componentDiv: HTMLElement | null = document.getElementById(component ? component : "ERROR");
+        /*
+            let componentDiv: HTMLElement | null = document.getElementById(component ? component : "ERROR");
+
+            if (componentDiv !== null) {
+                componentDiv.innerHTML = await fetchComponent(component);
+            }
+
+            return componentDiv as HTMLElement;
+        */
+        let componentDiv: HTMLElement | null = $("#" + (component ? component : "ERROR"))[0];
 
         if (componentDiv !== null) {
-            componentDiv.innerHTML = await fetchComponent(component);
+            const componentHTML = await fetchComponent(component, dynamiclink);
+            $(componentDiv).html(componentHTML);
         }
 
         return componentDiv as HTMLElement;
@@ -702,18 +473,72 @@ async function buildComponent(component: string): Promise<HTMLElement | null> {
     }
 }
 
+// --------------------------------------------------------------------------------------- Event-based functions:
+
+function hashchange(): void {
+    updateApp();
+
+    if (inPhoneMode()) {
+        hideDiv("navbar-div");
+
+        if (getPage() !== "home") {
+            hideDiv("homepage-navbar-div");
+            /*
+                navbar-div-phone", "homepage-navbar-div-phone"
+                hideDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
+                */
+        } else {
+            showDiv("homepage-navbar-div");
+            // showDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
+            $("#app").css("margin-top", "100px");
+        }
+    } else {
+        if (getPage() === "home") {
+            showDiv("homepagenavbar-container");
+        } else {
+            showDiv("navbar-div");
+        }
+
+        $("#app").css("margin-top", "0px");
+    }
+
+    previousPage = getPage();
+}
+
+async function nextHomepageImage(): Promise<void> {
+    try {
+        let images: ReadonlyArray<string> = await getHomepageCoverImages("@dynamiclink");
+        const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
+
+        if (homepage_navbar_div == null) {
+            return;
+        }
+
+        if (iterated === images.length) {
+            iterated = 0;
+            homepage_navbar_div.style.backgroundImage = `url(${images[iterated++]})`;
+        } else {
+            homepage_navbar_div.style.backgroundImage = `url(${images[iterated++]})`;
+        }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
 function windowSizeCheck(): boolean {
     const _default: ReturnType<typeof windowSizeCheck> = false;
+
     try {
         if (window.innerWidth <= 768) {
             changeNavbarForSmallDisplays();
             return true;
         }
 
-        let _: JQuery<HTMLElement> = $("#homepage-navbar-div").css("height", "100%");
-        let _2: JQuery<HTMLElement> = $("#homepage-navbar-div").css("margin-top", "0%");
+        $("#homepage-navbar-div").css("height", "100%");
+        $("#homepage-navbar-div").css("margin-top", "0%");
         hideDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
+
         if (getPage() === "home") {
             showDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
@@ -721,7 +546,8 @@ function windowSizeCheck(): boolean {
         } else {
             showDiv("navbar-div");
         }
-        let _3: JQuery<HTMLElement> = $("#app").css("margin-top", "0px");
+
+        $("#app").css("margin-top", "0px");
 
         return false;
     } catch (e: unknown) {
@@ -730,49 +556,241 @@ function windowSizeCheck(): boolean {
     }
 }
 
-function inPhoneMode(): boolean {
-    if (window.innerWidth <= 768) {
-        return true;
+function toggleCurrentHamburgerNavbar(currentNavbarID: string): void {
+    try {
+        const $navbarDiv: JQuery<HTMLElement> = $(`#${currentNavbarID}`);
+        const isHidden: boolean = $navbarDiv.is(":hidden");
+
+        if (isHidden) {
+            $navbarDiv.css("margin-top", "40px").slideDown("fast");
+        } else {
+            $navbarDiv.css("margin-top", "0").toggle();
+        }
+    } catch (e: unknown) {
+        console.error(e);
     }
-    return false;
 }
 
-function hashchange(): () => void {
-    return (): void => {
-        updateApp();
+function changeNavbarForSmallDisplays(): void {
+    try {
+        $("#navbar-div").hide();
 
-        if (inPhoneMode()) {
-            hideDiv("navbar-div");
-            if (getPage() !== "home") {
-                hideDiv("homepage-navbar-div");
-                /*
-                navbar-div-phone", "homepage-navbar-div-phone"
-                hideDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
-                */
-            } else {
-                showDiv("homepage-navbar-div");
-                // showDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
-                let _: JQuery<HTMLElement> = $("#app").css("margin-top", "100px");
+        if (getPage() === "home") {
+            hideDiv("navbar-div-phone");
+            showDiv("homepage-navbar-div-phone");
+            hideDiv("homepagenavbar-container");
+            showDiv("homepage-navbar-div");
+            $("#homepage-navbar-div").css("height", "200px");
+            $("#homepage-navbar-div").css("margin-top", "100px");
+        } else {
+            showDiv("navbar-div-phone");
+            hideDiv("homepage-navbar-div-phone");
+            hideDiv("homepagenavbar-container");
+            hideDiv("homepage-navbar-div");
+            $("#app").css("margin-top", "100px");
+        }
+        hideDiv("homepage-navbar-logo-container");
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+function hamburgerClick(from: string): void {
+    try {
+        const currentNavbarID: string = `hamburger-navbar-for-${from}`;
+        toggleCurrentHamburgerNavbar(currentNavbarID);
+
+        if (!$(`#${currentNavbarID}`).is(":hidden")) {
+            $("#homepage-navbar-div").css("margin-top", "300px");
+            if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
+                $(`#app`).css("margin-top", "300px");
             }
         } else {
-            if (getPage() === "home") {
-                showDiv("homepagenavbar-container");
-            } else {
-                showDiv("navbar-div");
+            $("#homepage-navbar-div").css("margin-top", "100px");
+            if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
+                $(`#${getPage()}`).css("margin-top", "100px");
             }
-            let _: JQuery<HTMLElement> = $("#app").css("margin-top", "0px");
         }
 
-        previousPage = getPage();
-    };
+        if (getPage() !== "home") {
+            $("#app").css("margin-top", "100px");
+        }
+    } catch (e: unknown) {
+        console.error(e);
+    }
 }
 
-window.addEventListener("hashchange", hashchange());
+// --------------------------------------------------------------------------------------- Helper functions:
 
-setInterval(function () {
+function inPhoneMode(): boolean {
+    const _default: ReturnType<typeof inPhoneMode> = false;
+    try {
+        if (window.innerWidth <= 768) {
+            return true;
+        }
+
+        return false;
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
+function hideDiv(div: string): JQuery<HTMLElement> {
+    return $(`#${div}`).hide();
+}
+
+function showDiv(div: string): JQuery<HTMLElement> {
+    return $(`#${div}`).show();
+}
+async function updateApp(): Promise<void> {
+    try {
+        updateNavbar(true);
+
+        const currentPage: string = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
+
+        for (let i: number = 0; i < pages.length; i++) {
+            if (currentPage === pages[i]) {
+                showDiv(pages[i]);
+            } else {
+                hideDiv(pages[i]);
+            }
+        }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+function getLang(lang: string): string {
+    const _default: ReturnType<typeof getLang> = "en";
+
+    try {
+        return lang === "ru" ? lang : lang === "ge" ? lang : "en";
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
+function changeLang(lang: string): boolean {
+    const _default: ReturnType<typeof changeLang> = false;
+
+    try {
+        return true;
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
+// --------------------------------------------------------------------------------------- Data fetching functions:
+
+async function fetchComponent(component: string, dynamiclink: string): Promise<string> {
+    const _default: Unpromisify<ReturnType<typeof fetchComponent>> = "";
+
+    try {
+        const url: string = `${dynamiclink}:8095/?c=${component}`;
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data: string = await response.text();
+        return data;
+    } catch (e: unknown) {
+        console.error("Error:", e);
+        return _default;
+    }
+}
+
+async function fetchCategories(dynamiclink: string): Promise<ReadonlyArray<CATEGORY>> {
+    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [
+        {
+            UID: 1,
+            NAME: "newborns",
+            COVER_STILL_UID: 48,
+            DESCRIPTION: "",
+        },
+        {
+            UID: 2,
+            NAME: "families",
+            COVER_STILL_UID: 2,
+            DESCRIPTION: "",
+        },
+        {
+            UID: 3,
+            NAME: "advertisements",
+            COVER_STILL_UID: 83,
+            DESCRIPTION: "",
+        },
+        {
+            UID: 4,
+            NAME: "portraits",
+            COVER_STILL_UID: 76,
+            DESCRIPTION: "",
+        },
+        {
+            UID: 5,
+            NAME: "weddings",
+            COVER_STILL_UID: 22,
+            DESCRIPTION: "",
+        },
+        {
+            UID: 6,
+            NAME: "business",
+            COVER_STILL_UID: 82,
+            DESCRIPTION: "",
+        },
+    ] as const;
+
+    try {
+        const url: string = `${dynamiclink}:8094/?data=categories`;
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: ReadonlyArray<CATEGORY> = (await response.json()) as ReadonlyArray<CATEGORY>;
+        return data;
+    } catch (e: unknown) {
+        console.error("An error occurred while fetching dynamic data:", e);
+        return _default;
+    }
+}
+
+// --------------------------------------------------------------------------------------- Events:
+
+window.addEventListener("hashchange", hashchange);
+
+setInterval(function (): void {
     if (getPage() === "home") {
         nextHomepageImage();
     }
 }, 10000);
 
 window.addEventListener("resize", windowSizeCheck);
+
+// --------------------------------------------------------------------------------------- ARCHIVE:
+
+/*
+
+function toggleCurrentHamburgerNavbar(currentNavbarID) {
+    const $navbarDiv = $(`#${currentNavbarID}`);
+    const isHidden = $navbarDiv.is(":hidden");
+
+    if (isHidden) {
+        $navbarDiv.css("margin-top", "40px");
+        // Slide down the navbar with animation and set margin-top
+        $navbarDiv.slideDown("fast", function () {
+            //
+        });
+    } else {
+        $navbarDiv.css("margin-top", "0");
+        // Slide up the navbar with animation and reset margin-top
+        $navbarDiv.slideUp("fast", function () {});
+    }
+}
+
+*/

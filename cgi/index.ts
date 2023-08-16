@@ -30,6 +30,7 @@ app.get(
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
             const fpath: fs.PathLike = findPath(["public"], "index.html");
+
             return fs.existsSync(fpath) ? w(replaceData(String(fs.readFileSync(fpath)), url_info)) : w("");
         } catch (e: unknown) {
             print(e);

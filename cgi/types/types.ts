@@ -45,8 +45,9 @@ export const undefinedOptions = [[], {}, "", null, undefined];
 
 export type CATEGORY = {
     UID: number;
-    SESSION_UID: number;
     NAME: string;
+    COVER_STILL_UID: number;
+    DESCRIPTION: string;
 };
 
 export type CUSTOMER = {
@@ -60,6 +61,8 @@ export type SESSION = {
     CUSTOMER_UID: number;
     CATEGORY_UID: number;
     SESSION_DATE: string;
+    COVER_STILL_UID: number;
+    DESCRIPTION: string;
 };
 
 export type STILL = {
@@ -67,3 +70,9 @@ export type STILL = {
     SESSION_UID: number;
     NAME: string;
 };
+
+export type Unreadonly<T> = {
+    -readonly [K in keyof T]: T[K];
+};
+
+export type Unpromisify<T> = T extends Promise<infer U> ? U : T;
