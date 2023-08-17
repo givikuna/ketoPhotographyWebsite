@@ -6,7 +6,7 @@ import { print, len, lower } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { CATEGORY, SESSION, STILL } from "./types/types";
+import { CATEGORY, SESSION, STILL, Immutable2DArray } from "./types/types";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
@@ -38,9 +38,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
                 const categoryDataType: string = typeof categoryData;
-                const categories: Readonly<CATEGORY[]> = JSON.parse(
+                const categories: Readonly<Readonly<CATEGORY>[]> = JSON.parse(
                     getDataToReturn("categories", {}),
-                ) as CATEGORY[];
+                ) as Readonly<Readonly<CATEGORY>[]>;
 
                 if (categoryDataType === "string") {
                     for (let i: number = 0; i < len(categoryData as string); i++) {
@@ -58,9 +58,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             })(url_info["category"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("sessions", {})) as Readonly<SESSION[]>).filter(
+                (JSON.parse(getDataToReturn("sessions", {})) as Immutable2DArray<SESSION>).filter(
                     (session) => session.CATEGORY_UID === category_UID,
-                ),
+                ) as Immutable2DArray<SESSION>,
             );
         }
         if (
@@ -69,9 +69,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             typeof url_info["session"] === "number"
         ) {
             const session_UID: number = ((session_uid: number): number => {
-                const sessions: Readonly<SESSION[]> = JSON.parse(
+                const sessions: Immutable2DArray<SESSION> = JSON.parse(
                     getDataToReturn("sessions", {}),
-                ) as SESSION[];
+                ) as Immutable2DArray<SESSION>;
 
                 for (let i: number = 0; i < sessions.length; i++) {
                     if (session_uid === sessions[i].UID) {
@@ -83,7 +83,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             })(url_info["session"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("stills", {})) as Readonly<STILL[]>).filter(
+                (JSON.parse(getDataToReturn("stills", {})) as Immutable2DArray<STILL>).filter(
                     (still) => still.SESSION_UID === session_UID,
                 ),
             );
@@ -98,6 +98,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
 function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getDataToReturn> = "";
+
     try {
         if (givenData in ["categorySessions", "sessionImages"]) {
             return getSpecificData(givenData, url_info);
@@ -158,6 +159,7 @@ app.get(
             res.write(data);
             return res.end();
         };
+
         try {
             if (!req.url) {
                 return w("");

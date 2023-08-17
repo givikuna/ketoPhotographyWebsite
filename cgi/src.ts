@@ -15,6 +15,7 @@ const port: number = getPort(filename); // 8093
 
 function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getSourceFileExtension> = "js";
+
     try {
         const m_type: string = url_info["type"] as string;
         return m_type === "style" || m_type === "css" ? "css" : "js";
@@ -24,14 +25,15 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
     }
 }
 
-function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: boolean): fs.PathLike {
+function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: boolean): Readonly<fs.PathLike> {
     const _default: ReturnType<typeof getPath> = "../public/components/home.html";
+
     try {
         if (requestsLibrary) {
             return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         }
 
-        return findPath(["public"], `app.${getSourceFileExtension(url_info)}`);
+        return findPath(["public"], `app.${getSourceFileExtension(url_info)}`) as Readonly<fs.PathLike>;
     } catch (e: unknown) {
         console.log(e);
         return _default;
@@ -47,6 +49,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
             res.write(data);
             return res.end();
         };
+
         try {
             if (!req.url) {
                 return w("");

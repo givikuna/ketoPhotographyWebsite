@@ -81,3 +81,9 @@ buildCompilerFile.js
 imageCleaner.js
 scrambleImages.js
 public/dist
+dist
+cgi/dist
+cgi/constants/dist
+cgi/extensions/dist
+cgi/modules/dist
+cgi/types/dist

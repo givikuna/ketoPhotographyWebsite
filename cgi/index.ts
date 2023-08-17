@@ -23,6 +23,7 @@ app.get(
             res.write(data);
             return res.end();
         };
+
         try {
             if (!req.url) {
                 return w("");

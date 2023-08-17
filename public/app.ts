@@ -1,3 +1,5 @@
+import { Immutable2DArray, Unpromisify } from "../cgi/types/types";
+
 type FrontPageCoverImage = {
     img: string;
     extension: string;
@@ -7,11 +9,9 @@ type PageData = {
     type: string;
     page: string;
     display: string;
-    subpages: Array<PageData | string> | ReadonlyArray<PageData | string>;
-    components: Array<string> | ReadonlyArray<string>;
+    subpages: Array<PageData | string> | Immutable2DArray<PageData | string>;
+    components: Array<string> | Immutable2DArray<string>;
 };
-
-type Unpromisify<T> = T extends Promise<infer U> ? U : T;
 
 type CATEGORY = {
     UID: number;
@@ -57,7 +57,7 @@ async function main(
             })
             .then(updateApp)
             .then((): void => {
-                const navbars: string[] = ["navbar-div-phone", "homepage-navbar-div-phone"];
+                const navbars: Immutable2DArray<string> = ["navbar-div-phone", "homepage-navbar-div-phone"];
 
                 for (let i: number = 0; i < navbars.length; i++) {
                     let _: void = buildHamburger(navbars[i], dynamiclink);
@@ -133,7 +133,7 @@ function getPage(): string {
     }
 }
 
-async function getPages(dynamiclink: string): Promise<ReadonlyArray<PageData>> {
+async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>> {
     const _default: Unpromisify<ReturnType<typeof getPages>> = [
         {
             type: "page",
@@ -187,7 +187,7 @@ async function getPages(dynamiclink: string): Promise<ReadonlyArray<PageData>> {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: ReadonlyArray<PageData> = (await response.json()) as ReadonlyArray<PageData>;
+        const data: Immutable2DArray<PageData> = (await response.json()) as Immutable2DArray<PageData>;
         return data;
     } catch (error: unknown) {
         console.error("An error occurred while fetching dynamic data:", error);
@@ -218,7 +218,7 @@ async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
 
     try {
-        const data: ReadonlyArray<PageData> = (await getPages(dynamiclink)) as ReadonlyArray<PageData>;
+        const data: Immutable2DArray<PageData> = (await getPages(dynamiclink)) as Immutable2DArray<PageData>;
 
         for (let i: number = 0; i < data.length; i++) {
             const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
@@ -257,9 +257,9 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
     try {
         switch (page) {
             case "home":
-                const categories: ReadonlyArray<CATEGORY> = (await fetchCategories(
+                const categories: Immutable2DArray<CATEGORY> = (await fetchCategories(
                     dynamiclink,
-                )) as ReadonlyArray<CATEGORY>;
+                )) as Immutable2DArray<CATEGORY>;
 
                 for (let i: number = 0; i < categories.length; i++) {
                     const element: string = /*HTML*/ `
@@ -291,16 +291,16 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
     }
 }
 
-async function getHomepageCoverImages(dynamiclink: string): Promise<ReadonlyArray<string>> {
+async function getHomepageCoverImages(dynamiclink: string): Promise<Immutable2DArray<string>> {
     const _default: Unpromisify<ReturnType<typeof getHomepageCoverImages>> = [];
 
     try {
         const m_images: string[] = [];
-        const gottenImages: ReadonlyArray<FrontPageCoverImage> = (await (async (
+        const gottenImages: Immutable2DArray<FrontPageCoverImage> = (await (async (
             _dynamiclink: typeof dynamiclink,
-        ): Promise<ReadonlyArray<FrontPageCoverImage>> => {
+        ): Promise<Immutable2DArray<FrontPageCoverImage>> => {
             // fetchWelcomeImageData()
-            const _default2: ReadonlyArray<FrontPageCoverImage> = [
+            const _default2: Immutable2DArray<FrontPageCoverImage> = [
                 {
                     img: "1.jpeg",
                     extension: "jpeg",
@@ -331,15 +331,15 @@ async function getHomepageCoverImages(dynamiclink: string): Promise<ReadonlyArra
                     throw new Error(`Error: ${response.status} ${response.statusText}`);
                 }
 
-                const data: ReadonlyArray<FrontPageCoverImage> =
-                    (await response.json()) as ReadonlyArray<FrontPageCoverImage>;
+                const data: Immutable2DArray<FrontPageCoverImage> =
+                    (await response.json()) as Immutable2DArray<FrontPageCoverImage>;
 
                 return data;
             } catch (e2: unknown) {
                 console.error("An error occurred while fetching dynamic data:", e2);
                 return _default2;
             }
-        })(dynamiclink)) as ReadonlyArray<FrontPageCoverImage>;
+        })(dynamiclink)) as Immutable2DArray<FrontPageCoverImage>;
 
         for (let i: number = 1; i <= gottenImages?.length; i++) {
             if (i === 3) {
@@ -507,7 +507,7 @@ function hashchange(): void {
 
 async function nextHomepageImage(): Promise<void> {
     try {
-        let images: ReadonlyArray<string> = await getHomepageCoverImages("@dynamiclink");
+        const images: Immutable2DArray<string> = await getHomepageCoverImages("@dynamiclink");
         const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
 
         if (homepage_navbar_div == null) {
@@ -704,7 +704,7 @@ async function fetchComponent(component: string, dynamiclink: string): Promise<s
     }
 }
 
-async function fetchCategories(dynamiclink: string): Promise<ReadonlyArray<CATEGORY>> {
+async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CATEGORY>> {
     const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [
         {
             UID: 1,
@@ -752,7 +752,7 @@ async function fetchCategories(dynamiclink: string): Promise<ReadonlyArray<CATEG
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: ReadonlyArray<CATEGORY> = (await response.json()) as ReadonlyArray<CATEGORY>;
+        const data: Immutable2DArray<CATEGORY> = (await response.json()) as Immutable2DArray<CATEGORY>;
         return data;
     } catch (e: unknown) {
         console.error("An error occurred while fetching dynamic data:", e);

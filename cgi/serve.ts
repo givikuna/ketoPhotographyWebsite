@@ -18,6 +18,7 @@ const port: number = getPort(filename); // 8095
 
 function getExt(url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getExt> = "html";
+
     try {
         return "t" in url_info ? (url_info["t"] as string) : _default;
     } catch (e: unknown) {
@@ -34,6 +35,7 @@ app.get(
             res.write(data);
             return res.end();
         };
+
         try {
             if (!req.url) {
                 return w("");

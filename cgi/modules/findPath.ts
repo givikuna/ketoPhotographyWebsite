@@ -1,9 +1,10 @@
 import * as path from "path";
 
 import { existsSync, PathLike } from "fs";
+import { Immutable2DArray } from "../types/types";
 
 export function findPath(
-    folders: Readonly<string[]>,
+    folders: Immutable2DArray<string>,
     req: string,
     reqFrom: string = "index",
 ): string | PathLike {

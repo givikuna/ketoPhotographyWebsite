@@ -76,3 +76,9 @@ export type Unreadonly<T> = {
 };
 
 export type Unpromisify<T> = T extends Promise<infer U> ? U : T;
+
+export type Immutable2DArray<T> = Readonly<Readonly<T>[]>;
+
+export type Immutable3DArray<T> = Readonly<Readonly<Readonly<T>[]>[]>;
+
+export type ImmutableArray<T> = ReadonlyArray<T | ImmutableArray<T>>;
