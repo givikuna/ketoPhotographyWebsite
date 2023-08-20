@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "python3 compile.py",
     "build": "python3 build.py",
-    "start": "tsc ./public/app.ts && pm2 start pm2.config.js",
+    "start": "npm run compile-ui && pm2 start pm2.config.js",
+    "compile-ui": "tsc ./public/app.ts",
     "stop": "pm2 stop all",
     "list": "pm2 list",
     "save": "pm2 save",
@@ -16,7 +17,9 @@
     "collect-images": "ts-node imageCleaner && ts-node imageCollector",
     "collect-compiler-information": "ts-node buildCompilerFile.ts",
     "scramble-images": "ts-node scrambleImages.ts",
-    "deploy": "sudo chmod +x ./deploy.sh && ./deploy.sh"
+    "deploy": "sudo chmod +x ./deploy.sh && ./deploy.sh",
+    "run-site": "npm run compile && npm run start",
+    "build-compiler-file": "ts-node buildCompilerFile"
   },
   "repository": {
     "type": "git",

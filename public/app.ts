@@ -1,4 +1,4 @@
-import { Immutable2DArray, Unpromisify } from "../cgi/types/types";
+import { Immutable2DArray, Unpromisify, CATEGORY } from "../cgi/types/types";
 
 type FrontPageCoverImage = {
     img: string;
@@ -9,19 +9,12 @@ type PageData = {
     type: string;
     page: string;
     display: string;
-    subpages: Array<PageData | string> | Immutable2DArray<PageData | string>;
-    components: Array<string> | Immutable2DArray<string>;
+    subpages: (PageData[] | Immutable2DArray<PageData>) | (string[] | Immutable2DArray<string>);
+    components: string[] | Immutable2DArray<string>;
 };
 
-type CATEGORY = {
-    UID: number;
-    NAME: string;
-    COVER_STILL_UID: number;
-    DESCRIPTION: string;
-};
-
-const pages: Array<string> = [];
-const builtAlbums: Array<string> = [];
+const pages: string[] = [];
+const builtAlbums: string[] = [];
 let iterated: number = 0;
 let previousPage: string = "";
 
@@ -50,10 +43,8 @@ async function main(
             .then((): void => {
                 updateNavbar();
                 // keep this like this
-                // it'll throw an error if you pass it in as as a variable directly
-                // i'm not sure why
-                // just trust me
-                // me to future me
+                // it'll throw an error if you pass it in as as a variable directly because parameters
+                // - me to future me
             })
             .then(updateApp)
             .then((): void => {
