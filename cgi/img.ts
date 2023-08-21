@@ -3,8 +3,6 @@ import * as url from "url";
 import * as fs from "fs";
 // import * as subProcess from "child_process";
 
-import { print } from "lsse";
-
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
 import {
@@ -58,7 +56,7 @@ function getIcons(): Immutable2DArray<SocialMediaIcon> | Readonly<unknown> {
     try {
         return require("../public/assets/icons/icons.json") as Immutable2DArray<SocialMediaIcon>;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -78,7 +76,7 @@ function getIconExtension(icon: string): string {
         }
         return _default;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -96,7 +94,7 @@ function getWelcomeImageExtension(img: string): ImageExtension {
 
         return _default;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -121,7 +119,7 @@ function getWelcomeImageData(): Immutable2DArray<WelcomeImage> {
 
         return images as Immutable2DArray<WelcomeImage>;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -137,7 +135,7 @@ function readAlbumData(): Immutable2DArray<Album> | Readonly<unknown> {
             }),
         ) as Immutable2DArray<Album>;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -186,7 +184,7 @@ function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
 
         return "";
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -198,7 +196,7 @@ function wantsIcon(url_info: Readonly<ParsedUrlQuery>): boolean {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return type_ === "icons" && "img" in url_info;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -210,7 +208,7 @@ function wantsAlbumCover(url_info: Readonly<ParsedUrlQuery>): boolean {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return type_ === "cover" && "album" in url_info && typeof url_info["album"] === "string";
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -222,19 +220,21 @@ function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return type_ === "album" && "img" in url_info && typeof url_info["img"] === "string";
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
 
-function wantsWelcomeImage(url_info: Readonly<ParsedUrlQuery>): boolean {
-    const _default: ReturnType<typeof wantsWelcomeImage> = false;
+function wantsFrontPageCoverImage(url_info: Readonly<ParsedUrlQuery>): boolean {
+    const _default: ReturnType<typeof wantsFrontPageCoverImage> = false;
 
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
-        return type_ === "welcome" && "img" in url_info && isNumeric(url_info["img"] as string);
+        return (
+            type_ === "frontPageCoverImageData" && "img" in url_info && isNumeric(url_info["img"] as string)
+        );
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -245,7 +245,7 @@ function wantsLogo(url_info: Readonly<ParsedUrlQuery>): boolean {
     try {
         return "type" in url_info && typeof url_info["type"] === "string" && url_info["type"] === "logo";
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -263,25 +263,29 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
                 `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`,
             );
         }
-        if (wantsWelcomeImage(url_info)) {
+
+        if (wantsFrontPageCoverImage(url_info)) {
             return findPath(
                 ["public", "assets", type_],
                 `${url_info["img"]}.${getWelcomeImageExtension(url_info["img"] as string).toString()}`,
             );
         }
+
         if (wantsAlbumImage(url_info)) {
             return findPath(["img", "img"], url_info["img"] as string); // findPath(["img"]);
         }
+
         if (wantsAlbumCover(url_info)) {
             return findPath(["img", "img"], getAlbumCoverImage(url_info));
         }
+
         if (wantsLogo(url_info)) {
             return findPath(["public", "assets", "logo"], "logo.png");
         }
 
         return _default;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -323,12 +327,12 @@ app.get(
                 ? w(fs.readFileSync(fpath))
                 : w("");
         } catch (e: unknown) {
-            print(e);
+            console.error(e);
             return w("");
         }
     },
 );
 
 app.listen(port, (): void => {
-    print(`Server is running on http://localhost:${port}/`);
+    console.log(`Server is running on http://localhost:${port}/`);
 });

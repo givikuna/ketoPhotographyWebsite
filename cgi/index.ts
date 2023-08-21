@@ -2,8 +2,6 @@ import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
 
-import { print } from "lsse";
-
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
 
@@ -34,10 +32,10 @@ app.get(
 
             return fs.existsSync(fpath) ? w(replaceData(String(fs.readFileSync(fpath)), url_info)) : w("");
         } catch (e: unknown) {
-            print(e);
+            console.error(e);
             return w("");
         }
     },
 ).listen(port, (): void => {
-    print(`Server is running on http://localhost:${port}/`);
+    console.log(`Server is running on http://localhost:${port}/`);
 });

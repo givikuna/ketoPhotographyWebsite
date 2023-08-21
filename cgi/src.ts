@@ -1,9 +1,7 @@
 import * as url from "url";
 import * as fs from "fs";
 import * as http from "http";
-
-import { print, str } from "lsse";
-
+import * as lsse from "lsse";
 import { ParsedUrlQuery } from "querystring";
 
 import { findPath } from "./modules/findPath";
@@ -20,7 +18,7 @@ function getSourceFileExtension(url_info: Readonly<ParsedUrlQuery>): string {
         const m_type: string = url_info["type"] as string;
         return m_type === "style" || m_type === "css" ? "css" : "js";
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -35,7 +33,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: boolean): 
 
         return findPath(["public"], `app.${getSourceFileExtension(url_info)}`) as Readonly<fs.PathLike>;
     } catch (e: unknown) {
-        console.log(e);
+        console.error(e);
         return _default;
     }
 }
@@ -62,16 +60,16 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
 
             return w(
                 fs.existsSync(fpath)
-                    ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, str(getDynLink())))
+                    ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, lsse.str(getDynLink())))
                     : "",
             );
         } catch (e: unknown) {
-            print(e);
+            console.error(e);
             return w("");
         }
     },
 );
 
 server.listen(port, (): void => {
-    print(`Server is running on http://localhost:${port}/`);
+    console.log(`Server is running on http://localhost:${port}/`);
 });

@@ -1,15 +1,13 @@
+import * as fs from "fs";
 import * as path from "path";
 
-import { existsSync, PathLike } from "fs";
-import { Immutable2DArray } from "../types/types";
-
 export function findPath(
-    folders: Immutable2DArray<string>,
-    req: string,
+    folders: ReadonlyArray<string>,
+    requestedFile: string,
     reqFrom: string = "index",
-): string | PathLike {
+): string | fs.PathLike {
     const cFunc: string = "findPath";
-    const _default: ReturnType<typeof findPath> = "";
+    const def: string = "";
     try {
         let fPath: string = "";
         let foundDir: boolean = false;
@@ -17,7 +15,7 @@ export function findPath(
         let i: number = 0;
         while (i < folders.length) {
             let folder: string = fPath + folders[i];
-            if (existsSync(folder)) {
+            if (fs.existsSync(folder)) {
                 if (i === 0 && !foundDir && count === 0) {
                     foundDir = true;
                     fPath = "./";
@@ -28,19 +26,23 @@ export function findPath(
             }
             i = -1;
             fPath += "../";
-            if (count > 7) break;
+            if (count > 7) {
+                break;
+            }
             count++;
             i++;
         }
-        const p: string | PathLike = path.join(fPath, req);
-        if (existsSync(p)) return p;
-        return _default;
+        let p: string | fs.PathLike = path.join(fPath, requestedFile);
+        if (fs.existsSync(p)) {
+            return p;
+        }
+        return def;
     } catch (e: unknown) {
-        return logErr(cFunc, e, _default, reqFrom);
+        return logErr(cFunc, e, def, reqFrom);
     }
 }
 
-export function logErr(cFunc: string, e: unknown, default_: any = "", filename: string): any {
-    console.log(`${filename} ${cFunc}() ERROR: ${e}`);
-    return default_;
+export function logErr(cFunc: string, e: any, def: any = "", filename: string): any {
+    console.error(`${filename} ${cFunc}() ERROR: ${e}`);
+    return def;
 }

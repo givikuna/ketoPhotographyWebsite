@@ -1,15 +1,15 @@
 import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
-
-import { print, len, lower } from "lsse";
+import * as lsse from "lsse";
+import * as http from "http";
 
 import { ParsedUrlQuery } from "querystring";
-import { IncomingMessage, ServerResponse } from "http";
 import { CATEGORY, SESSION, STILL, Immutable2DArray } from "./types/types";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
+import { isJSON } from "./extensions/syntax";
 
 const app: express.Application = express();
 
@@ -21,16 +21,30 @@ type RequestOption =
     | "sessionImages"
     | "languages"
     | "pages"
-    | "welcome"
     | "albumData"
     | "categories"
     | "stills"
-    | "sessions";
+    | "sessions"
+    | "frontPageCoverImageData";
+
+function getStills(): Immutable2DArray<STILL> {
+    return JSON.parse(getDataToReturn("stills", {} as ParsedUrlQuery)) as Immutable2DArray<STILL>;
+}
+
+function getCategories(): Immutable2DArray<CATEGORY> {
+    return JSON.parse(getDataToReturn("categories", {} as ParsedUrlQuery)) as Immutable2DArray<CATEGORY>;
+}
+
+function getSessions(): Immutable2DArray<SESSION> {
+    return JSON.parse(getDataToReturn("sessions", {} as ParsedUrlQuery)) as Immutable2DArray<SESSION>;
+}
 
 function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getSpecificData> = "";
+
     try {
         let write: string = "";
+
         if (
             givenData === "categorySessions" &&
             "category" in url_info &&
@@ -38,69 +52,86 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
                 const categoryDataType: string = typeof categoryData;
-                const categories: Readonly<Readonly<CATEGORY>[]> = JSON.parse(
-                    getDataToReturn("categories", {}),
-                ) as Readonly<Readonly<CATEGORY>[]>;
+                const categories: Immutable2DArray<CATEGORY> = getCategories();
 
                 if (categoryDataType === "string") {
-                    for (let i: number = 0; i < len(categoryData as string); i++) {
-                        if (categoryData === categories[i].NAME) {
-                            return categories[i].UID;
-                        }
+                    const assumedCategory: undefined | Readonly<CATEGORY> = categories.find((category) =>
+                        lsse.equals(category.NAME, categoryData),
+                    );
+
+                    if (
+                        assumedCategory &&
+                        !lsse.equalsAny(assumedCategory, [null, undefined, "", [], {}]) &&
+                        typeof assumedCategory !== "undefined" &&
+                        "UID" in assumedCategory
+                    ) {
+                        return assumedCategory.UID;
                     }
                 }
 
                 if (categoryDataType === "number") {
-                    return categoryData as number;
+                    return lsse.int(categoryData);
                 }
 
                 return 0;
             })(url_info["category"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("sessions", {})) as Immutable2DArray<SESSION>).filter(
-                    (session) => session.CATEGORY_UID === category_UID,
-                ) as Immutable2DArray<SESSION>,
+                getSessions().filter((session) =>
+                    lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID)),
+                ),
+                null,
+                4,
             );
         }
+
         if (
             givenData === "sessionImages" &&
             "session" in url_info &&
-            typeof url_info["session"] === "number"
+            (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")
         ) {
-            const session_UID: number = ((session_uid: number): number => {
-                const sessions: Immutable2DArray<SESSION> = JSON.parse(
-                    getDataToReturn("sessions", {}),
-                ) as Immutable2DArray<SESSION>;
+            const session_UID: number = ((session_uid: number | string): number => {
+                const sessionMatch: Readonly<SESSION> | undefined = getSessions().find((session) =>
+                    lsse.equals(lsse.str(session.UID), lsse.str(session_uid)),
+                );
 
-                for (let i: number = 0; i < sessions.length; i++) {
-                    if (session_uid === sessions[i].UID) {
-                        return session_uid;
-                    }
-                }
-
-                return 0;
+                return typeof sessionMatch &&
+                    sessionMatch !== undefined &&
+                    sessionMatch !== null &&
+                    "UID" in sessionMatch
+                    ? lsse.int(sessionMatch.UID)
+                    : 0;
             })(url_info["session"]);
 
             return JSON.stringify(
-                (JSON.parse(getDataToReturn("stills", {})) as Immutable2DArray<STILL>).filter(
-                    (still) => still.SESSION_UID === session_UID,
+                getStills().filter((still) =>
+                    lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID)),
                 ),
+                null,
+                4,
+            );
+        }
+
+        if (givenData === "frontPageCoverImageData") {
+            return JSON.stringify(
+                getStills().filter((still) => still.IS_FRONT_COVER_IMAGE),
+                null,
+                4,
             );
         }
 
         return write;
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }
 
-function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
-    const _default: ReturnType<typeof getDataToReturn> = "";
+function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery> = {}): string {
+    const _default: ReturnType<typeof getDataToReturn> = "[]";
 
     try {
-        if (givenData in ["categorySessions", "sessionImages"]) {
+        if ((givenData as string) in ["categorySessions", "sessionImages", "frontPageCoverImageData"]) {
             return getSpecificData(givenData, url_info);
         }
 
@@ -108,14 +139,9 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         let pathArray: string[] = [];
         let dataFile: string = "";
 
-        switch (lower(givenData)) {
+        switch (lsse.lower(givenData)) {
             case "languages":
-            case "pages":
-                break;
-            case "welcome":
-                pathArray = ["public", "assets", `${url_info["data"]}`];
-                dataFile = "info.json";
-                break;
+                throw new Error("languages can't be requested just yet");
             case "albumData":
                 pathArray = ["img"];
                 dataFile = "info.json";
@@ -132,30 +158,42 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                 pathArray = ["img"];
                 dataFile = "stills.json";
                 break;
+            case "pages":
+                pathArray = ["public", "data"];
+                dataFile = "pages.json";
+                break;
             default:
                 write = "";
                 throw new Error("unknown request");
         }
 
-        write = String(
-            fs.readFileSync(findPath(pathArray, dataFile), {
-                encoding: "utf8",
-                flag: "r",
-            }),
-        );
+        const dataAsString: string = fs.readFileSync(findPath(pathArray, dataFile), {
+            encoding: "utf8",
+            flag: "r",
+        });
+
+        if (isJSON(dataAsString)) {
+            write = JSON.stringify(dataAsString, null, 4);
+        } else {
+            write = lsse.str(dataAsString);
+        }
 
         return write;
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }
 
 app.get(
     "/",
-    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
+    (
+        req: http.IncomingMessage,
+        res: http.ServerResponse<http.IncomingMessage>,
+    ): http.ServerResponse<http.IncomingMessage> => {
         res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
-        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
+
+        const w: Function = (data: Readonly<unknown> = ""): http.ServerResponse<http.IncomingMessage> => {
             res.write(data);
             return res.end();
         };
@@ -172,12 +210,12 @@ app.get(
 
             return w(getDataToReturn(url_info["data"] as RequestOption, url_info));
         } catch (e: unknown) {
-            print(e);
+            console.error(e);
             return w("");
         }
     },
 );
 
 app.listen(port, (): void => {
-    print(`Server is running on http://localhost:${port}/`);
+    console.log(`Server is running on http://localhost:${port}/`);
 });

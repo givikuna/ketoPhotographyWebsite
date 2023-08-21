@@ -1,4 +1,17 @@
-import { Immutable2DArray, Unpromisify, CATEGORY } from "../cgi/types/types";
+type Immutable2DArray<T> = Readonly<Readonly<T>[]>;
+
+type Unreadonly<T> = {
+    -readonly [K in keyof T]: T[K];
+};
+
+type Unpromisify<T> = T extends Promise<infer U> ? U : T;
+
+type CATEGORY = {
+    UID: number;
+    NAME: string;
+    COVER_STILL_UID: number;
+    DESCRIPTION: string;
+};
 
 type FrontPageCoverImage = {
     img: string;
@@ -72,119 +85,7 @@ async function main(
     }
 }
 
-function makeFooter(dynamiclink: string): void {
-    try {
-        $("#footer-div").show().append(/*HTML*/ `
-            <footer>
-                <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.youtube.com"><img src="@${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
-                        class="SocialMediaIcon"></a>
-
-                <br>
-                <br>
-
-                <div>
-                    <p>
-                        <a href="#contact" class="contact-link">
-                            Contact Me
-                        </a>
-                    </p>
-                    <p>
-                    <a href="#home" class="contact-link">
-                        Home
-                    </a>
-                </p>
-                </div>
-            </footer>
-
-            <br>
-            <br>
-        `);
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-function getPage(): string {
-    const _default: ReturnType<typeof getPage> = "home";
-
-    try {
-        const page: string = window.location.hash.slice(1);
-        return page !== "" || pages.includes(page) ? page : "home";
-    } catch (e: unknown) {
-        console.error(e);
-        return _default;
-    }
-}
-
-async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>> {
-    const _default: Unpromisify<ReturnType<typeof getPages>> = [
-        {
-            type: "page",
-            page: "home",
-            display: "Home",
-            subpages: [],
-            components: [],
-        },
-        {
-            type: "page",
-            page: "contact",
-            display: "Contact",
-            subpages: [],
-            components: [],
-        },
-        {
-            type: "page",
-            page: "pricing",
-            display: "Pricing",
-            subpages: [],
-            components: [],
-        },
-        {
-            type: "page",
-            page: "about",
-            display: "About",
-            subpages: [],
-            components: [],
-        },
-        {
-            type: "page",
-            page: "blog",
-            display: "Blog",
-            subpages: [],
-            components: [],
-        },
-        {
-            type: "page",
-            page: "albums",
-            display: "Albums",
-            subpages: [],
-            components: [],
-        },
-    ] as const;
-
-    try {
-        const url = `${dynamiclink}:8094/?data=pages`;
-        const response: Readonly<Response> = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: Immutable2DArray<PageData> = (await response.json()) as Immutable2DArray<PageData>;
-        return data;
-    } catch (error: unknown) {
-        console.error("An error occurred while fetching dynamic data:", error);
-        return _default;
-    }
-}
+// --------------------------------------------------------------------------------------- Build functions:
 
 async function createAlbum(album: string, dynamiclink: string): Promise<void> {
     try {
@@ -202,8 +103,6 @@ async function createAlbum(album: string, dynamiclink: string): Promise<void> {
         console.error(e);
     }
 }
-
-// --------------------------------------------------------------------------------------- Build functions:
 
 async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
@@ -315,7 +214,7 @@ async function getHomepageCoverImages(dynamiclink: string): Promise<Immutable2DA
             ] as const;
 
             try {
-                const url: string = `${_dynamiclink}:8094/?data=welcome`;
+                const url: string = `${_dynamiclink}:8094/?data=frontPageCoverImageData`;
                 const response: Readonly<Response> = await fetch(url);
 
                 if (!response.ok) {
@@ -336,7 +235,7 @@ async function getHomepageCoverImages(dynamiclink: string): Promise<Immutable2DA
             if (i === 3) {
                 [m_images[0], m_images[1]] = [m_images[1], m_images[0]];
             }
-            m_images.push(`${dynamiclink}:8092/?type=welcome&img=${i}`);
+            m_images.push(`${dynamiclink}:8092/?type=frontPageCoverImageData&img=${i}`);
         }
 
         return m_images;
@@ -432,6 +331,46 @@ function buildHamburger(div: string, dynamiclink: string): void {
                 <br>
             `);
         }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+function makeFooter(dynamiclink: string): void {
+    try {
+        $("#footer-div").show().append(/*HTML*/ `
+            <footer>
+                <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
+                        class="SocialMediaIcon"></a>
+                <a href="https://www.youtube.com"><img src="${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
+                        class="SocialMediaIcon"></a>
+
+                <br>
+                <br>
+
+                <div>
+                    <p>
+                        <a href="#contact" class="contact-link">
+                            Contact Me
+                        </a>
+                    </p>
+                    <p>
+                    <a href="#home" class="contact-link">
+                        Home
+                    </a>
+                </p>
+                </div>
+            </footer>
+
+            <br>
+            <br>
+        `);
     } catch (e: unknown) {
         console.error(e);
     }
@@ -747,6 +686,86 @@ async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CA
         return data;
     } catch (e: unknown) {
         console.error("An error occurred while fetching dynamic data:", e);
+        return _default;
+    }
+}
+
+async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>> {
+    const _default: Unpromisify<ReturnType<typeof getPages>> = [
+        {
+            type: "page",
+            page: "home",
+            display: "Home",
+            subpages: [],
+            components: [],
+        },
+        {
+            type: "page",
+            page: "contact",
+            display: "Contact",
+            subpages: [],
+            components: [],
+        },
+        {
+            type: "page",
+            page: "pricing",
+            display: "Pricing",
+            subpages: [],
+            components: [],
+        },
+        {
+            type: "page",
+            page: "about",
+            display: "About",
+            subpages: [],
+            components: [],
+        },
+        {
+            type: "page",
+            page: "blog",
+            display: "Blog",
+            subpages: [],
+            components: [],
+        },
+        {
+            type: "page",
+            page: "albums",
+            display: "Albums",
+            subpages: [],
+            components: [],
+        },
+    ] as const;
+
+    try {
+        const url = `${dynamiclink}:8094/?data=pages`;
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<PageData> = (await response.json()) as Immutable2DArray<PageData>;
+        return data;
+    } catch (error: unknown) {
+        console.error("An error occurred while fetching dynamic data:", error);
+        return _default;
+    }
+}
+
+function getPage(): string {
+    const _default: ReturnType<typeof getPage> = "home";
+
+    try {
+        const page: string = window.location.hash.slice(1);
+        return page != "" &&
+            page != null &&
+            typeof page != "undefined" &&
+            page != undefined &&
+            pages.includes(page)
+            ? page
+            : "home";
+    } catch (e: unknown) {
+        console.error(e);
         return _default;
     }
 }

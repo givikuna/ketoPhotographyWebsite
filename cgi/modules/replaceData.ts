@@ -1,8 +1,8 @@
 import * as fs from "fs";
+import * as lsse from "lsse";
 
 import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
-import { print, str } from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
 import { Language, Immutable2DArray } from "../types/types";
@@ -28,7 +28,7 @@ export function replaceData(
                 }),
             );
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }
@@ -40,10 +40,10 @@ export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
         return "lang" in url_info &&
             typeof url_info["lang"] === "string" &&
             getLangs().includes(url_info["lang"])
-            ? str(url_info["lang"])
+            ? lsse.str(url_info["lang"])
             : "en";
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }
@@ -64,7 +64,7 @@ export function getLangs(): Immutable2DArray<string> {
 
         return langs as Immutable2DArray<string>;
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }
@@ -84,7 +84,7 @@ export function getEmail(data: Readonly<JSON | object>): string {
 
         throw new Error("contact email not found");
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }

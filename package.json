@@ -19,7 +19,8 @@
     "scramble-images": "ts-node scrambleImages.ts",
     "deploy": "sudo chmod +x ./deploy.sh && ./deploy.sh",
     "run-site": "npm run compile && npm run start",
-    "build-compiler-file": "ts-node buildCompilerFile"
+    "build-compiler-file": "ts-node buildCompilerFile",
+    "push": "lsc push.ls"
   },
   "repository": {
     "type": "git",

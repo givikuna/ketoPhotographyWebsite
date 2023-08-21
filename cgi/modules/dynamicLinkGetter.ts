@@ -1,7 +1,5 @@
 import * as fs from "fs";
 
-import { print } from "lsse";
-
 import { supertrim } from "../extensions/syntax";
 import { findPath } from "./findPath";
 
@@ -17,7 +15,7 @@ export function getDynLink(): fs.PathLike {
 
         throw new Error("dynamic link not found");
     } catch (e: unknown) {
-        print(e);
+        console.error(e);
         return _default;
     }
 }

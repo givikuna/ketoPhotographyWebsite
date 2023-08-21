@@ -2,8 +2,6 @@ import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
 
-import { print } from "lsse";
-
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
 
@@ -57,12 +55,12 @@ app.get(
 
             throw new Error("Wrong input");
         } catch (e: unknown) {
-            print(e);
+            console.error(e);
             return w("");
         }
     },
 );
 
 app.listen(port, (): void => {
-    print(`Server is running on http://localhost:${port}/`);
+    console.log(`Server is running on http://localhost:${port}/`);
 });

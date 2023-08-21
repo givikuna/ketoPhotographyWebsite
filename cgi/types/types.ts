@@ -69,6 +69,7 @@ export type STILL = {
     UID: number;
     SESSION_UID: number;
     NAME: string;
+    IS_FRONT_COVER_IMAGE: boolean;
 };
 
 export type Unreadonly<T> = {

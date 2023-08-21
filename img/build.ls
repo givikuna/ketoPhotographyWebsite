@@ -1,21 +1,14 @@
-(fs = require 'fs')
-({
-    print
-    len
-    read-dir
-    random
-    defun
-    lambda
-} = require 'lsse')
-({
-    floor
-} = require 'prelude-ls')
+(require! {
+    'lsse':{println,len,define,read-dir,lambda,random}
+    'fs':filesystem
+    'prelude-ls': {floor}
+})
 
 # (categories = require './categories.json')
 # (customers = require './customers.json')
 (sessions = require './sessions.json')
 
-(defun \main ->
+(define \main ->
     (stills = [])
     (images = read-dir './img')
     (count = 1)
@@ -34,13 +27,13 @@
                     NAME: img
                 })) image)
         (count++))
-    (fs.write-file-sync do
+    (filesystem.write-file-sync do
         \./stills.json
         JSON.stringify do
             stills
             null
             4
         'utf-8')
-    (return))
+    (return))!
 
-main!
+(println 'built ./stills.json')
