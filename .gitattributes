@@ -1,5 +1,5 @@
 *.sql linguist-detectable=true
 *.md linguist-detectable=true
-; *.json linguist-detectable=true
+*.json linguist-detectable=false
 *.yml linguist-detectable=true
 *.js linguist-detectable=false
