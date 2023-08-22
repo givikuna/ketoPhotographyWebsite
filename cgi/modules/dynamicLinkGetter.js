@@ -12,8 +12,7 @@ function getDynLink() {
             return (0, syntax_1.supertrim)(fs.readFileSync(fpath).toString());
         }
         throw new Error("dynamic link not found");
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }

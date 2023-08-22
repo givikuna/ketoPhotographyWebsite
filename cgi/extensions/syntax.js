@@ -7,15 +7,13 @@ function isBlank(input) {
 exports.isBlank = isBlank;
 function isJSON(obj) {
     try {
-        if (typeof obj !== "string")
-            return false;
+        if (typeof obj !== "string") return false;
         var ans = JSON.parse(obj);
         if (["", [], {}, null, undefined].includes(ans) || typeof ans === "undefined" || Array.isArray(ans)) {
             return true;
         }
         return false;
-    }
-    catch (e) {
+    } catch (e) {
         return false;
     }
 }
@@ -25,14 +23,12 @@ function supertrim(input) {
 }
 exports.supertrim = supertrim;
 function getFileExtension(file) {
-    if (file == undefined || file == null)
-        return undefined;
+    if (file == undefined || file == null) return undefined;
     return file.split(".").length > 1 ? file.split(".").pop() : undefined;
 }
 exports.getFileExtension = getFileExtension;
 function isNumeric(givenString) {
-    if (typeof givenString !== "string")
-        return false;
+    if (typeof givenString !== "string") return false;
     return /^-?\d+$/.test(givenString);
 }
 exports.isNumeric = isNumeric;

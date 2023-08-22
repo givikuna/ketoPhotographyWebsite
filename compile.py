@@ -14,6 +14,7 @@ run("python3 compilercleaner.py")
 print("collecting data for the compilation to begin...")
 run("ts-node buildCompilerFile")
 
+
 with open("compile.json") as file:
     data: dict | list = json.load(file)
 
@@ -28,3 +29,5 @@ for lang in data:
         if lang["type_"] == "rs":
             run(f"mv ./target/debug/{file['file'][2:-3]} ./")
     print("\n")
+
+run("npm run format-code")

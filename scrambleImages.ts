@@ -6,7 +6,7 @@ import prettier from "prettier";
 import { Album } from "./cgi/types/types";
 import { findPath } from "./cgi/modules/findPath";
 
-const albumData: Album[] = require('./img/info.json') as Album[];
+const albumData: Album[] = require("./img/info.json") as Album[];
 
 for (let o: number = 0; o < 20; o++) {
     for (let i: number = 0; i < albumData.length; i++) {

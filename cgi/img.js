@@ -40,8 +40,7 @@ function getIcons() {
     ];
     try {
         return require("../public/assets/icons/icons.json");
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -59,8 +58,7 @@ function getIconExtension(icon) {
             }
         }
         return _default;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -75,8 +73,7 @@ function getWelcomeImageExtension(img) {
             }
         }
         return _default;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -97,8 +94,7 @@ function getWelcomeImageData() {
             }
         }
         return images;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -106,12 +102,13 @@ function getWelcomeImageData() {
 function readAlbumData() {
     var _default = [];
     try {
-        return JSON.parse(fs.readFileSync((0, findPath_1.findPath)(["img"], "info.json"), {
-            encoding: "utf8",
-            flag: "r",
-        }));
-    }
-    catch (e) {
+        return JSON.parse(
+            fs.readFileSync((0, findPath_1.findPath)(["img"], "info.json"), {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        );
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -154,8 +151,7 @@ function getAlbumCoverImage(url_info) {
             }
         }
         return "";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -165,8 +161,7 @@ function wantsIcon(url_info) {
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
         return type_ === "icons" && "img" in url_info;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -176,8 +171,7 @@ function wantsAlbumCover(url_info) {
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
         return type_ === "cover" && "album" in url_info && typeof url_info["album"] === "string";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -187,8 +181,7 @@ function wantsAlbumImage(url_info) {
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
         return type_ === "album" && "img" in url_info && typeof url_info["img"] === "string";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -197,9 +190,12 @@ function wantsFrontPageCoverImage(url_info) {
     var _default = false;
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
-        return (type_ === "frontPageCoverImageData" && "img" in url_info && (0, syntax_1.isNumeric)(url_info["img"]));
-    }
-    catch (e) {
+        return (
+            type_ === "frontPageCoverImageData" &&
+            "img" in url_info &&
+            (0, syntax_1.isNumeric)(url_info["img"])
+        );
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -208,8 +204,7 @@ function wantsLogo(url_info) {
     var _default = false;
     try {
         return "type" in url_info && typeof url_info["type"] === "string" && url_info["type"] === "logo";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -219,10 +214,16 @@ function getPath(url_info) {
     try {
         var type_ = "type" in url_info && typeof url_info["type"] === "string" ? url_info["type"] : "";
         if (wantsIcon(url_info)) {
-            return (0, findPath_1.findPath)(["public", "assets", type_], "".concat(url_info["img"], ".").concat(getIconExtension(url_info["img"])));
+            return (0, findPath_1.findPath)(
+                ["public", "assets", type_],
+                "".concat(url_info["img"], ".").concat(getIconExtension(url_info["img"])),
+            );
         }
         if (wantsFrontPageCoverImage(url_info)) {
-            return (0, findPath_1.findPath)(["public", "assets", type_], "".concat(url_info["img"], ".").concat(getWelcomeImageExtension(url_info["img"]).toString()));
+            return (0, findPath_1.findPath)(
+                ["public", "assets", type_],
+                "".concat(url_info["img"], ".").concat(getWelcomeImageExtension(url_info["img"]).toString()),
+            );
         }
         if (wantsAlbumImage(url_info)) {
             return (0, findPath_1.findPath)(["img", "img"], url_info["img"]); // findPath(["img"]);
@@ -234,8 +235,7 @@ function getPath(url_info) {
             return (0, findPath_1.findPath)(["public", "assets", "logo"], "logo.png");
         }
         return _default;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -249,7 +249,9 @@ function getPath(url_info) {
 app.get("/", function (req, res) {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     var w = function (data) {
-        if (data === void 0) { data = ""; }
+        if (data === void 0) {
+            data = "";
+        }
         res.write(data);
         return res.end();
     };
@@ -258,18 +260,19 @@ app.get("/", function (req, res) {
             return w("");
         }
         var url_info = url.parse(req.url, true).query;
-        if (!("img" in url_info) &&
+        if (
+            !("img" in url_info) &&
             typeof url_info["img"] !== "string" &&
             !("type" in url_info) &&
-            typeof url_info["type"] == "string") {
+            typeof url_info["type"] == "string"
+        ) {
             throw new Error("Invalid request");
         }
         var fpath = getPath(url_info);
         return fpath !== undefined && fpath !== null && fs.existsSync(fpath)
             ? w(fs.readFileSync(fpath))
             : w("");
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return w("");
     }

@@ -8,8 +8,7 @@ function getPort(servername) {
     var default_ = 8080;
     try {
         return constants_1.Ports[servername];
-    }
-    catch (e) {
+    } catch (e) {
         return (0, findPath_1.logErr)(cFunc, e, default_, servername);
     }
 }

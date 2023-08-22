@@ -21,7 +21,7 @@
         "noImplicitThis": true,
         "noImplicitOverride": true,
         "strictBindCallApply": true,
-        "noFallthroughCasesInSwitch": true,
+        "noFallthroughCasesInSwitch": true
     },
     "files": [
         "cgi/img.ts",
@@ -35,6 +35,6 @@
         "cgi/modules/portServer.ts",
         "cgi/modules/replaceData.ts",
         "cgi/extensions/syntax.ts",
-        "cgi/constants/constants.ts",
-    ],
+        "cgi/constants/constants.ts"
+    ]
 }

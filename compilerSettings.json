@@ -1,21 +1,7 @@
 {
     "compilerIgnore": {
-        "files": [
-            "imageCleaner.ts",
-            "imageCollector.ts",
-            "buildCompilerFile.ts",
-            "scrambleImages.ts"
-        ],
-        "directories": [
-            "target",
-            "node_modules",
-            ".git",
-            "data",
-            "img",
-            "coverage",
-            "archived",
-            ".vscode"
-        ]
+        "files": ["imageCleaner.ts", "imageCollector.ts", "buildCompilerFile.ts", "scrambleImages.ts"],
+        "directories": ["target", "node_modules", ".git", "data", "img", "coverage", "archived", ".vscode"]
     },
     "compile": {
         "languages": [

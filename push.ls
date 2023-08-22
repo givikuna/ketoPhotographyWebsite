@@ -12,6 +12,7 @@
 
 (cmds = [
     "npm run compile"
+    "npm run format-code"
     "git add ."
     "git commit -m \"#commit-name\""
     "git push"
@@ -23,6 +24,9 @@
     (switch i
     case 0 then do
         (println "compiled all the files")
+    case 1 then do
+        (println ("formatted all of the files")
+        (sleep 1000))
     case 1 then do
         (println "staged all of the changes")
         (sleep 1000)

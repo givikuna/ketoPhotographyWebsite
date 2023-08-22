@@ -26,7 +26,8 @@
         "Unreadonly"
     ],
     "editor.tokenColorCustomizations": {
-        "textMateRules": [{
+        "textMateRules": [
+            {
                 "scope": "string.quoted.double.js",
                 "settings": {
                     "foreground": "#66CC66" // Specify the desired color
