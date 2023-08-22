@@ -6,7 +6,6 @@ import { findPath } from "./findPath";
 
 import { ParsedUrlQuery } from "querystring";
 import { Language, Immutable2DArray } from "../types/types";
-import { supertrim } from "../extensions/syntax";
 
 export function replaceData(
     data: string,
@@ -79,7 +78,7 @@ export function getEmail(data: Readonly<JSON | object>): string {
         );
 
         if (fs.existsSync(fpath)) {
-            return supertrim(String(fs.readFileSync(fpath)));
+            return lsse.supertrim(String(fs.readFileSync(fpath)));
         }
 
         throw new Error("contact email not found");

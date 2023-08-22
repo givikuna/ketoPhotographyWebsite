@@ -2,14 +2,13 @@ import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
 import * as lsse from "lsse";
-import * as http from "http";
 
 import { ParsedUrlQuery } from "querystring";
 import { CATEGORY, SESSION, STILL, Immutable2DArray } from "./types/types";
+import { IncomingMessage, ServerResponse } from "http";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
-import { isJSON } from "./extensions/syntax";
 
 const app: express.Application = express();
 
@@ -172,7 +171,7 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             flag: "r",
         });
 
-        if (isJSON(dataAsString)) {
+        if (lsse.isJSON(dataAsString)) {
             write = JSON.stringify(dataAsString, null, 4);
         } else {
             write = lsse.str(dataAsString);
@@ -187,13 +186,10 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
 app.get(
     "/",
-    (
-        req: http.IncomingMessage,
-        res: http.ServerResponse<http.IncomingMessage>,
-    ): http.ServerResponse<http.IncomingMessage> => {
+    (req: IncomingMessage, res: ServerResponse<IncomingMessage>): ServerResponse<IncomingMessage> => {
         res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
 
-        const w: Function = (data: Readonly<unknown> = ""): http.ServerResponse<http.IncomingMessage> => {
+        const w: Function = (data: Readonly<unknown> = ""): ServerResponse<IncomingMessage> => {
             res.write(data);
             return res.end();
         };

@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
+import * as lsse from "lsse";
 // import * as subProcess from "child_process";
 
 import { ParsedUrlQuery } from "querystring";
@@ -17,7 +18,6 @@ import {
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
-import { isNumeric } from "./extensions/syntax";
 
 const app: express.Application = express();
 
@@ -231,7 +231,9 @@ function wantsFrontPageCoverImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return (
-            type_ === "frontPageCoverImageData" && "img" in url_info && isNumeric(url_info["img"] as string)
+            type_ === "frontPageCoverImageData" &&
+            "img" in url_info &&
+            lsse.isNumeric(url_info["img"] as string)
         );
     } catch (e: unknown) {
         console.error(e);
