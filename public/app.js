@@ -1,47 +1,148 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
+var __awaiter =
+    (this && this.__awaiter) ||
+    function (thisArg, _arguments, P, generator) {
+        function adopt(value) {
+            return value instanceof P
+                ? value
+                : new P(function (resolve) {
+                      resolve(value);
+                  });
+        }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) {
+                try {
+                    step(generator.next(value));
+                } catch (e) {
+                    reject(e);
+                }
             }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
+            function rejected(value) {
+                try {
+                    step(generator["throw"](value));
+                } catch (e) {
+                    reject(e);
+                }
+            }
+            function step(result) {
+                result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+            }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+var __generator =
+    (this && this.__generator) ||
+    function (thisArg, body) {
+        var _ = {
+                label: 0,
+                sent: function () {
+                    if (t[0] & 1) throw t[1];
+                    return t[1];
+                },
+                trys: [],
+                ops: [],
+            },
+            f,
+            y,
+            t,
+            g;
+        return (
+            (g = { next: verb(0), throw: verb(1), return: verb(2) }),
+            typeof Symbol === "function" &&
+                (g[Symbol.iterator] = function () {
+                    return this;
+                }),
+            g
+        );
+        function verb(n) {
+            return function (v) {
+                return step([n, v]);
+            };
+        }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while ((g && ((g = 0), op[0] && (_ = 0)), _))
+                try {
+                    if (
+                        ((f = 1),
+                        y &&
+                            (t =
+                                op[0] & 2
+                                    ? y["return"]
+                                    : op[0]
+                                    ? y["throw"] || ((t = y["return"]) && t.call(y), 0)
+                                    : y.next) &&
+                            !(t = t.call(y, op[1])).done)
+                    )
+                        return t;
+                    if (((y = 0), t)) op = [op[0] & 2, t.value];
+                    switch (op[0]) {
+                        case 0:
+                        case 1:
+                            t = op;
+                            break;
+                        case 4:
+                            _.label++;
+                            return { value: op[1], done: false };
+                        case 5:
+                            _.label++;
+                            y = op[1];
+                            op = [0];
+                            continue;
+                        case 7:
+                            op = _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                        default:
+                            if (
+                                !((t = _.trys), (t = t.length > 0 && t[t.length - 1])) &&
+                                (op[0] === 6 || op[0] === 2)
+                            ) {
+                                _ = 0;
+                                continue;
+                            }
+                            if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                                _.label = op[1];
+                                break;
+                            }
+                            if (op[0] === 6 && _.label < t[1]) {
+                                _.label = t[1];
+                                t = op;
+                                break;
+                            }
+                            if (t && _.label < t[2]) {
+                                _.label = t[2];
+                                _.ops.push(op);
+                                break;
+                            }
+                            if (t[2]) _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                    }
+                    op = body.call(thisArg, _);
+                } catch (e) {
+                    op = [6, e];
+                    y = 0;
+                } finally {
+                    f = t = 0;
+                }
+            if (op[0] & 5) throw op[1];
+            return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    };
 var pages = [];
 var builtAlbums = [];
 var iterated = 0;
 var previousPage = "";
 function main(d, l, c) {
-    if (d === void 0) { d = null; }
-    if (l === void 0) { l = null; }
-    if (c === void 0) { c = null; }
+    if (d === void 0) {
+        d = null;
+    }
+    if (l === void 0) {
+        l = null;
+    }
+    if (c === void 0) {
+        c = null;
+    }
     return __awaiter(this, void 0, void 0, function () {
         var dynamiclink, language, contactemail, _1, e_1;
         return __generator(this, function (_a) {
@@ -56,39 +157,41 @@ function main(d, l, c) {
                     previousPage = getPage();
                     changeLang(language);
                     updateNavbar();
-                    return [4 /*yield*/, buildNavBar(dynamiclink)
+                    return [
+                        4 /*yield*/,
+                        buildNavBar(dynamiclink)
                             .then(function () {
-                            buildApp(dynamiclink);
-                        })
+                                buildApp(dynamiclink);
+                            })
                             .then(updateApp)
                             .then(function () {
-                            makeFooter(dynamiclink);
-                        })
+                                makeFooter(dynamiclink);
+                            })
                             .then(function () {
-                            updateNavbar();
-                            // keep this like this
-                            // it'll throw an error if you pass it in as as a variable directly because parameters
-                            // - me to future me
-                        })
+                                updateNavbar();
+                                // keep this like this
+                                // it'll throw an error if you pass it in as as a variable directly because parameters
+                                // - me to future me
+                            })
                             .then(updateApp)
                             .then(function () {
-                            var navbars = ["navbar-div-phone", "homepage-navbar-div-phone"];
-                            for (var i = 0; i < navbars.length; i++) {
-                                var _2 = buildHamburger(navbars[i], dynamiclink);
-                            }
-                        })
+                                var navbars = ["navbar-div-phone", "homepage-navbar-div-phone"];
+                                for (var i = 0; i < navbars.length; i++) {
+                                    var _2 = buildHamburger(navbars[i], dynamiclink);
+                                }
+                            })
                             .then(function () {
-                            if (inPhoneMode()) {
-                                hideDiv("navbar-div");
-                                hideDiv("homepagenavbar-container");
-                                if (getPage() === "home") {
-                                    showDiv("homepage-navbar-div");
+                                if (inPhoneMode()) {
+                                    hideDiv("navbar-div");
+                                    hideDiv("homepagenavbar-container");
+                                    if (getPage() === "home") {
+                                        showDiv("homepage-navbar-div");
+                                    } else {
+                                        hideDiv("homepage-navbar-div");
+                                    }
                                 }
-                                else {
-                                    hideDiv("homepage-navbar-div");
-                                }
-                            }
-                        })];
+                            }),
+                    ];
                 case 2:
                     _1 = _a.sent();
                     console.log("all loaded properly");
@@ -97,7 +200,8 @@ function main(d, l, c) {
                     e_1 = _a.sent();
                     console.error(e_1);
                     return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                case 4:
+                    return [2 /*return*/];
             }
         });
     });
@@ -110,19 +214,25 @@ function createAlbum(album, dynamiclink) {
             switch (_c.label) {
                 case 0:
                     _c.trys.push([0, 2, , 3]);
-                    _b = (_a = $(/*HTML*/ "<div>")
-                        .attr("id", "album_".concat(album)))
-                        .append;
+                    _b = (_a = $(/*HTML*/ "<div>").attr("id", "album_".concat(album))).append;
                     return [4 /*yield*/, fetchComponent("inAlbum", dynamiclink)];
                 case 1:
-                    albumDiv = _b.apply(_a, [_c.sent()]).append(/*HTML*/ "\n                <div\n                    class=\"inAlbumImages\"\n                    id=\"".concat(album, "Gallery\"\n                > </div>\n            "));
+                    albumDiv = _b
+                        .apply(_a, [_c.sent()])
+                        .append(
+                            /*HTML*/ '\n                <div\n                    class="inAlbumImages"\n                    id="'.concat(
+                                album,
+                                'Gallery"\n                > </div>\n            ',
+                            ),
+                        );
                     $("#app").append(albumDiv);
                     return [3 /*break*/, 3];
                 case 2:
                     e_2 = _c.sent();
                     console.error(e_2);
                     return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                case 3:
+                    return [2 /*return*/];
             }
         });
     });
@@ -139,7 +249,7 @@ function buildApp(dynamiclink) {
                     _a.trys.push([1, 11, , 12]);
                     return [4 /*yield*/, getPages(dynamiclink)];
                 case 2:
-                    data = (_a.sent());
+                    data = _a.sent();
                     _loop_1 = function (i) {
                         var pageDiv;
                         return __generator(this, function (_b) {
@@ -147,15 +257,25 @@ function buildApp(dynamiclink) {
                                 case 0:
                                     pageDiv = $(/*HTML*/ "<div></div>")
                                         .attr("id", data[i].page ? data[i].page : "ERROR")
-                                        .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
+                                        .addClass(
+                                            data[i].page && data[i].page.startsWith("album_")
+                                                ? "albumPage"
+                                                : "webPage",
+                                        );
                                     $("#app").append(pageDiv);
                                     pages.push(data[i].page);
-                                    return [4 /*yield*/, buildComponent((function (div_id) {
-                                            if (div_id == undefined && typeof div_id !== "undefined") {
-                                                return "";
-                                            }
-                                            return pageDiv.attr("id");
-                                        })(pageDiv.attr("id")), dynamiclink)];
+                                    return [
+                                        4 /*yield*/,
+                                        buildComponent(
+                                            (function (div_id) {
+                                                if (div_id == undefined && typeof div_id !== "undefined") {
+                                                    return "";
+                                                }
+                                                return pageDiv.attr("id");
+                                            })(pageDiv.attr("id")),
+                                            dynamiclink,
+                                        ),
+                                    ];
                                 case 1:
                                     _b.sent();
                                     updateApp();
@@ -186,12 +306,14 @@ function buildApp(dynamiclink) {
                 case 9:
                     i++;
                     return [3 /*break*/, 7];
-                case 10: return [2 /*return*/, true];
+                case 10:
+                    return [2 /*return*/, true];
                 case 11:
                     e_3 = _a.sent();
                     console.error(e_3);
                     return [2 /*return*/, _default];
-                case 12: return [2 /*return*/];
+                case 12:
+                    return [2 /*return*/];
             }
         });
     });
@@ -205,17 +327,42 @@ function buildPage(page, dynamiclink) {
                     _b.trys.push([0, 8, , 9]);
                     _a = page;
                     switch (_a) {
-                        case "home": return [3 /*break*/, 1];
+                        case "home":
+                            return [3 /*break*/, 1];
                     }
                     return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, fetchCategories(dynamiclink)];
+                case 1:
+                    return [4 /*yield*/, fetchCategories(dynamiclink)];
                 case 2:
-                    categories = (_b.sent());
+                    categories = _b.sent();
                     i = 0;
                     _b.label = 3;
                 case 3:
                     if (!(i < categories.length)) return [3 /*break*/, 6];
-                    element = "\n                        <div class=\"imageContainer\">\n                            <img\n                                src=\"".concat(dynamiclink, ":8092/?type=cover&album=").concat(categories[i].NAME, "\"\n                                onclick=\"window.location.href='#album_").concat(categories[i].NAME, "'\"\n                                class=\"albumCoverImage\"\n                                alt=\"Image ").concat(i, "\"\n                                id=\"").concat(categories[i].NAME, "AlbumCoverForHome\"\n                            >\n                            <span id=\"").concat(categories[i].NAME, "AlbumCoverForHomeSpan\">\n                                ").concat(categories[i].NAME, "\n                            </span>\n                        </div>\n                    ");
+                    element =
+                        '\n                        <div class="imageContainer">\n                            <img\n                                src="'
+                            .concat(dynamiclink, ":8092/?type=cover&album=")
+                            .concat(
+                                categories[i].NAME,
+                                '"\n                                onclick="window.location.href=\'#album_',
+                            )
+                            .concat(
+                                categories[i].NAME,
+                                '\'"\n                                class="albumCoverImage"\n                                alt="Image ',
+                            )
+                            .concat(i, '"\n                                id="')
+                            .concat(
+                                categories[i].NAME,
+                                'AlbumCoverForHome"\n                            >\n                            <span id="',
+                            )
+                            .concat(
+                                categories[i].NAME,
+                                'AlbumCoverForHomeSpan">\n                                ',
+                            )
+                            .concat(
+                                categories[i].NAME,
+                                "\n                            </span>\n                        </div>\n                    ",
+                            );
                     $("#album-gallery").append(element);
                     return [4 /*yield*/, createAlbum(categories[i].NAME, dynamiclink)];
                 case 4:
@@ -225,13 +372,16 @@ function buildPage(page, dynamiclink) {
                 case 5:
                     i++;
                     return [3 /*break*/, 3];
-                case 6: return [3 /*break*/, 7];
-                case 7: return [3 /*break*/, 9];
+                case 6:
+                    return [3 /*break*/, 7];
+                case 7:
+                    return [3 /*break*/, 9];
                 case 8:
                     e_4 = _b.sent();
                     console.error(e_4);
                     return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
+                case 9:
+                    return [2 /*return*/];
             }
         });
     });
@@ -249,69 +399,93 @@ function getHomepageCoverImages(dynamiclink) {
                 case 1:
                     _b.trys.push([1, 3, , 4]);
                     m_images = [];
-                    return [4 /*yield*/, (function (_dynamiclink) { return __awaiter(_this, void 0, void 0, function () {
-                            var _default2, url, response, data, e2_1;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        _default2 = [
-                                            {
-                                                img: "1.jpeg",
-                                                extension: "jpeg",
-                                            },
-                                            {
-                                                img: "2.jpeg",
-                                                extension: "jpeg",
-                                            },
-                                            {
-                                                img: "3.jpeg",
-                                                extension: "jpeg",
-                                            },
-                                            {
-                                                img: "4.jpeg",
-                                                extension: "jpeg",
-                                            },
-                                            {
-                                                img: "5.jpeg",
-                                                extension: "jpeg",
-                                            },
-                                        ];
-                                        _a.label = 1;
-                                    case 1:
-                                        _a.trys.push([1, 4, , 5]);
-                                        url = "".concat(_dynamiclink, ":8094/?data=frontPageCoverImageData");
-                                        return [4 /*yield*/, fetch(url)];
-                                    case 2:
-                                        response = _a.sent();
-                                        if (!response.ok) {
-                                            throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
-                                        }
-                                        return [4 /*yield*/, response.json()];
-                                    case 3:
-                                        data = (_a.sent());
-                                        return [2 /*return*/, data];
-                                    case 4:
-                                        e2_1 = _a.sent();
-                                        console.error("An error occurred while fetching dynamic data:", e2_1);
-                                        return [2 /*return*/, _default2];
-                                    case 5: return [2 /*return*/];
-                                }
+                    return [
+                        4 /*yield*/,
+                        (function (_dynamiclink) {
+                            return __awaiter(_this, void 0, void 0, function () {
+                                var _default2, url, response, data, e2_1;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            _default2 = [
+                                                {
+                                                    img: "1.jpeg",
+                                                    extension: "jpeg",
+                                                },
+                                                {
+                                                    img: "2.jpeg",
+                                                    extension: "jpeg",
+                                                },
+                                                {
+                                                    img: "3.jpeg",
+                                                    extension: "jpeg",
+                                                },
+                                                {
+                                                    img: "4.jpeg",
+                                                    extension: "jpeg",
+                                                },
+                                                {
+                                                    img: "5.jpeg",
+                                                    extension: "jpeg",
+                                                },
+                                            ];
+                                            _a.label = 1;
+                                        case 1:
+                                            _a.trys.push([1, 4, , 5]);
+                                            url = "".concat(
+                                                _dynamiclink,
+                                                ":8094/?data=frontPageCoverImageData",
+                                            );
+                                            return [4 /*yield*/, fetch(url)];
+                                        case 2:
+                                            response = _a.sent();
+                                            if (!response.ok) {
+                                                throw new Error(
+                                                    "Error: "
+                                                        .concat(response.status, " ")
+                                                        .concat(response.statusText),
+                                                );
+                                            }
+                                            return [4 /*yield*/, response.json()];
+                                        case 3:
+                                            data = _a.sent();
+                                            return [2 /*return*/, data];
+                                        case 4:
+                                            e2_1 = _a.sent();
+                                            console.error(
+                                                "An error occurred while fetching dynamic data:",
+                                                e2_1,
+                                            );
+                                            return [2 /*return*/, _default2];
+                                        case 5:
+                                            return [2 /*return*/];
+                                    }
+                                });
                             });
-                        }); })(dynamiclink)];
+                        })(dynamiclink),
+                    ];
                 case 2:
-                    gottenImages = (_b.sent());
-                    for (i = 1; i <= (gottenImages === null || gottenImages === void 0 ? void 0 : gottenImages.length); i++) {
+                    gottenImages = _b.sent();
+                    for (
+                        i = 1;
+                        i <=
+                        (gottenImages === null || gottenImages === void 0 ? void 0 : gottenImages.length);
+                        i++
+                    ) {
                         if (i === 3) {
-                            _a = [m_images[1], m_images[0]], m_images[0] = _a[0], m_images[1] = _a[1];
+                            (_a = [m_images[1], m_images[0]]), (m_images[0] = _a[0]), (m_images[1] = _a[1]);
                         }
-                        m_images.push("".concat(dynamiclink, ":8092/?type=frontPageCoverImageData&img=").concat(i));
+                        m_images.push(
+                            "".concat(dynamiclink, ":8092/?type=frontPageCoverImageData&img=").concat(i),
+                        );
                     }
                     return [2 /*return*/, m_images];
                 case 3:
                     e_5 = _b.sent();
                     console.error(e_5);
                     return [2 /*return*/, _default];
-                case 4: return [2 /*return*/];
+                case 4:
+                    return [2 /*return*/];
             }
         });
     });
@@ -343,13 +517,16 @@ function buildNavBar(dynamiclink) {
                     e_6 = _e.sent();
                     console.error(e_6);
                     return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                case 4:
+                    return [2 /*return*/];
             }
         });
     });
 }
 function updateNavbar(callingFromWindowSizeCheck) {
-    if (callingFromWindowSizeCheck === void 0) { callingFromWindowSizeCheck = false; }
+    if (callingFromWindowSizeCheck === void 0) {
+        callingFromWindowSizeCheck = false;
+    }
     try {
         if (callingFromWindowSizeCheck === false && windowSizeCheck() === true) {
             return;
@@ -357,34 +534,70 @@ function updateNavbar(callingFromWindowSizeCheck) {
         if (getPage() === "home") {
             hideDiv("navbar-div");
             showDiv("homepage-navbar-div");
-        }
-        else {
+        } else {
             hideDiv("homepage-navbar-div");
             showDiv("navbar-div");
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
 function buildHamburger(div, dynamiclink) {
     try {
-        var newNavbar = /*HTML*/ "\n            <div class=\"hamburger-button\" onclick=\"hamburgerClick('".concat(div, "')\" id=\"inside-").concat(div, "\">\n                &#9776;\n            </div>\n            <!-- Hamburger Navbar -->\n            <div class=\"hamburger-navbar\" id=\"hamburger-navbar-for-").concat(div, "\">\n                <a href=\"#home\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-home\">\n                    Home\n                </a>\n\n                <a href=\"#contact\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-contact\">\n                    Contact\n                </a>\n\n                <a href=\"#about\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-about\">\n                    About\n                </a>\n\n                <a href=\"#pricing\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-pricing\">\n                    Pricing\n                </a>\n\n                <a href=\"#blog\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-blog\">\n                    Blog\n                </a>\n\n                <a href=\"#albums\" class=\"hamburger-navbar-option\" id=\"hamburger-navbar-option-albums\">\n                    Albums\n                </a>\n            </div>\n            <div class=\"navbar-logo-container\" id=\"hamburger-navbar-logo-container-for-").concat(div, "\">\n                <a href=\"#home\">\n                    <img src=\"").concat(dynamiclink, ":8092/?type=logo\" class=\"navbar-logo-phone\" />\n                </a>\n            </div>\n        ");
+        var newNavbar = /*HTML*/ '\n            <div class="hamburger-button" onclick="hamburgerClick(\''
+            .concat(div, '\')" id="inside-')
+            .concat(
+                div,
+                '">\n                &#9776;\n            </div>\n            <!-- Hamburger Navbar -->\n            <div class="hamburger-navbar" id="hamburger-navbar-for-',
+            )
+            .concat(
+                div,
+                '">\n                <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">\n                    Home\n                </a>\n\n                <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">\n                    Contact\n                </a>\n\n                <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">\n                    About\n                </a>\n\n                <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">\n                    Pricing\n                </a>\n\n                <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">\n                    Blog\n                </a>\n\n                <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">\n                    Albums\n                </a>\n            </div>\n            <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-',
+            )
+            .concat(div, '">\n                <a href="#home">\n                    <img src="')
+            .concat(
+                dynamiclink,
+                ':8092/?type=logo" class="navbar-logo-phone" />\n                </a>\n            </div>\n        ',
+            );
         $("#".concat(div)).append(newNavbar);
         $("#inside-hamburger-wrapper-for-".concat(div)).hide();
         if (div === "navbar-div-phone") {
-            $("#".concat(div)).append(/*HTML*/ "\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n            ");
+            $("#".concat(div)).append(
+                /*HTML*/ "\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n            ",
+            );
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
 function makeFooter(dynamiclink) {
     try {
-        $("#footer-div").show().append(/*HTML*/ "\n            <footer>\n                <a href=\"https://www.facebook.com\"><img src=\"".concat(dynamiclink, ":8092/?type=icons&img=facebook\" alt=\"Facebook\"\n                        class=\"SocialMediaIcon\"></a>\n                <a href=\"https://www.flickr.com\"><img src=\"").concat(dynamiclink, ":8092/?type=icons&img=flickr\" alt=\"Flickr\"\n                        class=\"SocialMediaIcon\"></a>\n                <a href=\"https://www.instagram.com\"><img src=\"").concat(dynamiclink, ":8092/?type=icons&img=instagram\" alt=\"Instagram\"\n                        class=\"SocialMediaIcon\"></a>\n                <a href=\"https://www.pinterest.com\"><img src=\"").concat(dynamiclink, ":8092/?type=icons&img=pinterest\" alt=\"Pinterest\"\n                        class=\"SocialMediaIcon\"></a>\n                <a href=\"https://www.youtube.com\"><img src=\"").concat(dynamiclink, ":8092/?type=icons&img=youtube\" alt=\"YouTube\"\n                        class=\"SocialMediaIcon\"></a>\n\n                <br>\n                <br>\n\n                <div>\n                    <p>\n                        <a href=\"#contact\" class=\"contact-link\">\n                            Contact Me\n                        </a>\n                    </p>\n                    <p>\n                    <a href=\"#home\" class=\"contact-link\">\n                        Home\n                    </a>\n                </p>\n                </div>\n            </footer>\n\n            <br>\n            <br>\n        "));
-    }
-    catch (e) {
+        $("#footer-div")
+            .show()
+            .append(
+                /*HTML*/ '\n            <footer>\n                <a href="https://www.facebook.com"><img src="'
+                    .concat(
+                        dynamiclink,
+                        ':8092/?type=icons&img=facebook" alt="Facebook"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.flickr.com"><img src="',
+                    )
+                    .concat(
+                        dynamiclink,
+                        ':8092/?type=icons&img=flickr" alt="Flickr"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.instagram.com"><img src="',
+                    )
+                    .concat(
+                        dynamiclink,
+                        ':8092/?type=icons&img=instagram" alt="Instagram"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.pinterest.com"><img src="',
+                    )
+                    .concat(
+                        dynamiclink,
+                        ':8092/?type=icons&img=pinterest" alt="Pinterest"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.youtube.com"><img src="',
+                    )
+                    .concat(
+                        dynamiclink,
+                        ':8092/?type=icons&img=youtube" alt="YouTube"\n                        class="SocialMediaIcon"></a>\n\n                <br>\n                <br>\n\n                <div>\n                    <p>\n                        <a href="#contact" class="contact-link">\n                            Contact Me\n                        </a>\n                    </p>\n                    <p>\n                    <a href="#home" class="contact-link">\n                        Home\n                    </a>\n                </p>\n                </div>\n            </footer>\n\n            <br>\n            <br>\n        ',
+                    ),
+            );
+    } catch (e) {
         console.error(e);
     }
 }
@@ -405,12 +618,14 @@ function buildComponent(component, dynamiclink) {
                     componentHTML = _a.sent();
                     $(componentDiv).html(componentHTML);
                     _a.label = 3;
-                case 3: return [2 /*return*/, componentDiv];
+                case 3:
+                    return [2 /*return*/, componentDiv];
                 case 4:
                     e_7 = _a.sent();
                     console.error(e_7);
                     return [2 /*return*/, _default];
-                case 5: return [2 /*return*/];
+                case 5:
+                    return [2 /*return*/];
             }
         });
     });
@@ -426,18 +641,15 @@ function hashchange() {
                 navbar-div-phone", "homepage-navbar-div-phone"
                 hideDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
                 */
-        }
-        else {
+        } else {
             showDiv("homepage-navbar-div");
             // showDiv("hamburger-navbar-logo-container-for-homepage-navbar-div-phone");
             $("#app").css("margin-top", "100px");
         }
-    }
-    else {
+    } else {
         if (getPage() === "home") {
             showDiv("homepagenavbar-container");
-        }
-        else {
+        } else {
             showDiv("navbar-div");
         }
         $("#app").css("margin-top", "0px");
@@ -461,8 +673,7 @@ function nextHomepageImage() {
                     if (iterated === images.length) {
                         iterated = 0;
                         homepage_navbar_div.style.backgroundImage = "url(".concat(images[iterated++], ")");
-                    }
-                    else {
+                    } else {
                         homepage_navbar_div.style.backgroundImage = "url(".concat(images[iterated++], ")");
                     }
                     return [3 /*break*/, 3];
@@ -470,7 +681,8 @@ function nextHomepageImage() {
                     e_8 = _a.sent();
                     console.error(e_8);
                     return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                case 3:
+                    return [2 /*return*/];
             }
         });
     });
@@ -490,14 +702,12 @@ function windowSizeCheck() {
             showDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
             showDiv("homepage-navbar-logo-container");
-        }
-        else {
+        } else {
             showDiv("navbar-div");
         }
         $("#app").css("margin-top", "0px");
         return false;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -508,12 +718,10 @@ function toggleCurrentHamburgerNavbar(currentNavbarID) {
         var isHidden = $navbarDiv.is(":hidden");
         if (isHidden) {
             $navbarDiv.css("margin-top", "40px").slideDown("fast");
-        }
-        else {
+        } else {
             $navbarDiv.css("margin-top", "0").toggle();
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
@@ -527,8 +735,7 @@ function changeNavbarForSmallDisplays() {
             showDiv("homepage-navbar-div");
             $("#homepage-navbar-div").css("height", "200px");
             $("#homepage-navbar-div").css("margin-top", "100px");
-        }
-        else {
+        } else {
             showDiv("navbar-div-phone");
             hideDiv("homepage-navbar-div-phone");
             hideDiv("homepagenavbar-container");
@@ -536,8 +743,7 @@ function changeNavbarForSmallDisplays() {
             $("#app").css("margin-top", "100px");
         }
         hideDiv("homepage-navbar-logo-container");
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
@@ -550,8 +756,7 @@ function hamburgerClick(from) {
             if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
                 $("#app").css("margin-top", "300px");
             }
-        }
-        else {
+        } else {
             $("#homepage-navbar-div").css("margin-top", "100px");
             if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
                 $("#".concat(getPage())).css("margin-top", "100px");
@@ -560,8 +765,7 @@ function hamburgerClick(from) {
         if (getPage() !== "home") {
             $("#app").css("margin-top", "100px");
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
@@ -573,8 +777,7 @@ function inPhoneMode() {
             return true;
         }
         return false;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -595,13 +798,11 @@ function updateApp() {
                 for (i = 0; i < pages.length; i++) {
                     if (currentPage === pages[i]) {
                         showDiv(pages[i]);
-                    }
-                    else {
+                    } else {
                         hideDiv(pages[i]);
                     }
                 }
-            }
-            catch (e) {
+            } catch (e) {
                 console.error(e);
             }
             return [2 /*return*/];
@@ -612,8 +813,7 @@ function getLang(lang) {
     var _default = "en";
     try {
         return lang === "ru" ? lang : lang === "ge" ? lang : "en";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -622,8 +822,7 @@ function changeLang(lang) {
     var _default = false;
     try {
         return true;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -654,7 +853,8 @@ function fetchComponent(component, dynamiclink) {
                     e_9 = _a.sent();
                     console.error("Error:", e_9);
                     return [2 /*return*/, _default];
-                case 5: return [2 /*return*/];
+                case 5:
+                    return [2 /*return*/];
             }
         });
     });
@@ -715,13 +915,14 @@ function fetchCategories(dynamiclink) {
                     }
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    data = (_a.sent());
+                    data = _a.sent();
                     return [2 /*return*/, data];
                 case 4:
                     e_10 = _a.sent();
                     console.error("An error occurred while fetching dynamic data:", e_10);
                     return [2 /*return*/, _default];
-                case 5: return [2 /*return*/];
+                case 5:
+                    return [2 /*return*/];
             }
         });
     });
@@ -788,13 +989,14 @@ function getPages(dynamiclink) {
                     }
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    data = (_a.sent());
+                    data = _a.sent();
                     return [2 /*return*/, data];
                 case 4:
                     error_1 = _a.sent();
                     console.error("An error occurred while fetching dynamic data:", error_1);
                     return [2 /*return*/, _default];
-                case 5: return [2 /*return*/];
+                case 5:
+                    return [2 /*return*/];
             }
         });
     });
@@ -810,8 +1012,7 @@ function getPage() {
             pages.includes(page)
             ? page
             : "home";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
