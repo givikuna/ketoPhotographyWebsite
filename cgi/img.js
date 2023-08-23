@@ -59,6 +59,59 @@ function getIconExtension(icon) {
         }
         return _default;
     } catch (e) {
+<<<<<<< HEAD
+=======
+        console.error(e);
+        return _default;
+    }
+}
+function getWelcomeImageExtension(img) {
+    var _default = "jpeg";
+    try {
+        var welcomeImages = getWelcomeImageData();
+        for (var i = 0; i < welcomeImages.length; i++) {
+            if (welcomeImages[i].img === img) {
+                return welcomeImages[i].extension;
+            }
+        }
+        return _default;
+    } catch (e) {
+        console.error(e);
+        return _default;
+    }
+}
+function getWelcomeImageData() {
+    var _default = [];
+    try {
+        var images = [];
+        var files = fs.readdirSync("public/assets/welcome");
+        for (var i = 0; i < files.length; i++) {
+            for (var j = 0; j < types_1.imageExtensions.length; j++) {
+                if (files[i].endsWith(types_1.imageExtensions[j])) {
+                    images.push({
+                        img: files[i].split(".")[0],
+                        extension: files[i].split(".")[1],
+                    });
+                }
+            }
+        }
+        return images;
+    } catch (e) {
+        console.error(e);
+        return _default;
+    }
+}
+function readAlbumData() {
+    var _default = [];
+    try {
+        return JSON.parse(
+            fs.readFileSync((0, findPath_1.findPath)(["img"], "info.json"), {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        );
+    } catch (e) {
+>>>>>>> main
         console.error(e);
         return _default;
     }
@@ -69,6 +122,7 @@ function getAlbumCoverImage(url_info) {
         if (!("album" in url_info) || typeof url_info["album"] !== "string") {
             throw new Error("wrong data given to album cover image getter function");
         }
+<<<<<<< HEAD
         return (0, getImageData_1.getStills)().filter(function (still) {
             return lsse.equals(
                 lsse.int(still.UID),
@@ -83,6 +137,14 @@ function getAlbumCoverImage(url_info) {
                 ),
             );
         })[0].NAME;
+=======
+        for (var i = 0; i < albumImagesData.length; i++) {
+            if (albumImagesData[i].album === url_info["album"]) {
+                return albumImagesData[i].coverImage;
+            }
+        }
+        return "";
+>>>>>>> main
     } catch (e) {
         console.error(e);
         return _default;
@@ -125,7 +187,11 @@ function wantsFrontPageCoverImage(url_info) {
         return (
             type_ === "frontPageCoverImageData" &&
             "img" in url_info &&
+<<<<<<< HEAD
             lsse.isNumeric(String(url_info["img"]))
+=======
+            (0, syntax_1.isNumeric)(url_info["img"])
+>>>>>>> main
         );
     } catch (e) {
         console.error(e);
@@ -165,7 +231,14 @@ function getPath(url_info) {
             );
         }
         if (wantsFrontPageCoverImage(url_info)) {
+<<<<<<< HEAD
             return getFrontPageCoverImagePath(url_info);
+=======
+            return (0, findPath_1.findPath)(
+                ["public", "assets", type_],
+                "".concat(url_info["img"], ".").concat(getWelcomeImageExtension(url_info["img"]).toString()),
+            );
+>>>>>>> main
         }
         if (wantsAlbumImage(url_info)) {
             return (0, findPath_1.findPath)(["img", "img"], url_info["img"]); // findPath(["img"]);

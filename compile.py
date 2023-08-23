@@ -14,6 +14,7 @@ run("python3 compilercleaner.py")
 print("collecting data for the compilation to begin...")
 run("ts-node buildCompilerFile")
 
+
 with open("compile.json") as file:
     data: dict | list = json.load(file)
 
@@ -29,5 +30,8 @@ for lang in data:
             run(f"mv ./target/debug/{file['file'][2:-3]} ./")
     print("\n")
 
+<<<<<<< HEAD
 print("running prettier on the compiled javascript")
+=======
+>>>>>>> main
 run("npm run format-code")

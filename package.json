@@ -6,7 +6,11 @@
     "scripts": {
         "compile": "python3 compile.py",
         "build": "python3 build.py",
+<<<<<<< HEAD
         "start": "npm run compile-ui && npm run format-code && pm2 start pm2.config.js",
+=======
+        "start": "npm run compile-ui && pm2 start pm2.config.js",
+>>>>>>> main
         "compile-ui": "tsc ./public/app.ts",
         "stop": "pm2 stop all",
         "list": "pm2 list",
@@ -21,7 +25,11 @@
         "run-site": "npm run compile && npm run start",
         "build-compiler-file": "ts-node buildCompilerFile",
         "push": "lsc push.ls",
+<<<<<<< HEAD
         "format-code": "prettier --write \"**/*.{js,ts,json,css,html,vue}\" --ignore-path .gitignore"
+=======
+        "format-code": "find . \\( -name \"node_modules\" -o -name \"target\" \\) -prune -o \\( -name \"*.json\" -o -name \"*.html\" -o -name \"*.js\" -o -name \"*.md\" -o -name \"*.ts\" -o -name \"*.css\" \\) -print | xargs -I {} prettier --write {}"
+>>>>>>> main
     },
     "repository": {
         "type": "git",
