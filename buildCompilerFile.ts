@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as prettier from "prettier";
 
 import { getFileExtension } from "./cgi/extensions/syntax";
-import { Immutable2DArray } from "./cgi/types/types";
+import { Immutable2DArray, Unarray, Unreadonly } from "./cgi/types/types";
 
 type LanguageToCompile = {
     type_: string;
@@ -123,7 +123,7 @@ traverseDirectories(
                 parser: "json",
                 ...require("./.prettierrc.json"),
             });
-        })(compileables as Readonly<typeof compileables>),
+        })(compileables as Immutable2DArray<Unreadonly<Unarray<typeof compileables>>>),
         "utf-8",
     );
 })();

@@ -28,3 +28,6 @@ for lang in data:
         if lang["type_"] == "rs":
             run(f"mv ./target/debug/{file['file'][2:-3]} ./")
     print("\n")
+
+print("running prettier on the compiled javascript")
+run("npm run format-code")

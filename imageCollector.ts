@@ -33,9 +33,9 @@ const albumDirectories: string[] = fs
 if (albumDirectories.length <= 0) process.exit();
 
 for (let i: number = 0; i < albumDirectories.length; i++) {
-    for (let o: number = 0; o < albumData.length; o++) {
-        if (albumData[o].album === albumDirectories[i]) {
-            albumData[o].images = fs
+    for (let j: number = 0; j < albumData.length; j++) {
+        if (albumData[j].album === albumDirectories[i]) {
+            albumData[j].images = fs
                 .readdirSync(`${dir}/${albumDirectories[i]}`)
                 .filter((item: string): boolean => {
                     return isImage(item);

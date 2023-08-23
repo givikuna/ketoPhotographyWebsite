@@ -4,7 +4,9 @@ exports.logErr = exports.findPath = void 0;
 var fs = require("fs");
 var path = require("path");
 function findPath(folders, requestedFile, reqFrom) {
-    if (reqFrom === void 0) { reqFrom = "index"; }
+    if (reqFrom === void 0) {
+        reqFrom = "index";
+    }
     var cFunc = "findPath";
     var def = "";
     try {
@@ -36,14 +38,15 @@ function findPath(folders, requestedFile, reqFrom) {
             return p;
         }
         return def;
-    }
-    catch (e) {
+    } catch (e) {
         return logErr(cFunc, e, def, reqFrom);
     }
 }
 exports.findPath = findPath;
 function logErr(cFunc, e, def, filename) {
-    if (def === void 0) { def = ""; }
+    if (def === void 0) {
+        def = "";
+    }
     console.error("".concat(filename, " ").concat(cFunc, "() ERROR: ").concat(e));
     return def;
 }

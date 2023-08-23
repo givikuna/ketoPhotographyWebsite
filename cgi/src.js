@@ -14,8 +14,7 @@ function getSourceFileExtension(url_info) {
     try {
         var m_type = url_info["type"];
         return m_type === "style" || m_type === "css" ? "css" : "js";
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
@@ -24,18 +23,22 @@ function getPath(url_info, requestsLibrary) {
     var _default = "../public/components/home.html";
     try {
         if (requestsLibrary) {
-            return (0, findPath_1.findPath)(["public", "lib"], "".concat(url_info["type"], ".").concat(getSourceFileExtension(url_info)));
+            return (0, findPath_1.findPath)(
+                ["public", "lib"],
+                "".concat(url_info["type"], ".").concat(getSourceFileExtension(url_info)),
+            );
         }
         return (0, findPath_1.findPath)(["public"], "app.".concat(getSourceFileExtension(url_info)));
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
 }
 var server = http.createServer(function (req, res) {
     var w = function (data) {
-        if (data === void 0) { data = ""; }
+        if (data === void 0) {
+            data = "";
+        }
         res.write(data);
         return res.end();
     };
@@ -44,13 +47,19 @@ var server = http.createServer(function (req, res) {
             return w("");
         }
         var url_info = url.parse(req.url, true).query;
-        var requestsLibrary = "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
+        var requestsLibrary =
+            "type" in url_info && (url_info["type"] == "jQuery" || url_info["type"] == "Bootstrap");
         var fpath = getPath(url_info, requestsLibrary);
-        return w(fs.existsSync(fpath)
-            ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, lsse.str((0, dynamicLinkGetter_1.getDynLink)())))
-            : "");
-    }
-    catch (e) {
+        return w(
+            fs.existsSync(fpath)
+                ? String(
+                      fs
+                          .readFileSync(fpath, "utf-8")
+                          .replace(/@dynamiclink/g, lsse.str((0, dynamicLinkGetter_1.getDynLink)())),
+                  )
+                : "",
+        );
+    } catch (e) {
         console.error(e);
         return w("");
     }

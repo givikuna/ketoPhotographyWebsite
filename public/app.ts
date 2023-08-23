@@ -27,7 +27,6 @@ type PageData = {
 };
 
 const pages: string[] = [];
-const builtAlbums: string[] = [];
 let iterated: number = 0;
 let previousPage: string = "";
 
@@ -108,14 +107,25 @@ async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
 
     try {
-        const data: Immutable2DArray<PageData> = (await getPages(dynamiclink)) as Immutable2DArray<PageData>;
+        const data: Immutable2DArray<PageData> = await (async (
+            _dynamiclink: typeof dynamiclink,
+        ): Promise<Immutable2DArray<PageData>> => {
+            const _data: Immutable2DArray<PageData> = (await getPages(
+                _dynamiclink,
+            )) as Immutable2DArray<PageData>;
+
+            if (typeof _data === "string") {
+                return JSON.parse(_data);
+            }
+
+            return _data;
+        })(dynamiclink);
 
         for (let i: number = 0; i < data.length; i++) {
             const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
                 .attr("id", data[i].page ? data[i].page : "ERROR")
                 .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
-
-            $("#app").append(pageDiv);
+            alert(data[i].page);
 
             pages.push(data[i].page);
 

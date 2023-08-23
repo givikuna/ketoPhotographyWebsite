@@ -13,8 +13,7 @@ function getExt(url_info) {
     var _default = "html";
     try {
         return "t" in url_info ? url_info["t"] : _default;
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         return _default;
     }
@@ -22,7 +21,9 @@ function getExt(url_info) {
 app.get("/", function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html", "Access-Control-Allow-Origin": "*" });
     var w = function (data) {
-        if (data === void 0) { data = ""; }
+        if (data === void 0) {
+            data = "";
+        }
         res.write(data);
         return res.end();
     };
@@ -34,13 +35,15 @@ app.get("/", function (req, res) {
         if (Object.keys(url_info).length === 0 || !("c" in url_info)) {
             throw new Error("Wrong input");
         }
-        var fpath = (0, findPath_1.findPath)(["public", "components"], "".concat(url_info["c"], ".").concat(getExt(url_info)));
+        var fpath = (0, findPath_1.findPath)(
+            ["public", "components"],
+            "".concat(url_info["c"], ".").concat(getExt(url_info)),
+        );
         if (fs.existsSync(fpath)) {
             return w((0, replaceData_1.replaceData)(String(fs.readFileSync(fpath, "utf-8")), url_info));
         }
         throw new Error("Wrong input");
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return w("");
     }

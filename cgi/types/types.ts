@@ -83,3 +83,5 @@ export type Immutable2DArray<T> = Readonly<Readonly<T>[]>;
 export type Immutable3DArray<T> = Readonly<Readonly<Readonly<T>[]>[]>;
 
 export type ImmutableArray<T> = ReadonlyArray<T | ImmutableArray<T>>;
+
+export type Unarray<T> = T extends (infer U)[] ? U : T;

@@ -4,11 +4,12 @@ import * as fs from "fs";
 import * as lsse from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
-import { CATEGORY, SESSION, STILL, Immutable2DArray } from "./types/types";
+import { CATEGORY, SESSION, Immutable2DArray, STILL } from "./types/types";
 import { IncomingMessage, ServerResponse } from "http";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
+import { getStills, getCategories, getSessions } from "./modules/getImageData";
 
 const app: express.Application = express();
 
@@ -26,18 +27,6 @@ type RequestOption =
     | "sessions"
     | "frontPageCoverImageData";
 
-function getStills(): Immutable2DArray<STILL> {
-    return JSON.parse(getDataToReturn("stills", {} as ParsedUrlQuery)) as Immutable2DArray<STILL>;
-}
-
-function getCategories(): Immutable2DArray<CATEGORY> {
-    return JSON.parse(getDataToReturn("categories", {} as ParsedUrlQuery)) as Immutable2DArray<CATEGORY>;
-}
-
-function getSessions(): Immutable2DArray<SESSION> {
-    return JSON.parse(getDataToReturn("sessions", {} as ParsedUrlQuery)) as Immutable2DArray<SESSION>;
-}
-
 function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
     const _default: ReturnType<typeof getSpecificData> = "";
 
@@ -54,8 +43,8 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                 const categories: Immutable2DArray<CATEGORY> = getCategories();
 
                 if (categoryDataType === "string") {
-                    const assumedCategory: undefined | Readonly<CATEGORY> = categories.find((category) =>
-                        lsse.equals(category.NAME, categoryData),
+                    const assumedCategory: undefined | Readonly<CATEGORY> = categories.find(
+                        (category: Readonly<CATEGORY>): boolean => lsse.equals(category.NAME, categoryData),
                     );
 
                     if (
@@ -76,7 +65,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             })(url_info["category"]);
 
             return JSON.stringify(
-                getSessions().filter((session) =>
+                getSessions().filter((session: Readonly<SESSION>): boolean =>
                     lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID)),
                 ),
                 null,
@@ -90,8 +79,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")
         ) {
             const session_UID: number = ((session_uid: number | string): number => {
-                const sessionMatch: Readonly<SESSION> | undefined = getSessions().find((session) =>
-                    lsse.equals(lsse.str(session.UID), lsse.str(session_uid)),
+                const sessionMatch: Readonly<SESSION> | undefined = getSessions().find(
+                    (session: Readonly<SESSION>): boolean =>
+                        lsse.equals(lsse.str(session.UID), lsse.str(session_uid)),
                 );
 
                 return typeof sessionMatch &&
@@ -103,7 +93,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             })(url_info["session"]);
 
             return JSON.stringify(
-                getStills().filter((still) =>
+                getStills().filter((still: Readonly<STILL>): boolean =>
                     lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID)),
                 ),
                 null,
@@ -113,7 +103,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
         if (givenData === "frontPageCoverImageData") {
             return JSON.stringify(
-                getStills().filter((still) => still.IS_FRONT_COVER_IMAGE),
+                getStills().filter((still: Readonly<STILL>): boolean => still.IS_FRONT_COVER_IMAGE),
                 null,
                 4,
             );
@@ -126,7 +116,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
     }
 }
 
-function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery> = {}): string {
+export function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery> = {}): string {
     const _default: ReturnType<typeof getDataToReturn> = "[]";
 
     try {

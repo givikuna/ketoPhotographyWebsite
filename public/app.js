@@ -130,7 +130,6 @@ var __generator =
         }
     };
 var pages = [];
-var builtAlbums = [];
 var iterated = 0;
 var previousPage = "";
 function main(d, l, c) {
@@ -240,6 +239,7 @@ function createAlbum(album, dynamiclink) {
 function buildApp(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
         var _default, data, _loop_1, i, i, e_3;
+        var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -247,7 +247,26 @@ function buildApp(dynamiclink) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 11, , 12]);
-                    return [4 /*yield*/, getPages(dynamiclink)];
+                    return [
+                        4 /*yield*/,
+                        (function (_dynamiclink) {
+                            return __awaiter(_this, void 0, void 0, function () {
+                                var _data;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            return [4 /*yield*/, getPages(_dynamiclink)];
+                                        case 1:
+                                            _data = _a.sent();
+                                            if (typeof _data === "string") {
+                                                return [2 /*return*/, JSON.parse(_data)];
+                                            }
+                                            return [2 /*return*/, _data];
+                                    }
+                                });
+                            });
+                        })(dynamiclink),
+                    ];
                 case 2:
                     data = _a.sent();
                     _loop_1 = function (i) {
@@ -262,7 +281,7 @@ function buildApp(dynamiclink) {
                                                 ? "albumPage"
                                                 : "webPage",
                                         );
-                                    $("#app").append(pageDiv);
+                                    alert(data[i].page);
                                     pages.push(data[i].page);
                                     return [
                                         4 /*yield*/,

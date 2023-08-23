@@ -1,42 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDataToReturn = void 0;
 var express = require("express");
 var url = require("url");
 var fs = require("fs");
 var lsse = require("lsse");
 var portServer_1 = require("./modules/portServer");
 var findPath_1 = require("./modules/findPath");
-var syntax_1 = require("./extensions/syntax");
+var getImageData_1 = require("./modules/getImageData");
 var app = express();
 var filename = "select";
 var port = (0, portServer_1.getPort)(filename); // 8094
-function getStills() {
-    return JSON.parse(getDataToReturn("stills", {}));
-}
-function getCategories() {
-    return JSON.parse(getDataToReturn("categories", {}));
-}
-function getSessions() {
-    return JSON.parse(getDataToReturn("sessions", {}));
-}
 function getSpecificData(givenData, url_info) {
     var _default = "";
     try {
         var write = "";
-        if (givenData === "categorySessions" &&
+        if (
+            givenData === "categorySessions" &&
             "category" in url_info &&
-            (typeof url_info["category"] === "string" || typeof url_info["category"] === "number")) {
+            (typeof url_info["category"] === "string" || typeof url_info["category"] === "number")
+        ) {
             var category_UID_1 = (function (categoryData) {
                 var categoryDataType = typeof categoryData;
-                var categories = getCategories();
+                var categories = (0, getImageData_1.getCategories)();
                 if (categoryDataType === "string") {
                     var assumedCategory = categories.find(function (category) {
                         return lsse.equals(category.NAME, categoryData);
                     });
-                    if (assumedCategory &&
+                    if (
+                        assumedCategory &&
                         !lsse.equalsAny(assumedCategory, [null, undefined, "", [], {}]) &&
                         typeof assumedCategory !== "undefined" &&
-                        "UID" in assumedCategory) {
+                        "UID" in assumedCategory
+                    ) {
                         return assumedCategory.UID;
                     }
                 }
@@ -45,15 +41,21 @@ function getSpecificData(givenData, url_info) {
                 }
                 return 0;
             })(url_info["category"]);
-            return JSON.stringify(getSessions().filter(function (session) {
-                return lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID_1));
-            }), null, 4);
+            return JSON.stringify(
+                (0, getImageData_1.getSessions)().filter(function (session) {
+                    return lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID_1));
+                }),
+                null,
+                4,
+            );
         }
-        if (givenData === "sessionImages" &&
+        if (
+            givenData === "sessionImages" &&
             "session" in url_info &&
-            (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")) {
+            (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")
+        ) {
             var session_UID_1 = (function (session_uid) {
-                var sessionMatch = getSessions().find(function (session) {
+                var sessionMatch = (0, getImageData_1.getSessions)().find(function (session) {
                     return lsse.equals(lsse.str(session.UID), lsse.str(session_uid));
                 });
                 return typeof sessionMatch &&
@@ -63,22 +65,33 @@ function getSpecificData(givenData, url_info) {
                     ? lsse.int(sessionMatch.UID)
                     : 0;
             })(url_info["session"]);
-            return JSON.stringify(getStills().filter(function (still) {
-                return lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID_1));
-            }), null, 4);
+            return JSON.stringify(
+                (0, getImageData_1.getStills)().filter(function (still) {
+                    return lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID_1));
+                }),
+                null,
+                4,
+            );
         }
         if (givenData === "frontPageCoverImageData") {
-            return JSON.stringify(getStills().filter(function (still) { return still.IS_FRONT_COVER_IMAGE; }), null, 4);
+            return JSON.stringify(
+                (0, getImageData_1.getStills)().filter(function (still) {
+                    return still.IS_FRONT_COVER_IMAGE;
+                }),
+                null,
+                4,
+            );
         }
         return write;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
 }
 function getDataToReturn(givenData, url_info) {
-    if (url_info === void 0) { url_info = {}; }
+    if (url_info === void 0) {
+        url_info = {};
+    }
     var _default = "[]";
     try {
         if (givenData in ["categorySessions", "sessionImages", "frontPageCoverImageData"]) {
@@ -118,23 +131,24 @@ function getDataToReturn(givenData, url_info) {
             encoding: "utf8",
             flag: "r",
         });
-        if ((0, syntax_1.isJSON)(dataAsString)) {
+        if (lsse.isJSON(dataAsString)) {
             write = JSON.stringify(dataAsString, null, 4);
-        }
-        else {
+        } else {
             write = lsse.str(dataAsString);
         }
         return write;
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return _default;
     }
 }
+exports.getDataToReturn = getDataToReturn;
 app.get("/", function (req, res) {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     var w = function (data) {
-        if (data === void 0) { data = ""; }
+        if (data === void 0) {
+            data = "";
+        }
         res.write(data);
         return res.end();
     };
@@ -147,8 +161,7 @@ app.get("/", function (req, res) {
             return w("");
         }
         return w(getDataToReturn(url_info["data"], url_info));
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         return w("");
     }
