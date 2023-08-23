@@ -27,7 +27,7 @@
         (sleep 1000)
     case 1 then do
         (println "formatted the code")
-        (println 1000)
+        (sleep 1000)
     case 2 then do
         (println "staged all of the changes")
         (sleep 1000)
