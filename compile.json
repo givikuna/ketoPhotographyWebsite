@@ -70,7 +70,6 @@
                 "compilesTo": "./cgi/serve.js"
             },
             { "dir": "cgi/", "file": "./cgi/src.ts", "filename": "src.ts", "compilesTo": "./cgi/src.js" },
-            { "dir": "cgi/", "file": "./cgi/test.ts", "filename": "test.ts", "compilesTo": "./cgi/test.js" },
             {
                 "dir": "cgi/types/",
                 "file": "./cgi/types/types.ts",

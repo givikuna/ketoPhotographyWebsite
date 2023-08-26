@@ -1,15 +1,20 @@
-import { ParsedUrlQuery } from "querystring";
+import * as fs from "fs";
+
 import { CATEGORY, SESSION, STILL, Immutable2DArray } from "../types/types";
-import { getDataToReturn } from "../select";
+import { findPath } from "./findPath";
 
 export function getStills(): Immutable2DArray<STILL> {
-    return JSON.parse(getDataToReturn("stills", {} as ParsedUrlQuery)) as Immutable2DArray<STILL>;
+    return JSON.parse(fs.readFileSync(findPath(["img"], "stills.json"), "utf-8")) as Immutable2DArray<STILL>;
 }
 
 export function getCategories(): Immutable2DArray<CATEGORY> {
-    return JSON.parse(getDataToReturn("categories", {} as ParsedUrlQuery)) as Immutable2DArray<CATEGORY>;
+    return JSON.parse(
+        fs.readFileSync(findPath(["img"], "categories.json"), "utf-8"),
+    ) as Immutable2DArray<CATEGORY>;
 }
 
 export function getSessions(): Immutable2DArray<SESSION> {
-    return JSON.parse(getDataToReturn("sessions", {} as ParsedUrlQuery)) as Immutable2DArray<SESSION>;
+    return JSON.parse(
+        fs.readFileSync(findPath(["img"], "sessions.json"), "utf-8"),
+    ) as Immutable2DArray<SESSION>;
 }

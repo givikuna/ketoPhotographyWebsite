@@ -129,6 +129,18 @@ var __generator =
             return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
+var __spreadArray =
+    (this && this.__spreadArray) ||
+    function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                    ar[i] = from[i];
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    };
 var pages = [];
 var iterated = 0;
 var previousPage = "";
@@ -206,39 +218,9 @@ function main(d, l, c) {
     });
 }
 // --------------------------------------------------------------------------------------- Build functions:
-function createAlbum(album, dynamiclink) {
-    return __awaiter(this, void 0, void 0, function () {
-        var albumDiv, _a, _b, e_2;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _c.trys.push([0, 2, , 3]);
-                    _b = (_a = $(/*HTML*/ "<div>").attr("id", "album_".concat(album))).append;
-                    return [4 /*yield*/, fetchComponent("inAlbum", dynamiclink)];
-                case 1:
-                    albumDiv = _b
-                        .apply(_a, [_c.sent()])
-                        .append(
-                            /*HTML*/ '\n                <div\n                    class="inAlbumImages"\n                    id="'.concat(
-                                album,
-                                'Gallery"\n                > </div>\n            ',
-                            ),
-                        );
-                    $("#app").append(albumDiv);
-                    return [3 /*break*/, 3];
-                case 2:
-                    e_2 = _c.sent();
-                    console.error(e_2);
-                    return [3 /*break*/, 3];
-                case 3:
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
 function buildApp(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, data, _loop_1, i, i, e_3;
+        var _default, data, _loop_1, i, i, e_2;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -281,7 +263,7 @@ function buildApp(dynamiclink) {
                                                 ? "albumPage"
                                                 : "webPage",
                                         );
-                                    alert(data[i].page);
+                                    $("#app").append(pageDiv);
                                     pages.push(data[i].page);
                                     return [
                                         4 /*yield*/,
@@ -328,8 +310,8 @@ function buildApp(dynamiclink) {
                 case 10:
                     return [2 /*return*/, true];
                 case 11:
-                    e_3 = _a.sent();
-                    console.error(e_3);
+                    e_2 = _a.sent();
+                    console.error(e_2);
                     return [2 /*return*/, _default];
                 case 12:
                     return [2 /*return*/];
@@ -339,171 +321,62 @@ function buildApp(dynamiclink) {
 }
 function buildPage(page, dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, categories, i, element, e_4;
+        var _a, categories, i, element, e_3;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 8, , 9]);
+                    _b.trys.push([0, 4, , 5]);
                     _a = page;
                     switch (_a) {
                         case "home":
                             return [3 /*break*/, 1];
                     }
-                    return [3 /*break*/, 7];
+                    return [3 /*break*/, 3];
                 case 1:
                     return [4 /*yield*/, fetchCategories(dynamiclink)];
                 case 2:
                     categories = _b.sent();
-                    i = 0;
-                    _b.label = 3;
-                case 3:
-                    if (!(i < categories.length)) return [3 /*break*/, 6];
-                    element =
-                        '\n                        <div class="imageContainer">\n                            <img\n                                src="'
-                            .concat(dynamiclink, ":8092/?type=cover&album=")
-                            .concat(
-                                categories[i].NAME,
-                                '"\n                                onclick="window.location.href=\'#album_',
-                            )
-                            .concat(
-                                categories[i].NAME,
-                                '\'"\n                                class="albumCoverImage"\n                                alt="Image ',
-                            )
-                            .concat(i, '"\n                                id="')
-                            .concat(
-                                categories[i].NAME,
-                                'AlbumCoverForHome"\n                            >\n                            <span id="',
-                            )
-                            .concat(
-                                categories[i].NAME,
-                                'AlbumCoverForHomeSpan">\n                                ',
-                            )
-                            .concat(
-                                categories[i].NAME,
-                                "\n                            </span>\n                        </div>\n                    ",
-                            );
-                    $("#album-gallery").append(element);
-                    return [4 /*yield*/, createAlbum(categories[i].NAME, dynamiclink)];
-                case 4:
-                    _b.sent();
-                    pages.push("album_".concat(categories[i].NAME));
-                    _b.label = 5;
-                case 5:
-                    i++;
-                    return [3 /*break*/, 3];
-                case 6:
-                    return [3 /*break*/, 7];
-                case 7:
-                    return [3 /*break*/, 9];
-                case 8:
-                    e_4 = _b.sent();
-                    console.error(e_4);
-                    return [3 /*break*/, 9];
-                case 9:
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function getHomepageCoverImages(dynamiclink) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _default, m_images, gottenImages, i, e_5;
-        var _a;
-        var _this = this;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _default = [];
-                    _b.label = 1;
-                case 1:
-                    _b.trys.push([1, 3, , 4]);
-                    m_images = [];
-                    return [
-                        4 /*yield*/,
-                        (function (_dynamiclink) {
-                            return __awaiter(_this, void 0, void 0, function () {
-                                var _default2, url, response, data, e2_1;
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0:
-                                            _default2 = [
-                                                {
-                                                    img: "1.jpeg",
-                                                    extension: "jpeg",
-                                                },
-                                                {
-                                                    img: "2.jpeg",
-                                                    extension: "jpeg",
-                                                },
-                                                {
-                                                    img: "3.jpeg",
-                                                    extension: "jpeg",
-                                                },
-                                                {
-                                                    img: "4.jpeg",
-                                                    extension: "jpeg",
-                                                },
-                                                {
-                                                    img: "5.jpeg",
-                                                    extension: "jpeg",
-                                                },
-                                            ];
-                                            _a.label = 1;
-                                        case 1:
-                                            _a.trys.push([1, 4, , 5]);
-                                            url = "".concat(
-                                                _dynamiclink,
-                                                ":8094/?data=frontPageCoverImageData",
-                                            );
-                                            return [4 /*yield*/, fetch(url)];
-                                        case 2:
-                                            response = _a.sent();
-                                            if (!response.ok) {
-                                                throw new Error(
-                                                    "Error: "
-                                                        .concat(response.status, " ")
-                                                        .concat(response.statusText),
-                                                );
-                                            }
-                                            return [4 /*yield*/, response.json()];
-                                        case 3:
-                                            data = _a.sent();
-                                            return [2 /*return*/, data];
-                                        case 4:
-                                            e2_1 = _a.sent();
-                                            console.error(
-                                                "An error occurred while fetching dynamic data:",
-                                                e2_1,
-                                            );
-                                            return [2 /*return*/, _default2];
-                                        case 5:
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            });
-                        })(dynamiclink),
-                    ];
-                case 2:
-                    gottenImages = _b.sent();
-                    for (
-                        i = 1;
-                        i <=
-                        (gottenImages === null || gottenImages === void 0 ? void 0 : gottenImages.length);
-                        i++
-                    ) {
-                        if (i === 3) {
-                            (_a = [m_images[1], m_images[0]]), (m_images[0] = _a[0]), (m_images[1] = _a[1]);
-                        }
-                        m_images.push(
-                            "".concat(dynamiclink, ":8092/?type=frontPageCoverImageData&img=").concat(i),
-                        );
+                    console.log(categories.length);
+                    // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
+                    for (i = 0; i < categories.length; i++) {
+                        element =
+                            '\n                        <div class="imageContainer">\n                            <img\n                                src="'
+                                .concat(
+                                    (function (_dynamiclink, category) {
+                                        var url = new URL("".concat(_dynamiclink, ":8092/"));
+                                        url.searchParams.set("type", "cover");
+                                        url.searchParams.set("album", category);
+                                        return url.toString();
+                                    })(dynamiclink, categories[i].NAME),
+                                    '"\n                                onclick="window.location.href=\'#album_',
+                                )
+                                .concat(
+                                    categories[i].NAME,
+                                    '\'"\n                                class="albumCoverImage"\n                                alt="Image ',
+                                )
+                                .concat(i, '"\n                                id="')
+                                .concat(
+                                    categories[i].NAME,
+                                    'AlbumCoverForHome"\n                            >\n                            <span id="',
+                                )
+                                .concat(
+                                    categories[i].NAME,
+                                    'AlbumCoverForHomeSpan">\n                                ',
+                                )
+                                .concat(
+                                    categories[i].NAME,
+                                    "\n                            </span>\n                        </div>\n                    ",
+                                );
+                        $("#album-gallery").append(element);
                     }
-                    return [2 /*return*/, m_images];
+                    return [3 /*break*/, 3];
                 case 3:
-                    e_5 = _b.sent();
-                    console.error(e_5);
-                    return [2 /*return*/, _default];
+                    return [3 /*break*/, 5];
                 case 4:
+                    e_3 = _b.sent();
+                    console.error(e_3);
+                    return [3 /*break*/, 5];
+                case 5:
                     return [2 /*return*/];
             }
         });
@@ -511,7 +384,7 @@ function getHomepageCoverImages(dynamiclink) {
 }
 function buildNavBar(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var navbar_div, homepage_navbar_div, _a, _b, _c, _d, e_6;
+        var navbar_div, homepage_navbar_div, _a, _b, _c, _d, e_4;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -533,8 +406,8 @@ function buildNavBar(dynamiclink) {
                     _c.innerHTML = _d + _e.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    e_6 = _e.sent();
-                    console.error(e_6);
+                    e_4 = _e.sent();
+                    console.error(e_4);
                     return [3 /*break*/, 4];
                 case 4:
                     return [2 /*return*/];
@@ -571,7 +444,7 @@ function buildHamburger(div, dynamiclink) {
             )
             .concat(
                 div,
-                '">\n                <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">\n                    Home\n                </a>\n\n                <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">\n                    Contact\n                </a>\n\n                <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">\n                    About\n                </a>\n\n                <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">\n                    Pricing\n                </a>\n\n                <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">\n                    Blog\n                </a>\n\n                <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">\n                    Albums\n                </a>\n            </div>\n            <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-',
+                '">\n                <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">\n                    Home\n                </a>\n\n                <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">\n                    Contact\n                </a>\n\n                <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">\n                    About\n                </a>\n\n                <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">\n                    Pricing\n                </a>\n\n                <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">\n                    Blog\n                </a>\n\n                <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">\n                    Albums\n                </a>\n            </div>\n\n            <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-',
             )
             .concat(div, '">\n                <a href="#home">\n                    <img src="')
             .concat(
@@ -622,34 +495,30 @@ function makeFooter(dynamiclink) {
 }
 function buildComponent(component, dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, componentDiv, componentHTML, e_7;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _default, componentDiv, _a, _b, e_5;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     _default = null;
-                    _a.label = 1;
+                    _c.label = 1;
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
-                    componentDiv = $("#" + (component ? component : "ERROR"))[0];
-                    if (!(componentDiv !== null)) return [3 /*break*/, 3];
+                    _c.trys.push([1, 3, , 4]);
+                    _b = (_a = $("#" + (component ? component : "ERROR"))).html;
                     return [4 /*yield*/, fetchComponent(component, dynamiclink)];
                 case 2:
-                    componentHTML = _a.sent();
-                    $(componentDiv).html(componentHTML);
-                    _a.label = 3;
-                case 3:
+                    componentDiv = _b.apply(_a, [_c.sent()]);
                     return [2 /*return*/, componentDiv];
-                case 4:
-                    e_7 = _a.sent();
-                    console.error(e_7);
+                case 3:
+                    e_5 = _c.sent();
+                    console.error(e_5);
                     return [2 /*return*/, _default];
-                case 5:
+                case 4:
                     return [2 /*return*/];
             }
         });
     });
 }
-// --------------------------------------------------------------------------------------- Event-based functions:
+// --------------------------------------------------------------------------------------- Event functions:
 function hashchange() {
     updateApp();
     if (inPhoneMode()) {
@@ -677,14 +546,16 @@ function hashchange() {
 }
 function nextHomepageImage() {
     return __awaiter(this, void 0, void 0, function () {
-        var images, homepage_navbar_div, e_8;
+        var images, homepage_navbar_div, e_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, getHomepageCoverImages("@dynamiclink")];
+                    return [4 /*yield*/, getHomepageCoverImagesURLs("@dynamiclink")];
                 case 1:
-                    images = _a.sent();
+                    images = _a.sent().map(function (url) {
+                        return url.toString();
+                    });
                     homepage_navbar_div = document.querySelector("#homepage-navbar-div");
                     if (homepage_navbar_div == null) {
                         return [2 /*return*/];
@@ -697,8 +568,8 @@ function nextHomepageImage() {
                     }
                     return [3 /*break*/, 3];
                 case 2:
-                    e_8 = _a.sent();
-                    console.error(e_8);
+                    e_6 = _a.sent();
+                    console.error(e_6);
                     return [3 /*break*/, 3];
                 case 3:
                     return [2 /*return*/];
@@ -713,8 +584,7 @@ function windowSizeCheck() {
             changeNavbarForSmallDisplays();
             return true;
         }
-        $("#homepage-navbar-div").css("height", "100%");
-        $("#homepage-navbar-div").css("margin-top", "0%");
+        $("#homepage-navbar-div").css("height", "100%").css("margin-top", "0%");
         hideDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
         if (getPage() === "home") {
@@ -752,8 +622,7 @@ function changeNavbarForSmallDisplays() {
             showDiv("homepage-navbar-div-phone");
             hideDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
-            $("#homepage-navbar-div").css("height", "200px");
-            $("#homepage-navbar-div").css("margin-top", "100px");
+            $("#homepage-navbar-div").css("height", "200px").css("margin-top", "100px");
         } else {
             showDiv("navbar-div-phone");
             hideDiv("homepage-navbar-div-phone");
@@ -849,7 +718,7 @@ function changeLang(lang) {
 // --------------------------------------------------------------------------------------- Data fetching functions:
 function fetchComponent(component, dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, url, response, data, e_9;
+        var _default, url, response, data, e_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -857,7 +726,8 @@ function fetchComponent(component, dynamiclink) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    url = "".concat(dynamiclink, ":8095/?c=").concat(component);
+                    url = new URL("".concat(dynamiclink, ":8095/"));
+                    url.searchParams.set("c", component);
                     return [4 /*yield*/, fetch(url)];
                 case 2:
                     response = _a.sent();
@@ -869,8 +739,8 @@ function fetchComponent(component, dynamiclink) {
                     data = _a.sent();
                     return [2 /*return*/, data];
                 case 4:
-                    e_9 = _a.sent();
-                    console.error("Error:", e_9);
+                    e_7 = _a.sent();
+                    console.error("Error:", e_7);
                     return [2 /*return*/, _default];
                 case 5:
                     return [2 /*return*/];
@@ -880,9 +750,9 @@ function fetchComponent(component, dynamiclink) {
 }
 function fetchCategories(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, url, response, data, e_10;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _default, url, response, data, _a, _b, _c, _d, e_8;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0:
                     _default = [
                         {
@@ -922,25 +792,115 @@ function fetchCategories(dynamiclink) {
                             DESCRIPTION: "",
                         },
                     ];
-                    _a.label = 1;
+                    _e.label = 1;
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
-                    url = "".concat(dynamiclink, ":8094/?data=categories");
+                    _e.trys.push([1, 4, , 5]);
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "categories");
                     return [4 /*yield*/, fetch(url)];
                 case 2:
-                    response = _a.sent();
+                    response = _e.sent();
                     if (!response.ok) {
                         throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
                     }
+                    _b = (_a = JSON).parse;
+                    _d = (_c = JSON).stringify;
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    data = _a.sent();
-                    return [2 /*return*/, data];
+                    data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
+                    if (typeof data === "string") {
+                        return [2 /*return*/, JSON.parse(data)];
+                    }
+                    return [
+                        2 /*return*/,
+                        (function (_data) {
+                            return JSON.parse(_data);
+                        })(data),
+                    ];
                 case 4:
-                    e_10 = _a.sent();
-                    console.error("An error occurred while fetching dynamic data:", e_10);
+                    e_8 = _e.sent();
+                    console.error("An error occurred while fetching dynamic categories/albums data:", e_8);
                     return [2 /*return*/, _default];
                 case 5:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getHomepageCoverStills(dynamiclink) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _default, url, response, data, _a, _b, _c, _d, e_9;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _default = [];
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 4, , 5]);
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "frontPageCoverImageData");
+                    return [4 /*yield*/, fetch(url)];
+                case 2:
+                    response = _e.sent();
+                    if (!response.ok) {
+                        throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
+                    }
+                    _b = (_a = JSON).parse;
+                    _d = (_c = JSON).stringify;
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
+                    return [2 /*return*/, data];
+                case 4:
+                    e_9 = _e.sent();
+                    console.error(
+                        "An error occurred while trying to fetch dynamic front page cover images data:",
+                        e_9,
+                    );
+                    return [2 /*return*/, _default];
+                case 5:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getHomepageCoverImagesURLs(dynamiclink) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _default, _a, e_10;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _default = [];
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 3, , 4]);
+                    _a = function (arr) {
+                        return arr.length < 2
+                            ? arr
+                            : __spreadArray(
+                                  __spreadArray([arr[arr.length - 1]], arr.slice(1, arr.length - 1), true),
+                                  [arr[0]],
+                                  false,
+                              );
+                    };
+                    return [4 /*yield*/, getHomepageCoverStills(dynamiclink)];
+                case 2:
+                    return [
+                        2 /*return*/,
+                        _a.apply(void 0, [
+                            _b.sent().map(function (_, i) {
+                                var url = new URL("".concat(dynamiclink, ":8092/"));
+                                url.searchParams.set("type", "frontPageCoverImage");
+                                url.searchParams.set("img", "".concat(i));
+                                return url;
+                            }),
+                        ]),
+                    ];
+                case 3:
+                    e_10 = _b.sent();
+                    console.error(e_10);
+                    return [2 /*return*/, _default];
+                case 4:
                     return [2 /*return*/];
             }
         });
@@ -999,7 +959,8 @@ function getPages(dynamiclink) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    url = "".concat(dynamiclink, ":8094/?data=pages");
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "pages");
                     return [4 /*yield*/, fetch(url)];
                 case 2:
                     response = _a.sent();
@@ -1012,7 +973,7 @@ function getPages(dynamiclink) {
                     return [2 /*return*/, data];
                 case 4:
                     error_1 = _a.sent();
-                    console.error("An error occurred while fetching dynamic data:", error_1);
+                    console.error("An error occurred while fetching dynamic page information data:", error_1);
                     return [2 /*return*/, _default];
                 case 5:
                     return [2 /*return*/];

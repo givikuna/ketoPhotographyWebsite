@@ -26,14 +26,10 @@
         (println "compiled all the files")
         (sleep 1000)
     case 1 then do
-<<<<<<< HEAD
         (println "formatted the code")
-=======
-        (println ("formatted all of the files")
-        (sleep 1000))
+        (sleep 1000)
     case 1 then do
         (println "staged all of the changes")
->>>>>>> main
         (sleep 1000)
     case 2 then do
         (println "staged all of the changes")

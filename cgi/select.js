@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDataToReturn = void 0;
 var express = require("express");
 var url = require("url");
 var fs = require("fs");
@@ -42,11 +41,7 @@ function getSpecificData(givenData, url_info) {
                 return 0;
             })(url_info["category"]);
             return JSON.stringify(
-<<<<<<< HEAD
                 (0, getImageData_1.getSessions)().filter(function (session) {
-=======
-                getSessions().filter(function (session) {
->>>>>>> main
                     return lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID_1));
                 }),
                 null,
@@ -70,11 +65,7 @@ function getSpecificData(givenData, url_info) {
                     : 0;
             })(url_info["session"]);
             return JSON.stringify(
-<<<<<<< HEAD
                 (0, getImageData_1.getStills)().filter(function (still) {
-=======
-                getStills().filter(function (still) {
->>>>>>> main
                     return lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID_1));
                 }),
                 null,
@@ -83,11 +74,7 @@ function getSpecificData(givenData, url_info) {
         }
         if (givenData === "frontPageCoverImageData") {
             return JSON.stringify(
-<<<<<<< HEAD
                 (0, getImageData_1.getStills)().filter(function (still) {
-=======
-                getStills().filter(function (still) {
->>>>>>> main
                     return still.IS_FRONT_COVER_IMAGE;
                 }),
                 null,
@@ -106,7 +93,7 @@ function getDataToReturn(givenData, url_info) {
     }
     var _default = "[]";
     try {
-        if (givenData in ["categorySessions", "sessionImages", "frontPageCoverImageData"]) {
+        if (["categorySessions", "sessionImages", "frontPageCoverImageData"].includes(givenData)) {
             return getSpecificData(givenData, url_info);
         }
         var write = "";
@@ -154,7 +141,6 @@ function getDataToReturn(givenData, url_info) {
         return _default;
     }
 }
-exports.getDataToReturn = getDataToReturn;
 app.get("/", function (req, res) {
     res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
     var w = function (data) {

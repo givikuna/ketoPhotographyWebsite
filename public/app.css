@@ -210,7 +210,7 @@ body {
 
 #homepage-navbar-div {
     position: relative;
-    background-image: url("@dynamiclink:8092/?type=welcome&img=1");
+    background-image: url("@dynamiclink:8092/?type=frontPageCoverImage&img=0");
     display: none;
     width: 100%;
     opacity: 0.97;

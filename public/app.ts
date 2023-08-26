@@ -13,6 +13,13 @@ type CATEGORY = {
     DESCRIPTION: string;
 };
 
+type STILL = {
+    UID: number;
+    SESSION_UID: number;
+    NAME: string;
+    IS_FRONT_COVER_IMAGE: boolean;
+};
+
 type FrontPageCoverImage = {
     img: string;
     extension: string;
@@ -38,6 +45,7 @@ async function main(
     const dynamiclink: typeof d = d ? d : "ketojibladze.com";
     const language: typeof l = l ? getLang(l) : "en";
     const contactemail: typeof c = c ? c : "givitsvariani@proton.me";
+
     try {
         previousPage = getPage();
 
@@ -60,7 +68,7 @@ async function main(
             })
             .then(updateApp)
             .then((): void => {
-                const navbars: Immutable2DArray<string> = ["navbar-div-phone", "homepage-navbar-div-phone"];
+                const navbars: ReadonlyArray<string> = ["navbar-div-phone", "homepage-navbar-div-phone"];
 
                 for (let i: number = 0; i < navbars.length; i++) {
                     let _: void = buildHamburger(navbars[i], dynamiclink);
@@ -86,29 +94,12 @@ async function main(
 
 // --------------------------------------------------------------------------------------- Build functions:
 
-async function createAlbum(album: string, dynamiclink: string): Promise<void> {
-    try {
-        const albumDiv: JQuery<Element> = $(/*HTML*/ `<div>`)
-            .attr("id", `album_${album}`)
-            .append(await fetchComponent("inAlbum", dynamiclink)).append(/*HTML*/ `
-                <div
-                    class="inAlbumImages"
-                    id="${album}Gallery"
-                > </div>
-            `);
-
-        $("#app").append(albumDiv);
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
 async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
 
     try {
         const data: Immutable2DArray<PageData> = await (async (
-            _dynamiclink: typeof dynamiclink,
+            _dynamiclink: string,
         ): Promise<Immutable2DArray<PageData>> => {
             const _data: Immutable2DArray<PageData> = (await getPages(
                 _dynamiclink,
@@ -125,7 +116,8 @@ async function buildApp(dynamiclink: string): Promise<boolean> {
             const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
                 .attr("id", data[i].page ? data[i].page : "ERROR")
                 .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
-            alert(data[i].page);
+
+            $("#app").append(pageDiv);
 
             pages.push(data[i].page);
 
@@ -157,15 +149,32 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
     try {
         switch (page) {
             case "home":
-                const categories: Immutable2DArray<CATEGORY> = (await fetchCategories(
-                    dynamiclink,
-                )) as Immutable2DArray<CATEGORY>;
+                /*
+                const categories: Immutable2DArray<CATEGORY> = ((
+                    data: string,
+                ): Immutable2DArray<CATEGORY> => {
+                    return JSON.parse(data) as Immutable2DArray<CATEGORY>;
+                })(
+                    JSON.parse(
+                        JSON.stringify((await fetchCategories(dynamiclink)) as Immutable2DArray<CATEGORY>),
+                    ),
+                );
+                */
+                const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
+                console.log(categories.length);
 
+                // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
                 for (let i: number = 0; i < categories.length; i++) {
                     const element: string = /*HTML*/ `
                         <div class="imageContainer">
                             <img
-                                src="${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}"
+                                src="${((_dynamiclink: string, category: string): string => {
+                                    let url: URL = new URL(`${_dynamiclink}:8092/`);
+                                    url.searchParams.set("type", "cover");
+                                    url.searchParams.set("album", category);
+
+                                    return url.toString();
+                                })(dynamiclink, categories[i].NAME)}"
                                 onclick="window.location.href='#album_${categories[i].NAME}'"
                                 class="albumCoverImage"
                                 alt="Image ${i}"
@@ -178,80 +187,12 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
                     `;
 
                     $("#album-gallery").append(element);
-
-                    await createAlbum(categories[i].NAME, dynamiclink);
-
-                    pages.push(`album_${categories[i].NAME}`);
                 }
 
                 break;
         }
     } catch (e: unknown) {
         console.error(e);
-    }
-}
-
-async function getHomepageCoverImages(dynamiclink: string): Promise<Immutable2DArray<string>> {
-    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImages>> = [];
-
-    try {
-        const m_images: string[] = [];
-        const gottenImages: Immutable2DArray<FrontPageCoverImage> = (await (async (
-            _dynamiclink: typeof dynamiclink,
-        ): Promise<Immutable2DArray<FrontPageCoverImage>> => {
-            // fetchWelcomeImageData()
-            const _default2: Immutable2DArray<FrontPageCoverImage> = [
-                {
-                    img: "1.jpeg",
-                    extension: "jpeg",
-                },
-                {
-                    img: "2.jpeg",
-                    extension: "jpeg",
-                },
-                {
-                    img: "3.jpeg",
-                    extension: "jpeg",
-                },
-                {
-                    img: "4.jpeg",
-                    extension: "jpeg",
-                },
-                {
-                    img: "5.jpeg",
-                    extension: "jpeg",
-                },
-            ] as const;
-
-            try {
-                const url: string = `${_dynamiclink}:8094/?data=frontPageCoverImageData`;
-                const response: Readonly<Response> = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} ${response.statusText}`);
-                }
-
-                const data: Immutable2DArray<FrontPageCoverImage> =
-                    (await response.json()) as Immutable2DArray<FrontPageCoverImage>;
-
-                return data;
-            } catch (e2: unknown) {
-                console.error("An error occurred while fetching dynamic data:", e2);
-                return _default2;
-            }
-        })(dynamiclink)) as Immutable2DArray<FrontPageCoverImage>;
-
-        for (let i: number = 1; i <= gottenImages?.length; i++) {
-            if (i === 3) {
-                [m_images[0], m_images[1]] = [m_images[1], m_images[0]];
-            }
-            m_images.push(`${dynamiclink}:8092/?type=frontPageCoverImageData&img=${i}`);
-        }
-
-        return m_images;
-    } catch (e: unknown) {
-        console.error(e);
-        return _default;
     }
 }
 
@@ -321,6 +262,7 @@ function buildHamburger(div: string, dynamiclink: string): void {
                     Albums
                 </a>
             </div>
+
             <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-${div}">
                 <a href="#home">
                     <img src="${dynamiclink}:8092/?type=logo" class="navbar-logo-phone" />
@@ -386,7 +328,7 @@ function makeFooter(dynamiclink: string): void {
     }
 }
 
-async function buildComponent(component: string, dynamiclink: string): Promise<HTMLElement | null> {
+async function buildComponent(component: string, dynamiclink: string): Promise<JQuery<HTMLElement> | null> {
     const _default: Unpromisify<ReturnType<typeof buildComponent>> = null;
 
     try {
@@ -399,21 +341,18 @@ async function buildComponent(component: string, dynamiclink: string): Promise<H
 
             return componentDiv as HTMLElement;
         */
-        let componentDiv: HTMLElement | null = $("#" + (component ? component : "ERROR"))[0];
+        let componentDiv = $("#" + (component ? component : "ERROR")).html(
+            await fetchComponent(component, dynamiclink),
+        );
 
-        if (componentDiv !== null) {
-            const componentHTML = await fetchComponent(component, dynamiclink);
-            $(componentDiv).html(componentHTML);
-        }
-
-        return componentDiv as HTMLElement;
+        return componentDiv;
     } catch (e: unknown) {
         console.error(e);
         return _default;
     }
 }
 
-// --------------------------------------------------------------------------------------- Event-based functions:
+// --------------------------------------------------------------------------------------- Event functions:
 
 function hashchange(): void {
     updateApp();
@@ -447,7 +386,10 @@ function hashchange(): void {
 
 async function nextHomepageImage(): Promise<void> {
     try {
-        const images: Immutable2DArray<string> = await getHomepageCoverImages("@dynamiclink");
+        const images: ReadonlyArray<string> = (await getHomepageCoverImagesURLs("@dynamiclink")).map(
+            (url: URL): string => url.toString(),
+        );
+
         const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
 
         if (homepage_navbar_div == null) {
@@ -474,8 +416,7 @@ function windowSizeCheck(): boolean {
             return true;
         }
 
-        $("#homepage-navbar-div").css("height", "100%");
-        $("#homepage-navbar-div").css("margin-top", "0%");
+        $("#homepage-navbar-div").css("height", "100%").css("margin-top", "0%");
         hideDiv("navbar-div-phone");
         hideDiv("homepage-navbar-div-phone");
 
@@ -520,8 +461,7 @@ function changeNavbarForSmallDisplays(): void {
             showDiv("homepage-navbar-div-phone");
             hideDiv("homepagenavbar-container");
             showDiv("homepage-navbar-div");
-            $("#homepage-navbar-div").css("height", "200px");
-            $("#homepage-navbar-div").css("margin-top", "100px");
+            $("#homepage-navbar-div").css("height", "200px").css("margin-top", "100px");
         } else {
             showDiv("navbar-div-phone");
             hideDiv("homepage-navbar-div-phone");
@@ -542,6 +482,7 @@ function hamburgerClick(from: string): void {
 
         if (!$(`#${currentNavbarID}`).is(":hidden")) {
             $("#homepage-navbar-div").css("margin-top", "300px");
+
             if (currentNavbarID === "hamburger-navbar-for-navbar-div-phone") {
                 $(`#app`).css("margin-top", "300px");
             }
@@ -629,7 +570,9 @@ async function fetchComponent(component: string, dynamiclink: string): Promise<s
     const _default: Unpromisify<ReturnType<typeof fetchComponent>> = "";
 
     try {
-        const url: string = `${dynamiclink}:8095/?c=${component}`;
+        const url: URL = new URL(`${dynamiclink}:8095/`);
+        url.searchParams.set("c", component);
+
         const response: Readonly<Response> = await fetch(url);
 
         if (!response.ok) {
@@ -685,17 +628,72 @@ async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CA
     ] as const;
 
     try {
-        const url: string = `${dynamiclink}:8094/?data=categories`;
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "categories");
+
         const response: Readonly<Response> = await fetch(url);
 
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<CATEGORY> = (await response.json()) as Immutable2DArray<CATEGORY>;
+        const data: Immutable2DArray<CATEGORY> = JSON.parse(
+            JSON.stringify(await response.json()),
+        ) as Immutable2DArray<CATEGORY>;
+
+        if (typeof data === "string") {
+            return JSON.parse(data);
+        }
+
+        return ((_data: string | Immutable2DArray<CATEGORY>): Immutable2DArray<CATEGORY> => {
+            return JSON.parse(_data as string) as Immutable2DArray<CATEGORY>;
+        })(data);
+    } catch (e: unknown) {
+        console.error("An error occurred while fetching dynamic categories/albums data:", e);
+        return _default;
+    }
+}
+
+async function getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DArray<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [];
+
+    try {
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "frontPageCoverImageData");
+
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<STILL> = JSON.parse(
+            JSON.stringify((await response.json()) as Immutable2DArray<STILL>),
+        );
+
         return data;
     } catch (e: unknown) {
-        console.error("An error occurred while fetching dynamic data:", e);
+        console.error("An error occurred while trying to fetch dynamic front page cover images data:", e);
+        return _default;
+    }
+}
+
+async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<ReadonlyArray<URL>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImagesURLs>> = [];
+
+    try {
+        return ((arr: ReadonlyArray<URL>): ReadonlyArray<URL> => {
+            return arr.length < 2 ? arr : [arr[arr.length - 1], ...arr.slice(1, arr.length - 1), arr[0]];
+        })(
+            (await getHomepageCoverStills(dynamiclink)).map((_: Readonly<STILL>, i: number): URL => {
+                const url = new URL(`${dynamiclink}:8092/`);
+                url.searchParams.set("type", "frontPageCoverImage");
+                url.searchParams.set("img", `${i}`);
+                return url;
+            }),
+        );
+    } catch (e: unknown) {
+        console.error(e);
         return _default;
     }
 }
@@ -747,7 +745,9 @@ async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>
     ] as const;
 
     try {
-        const url = `${dynamiclink}:8094/?data=pages`;
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "pages");
+
         const response: Readonly<Response> = await fetch(url);
 
         if (!response.ok) {
@@ -757,7 +757,7 @@ async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>
         const data: Immutable2DArray<PageData> = (await response.json()) as Immutable2DArray<PageData>;
         return data;
     } catch (error: unknown) {
-        console.error("An error occurred while fetching dynamic data:", error);
+        console.error("An error occurred while fetching dynamic page information data:", error);
         return _default;
     }
 }

@@ -67,7 +67,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             return JSON.stringify(
                 getSessions().filter((session: Readonly<SESSION>): boolean =>
                     lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID)),
-                ),
+                ) as Immutable2DArray<SESSION>,
                 null,
                 4,
             );
@@ -95,7 +95,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             return JSON.stringify(
                 getStills().filter((still: Readonly<STILL>): boolean =>
                     lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID)),
-                ),
+                ) as Immutable2DArray<STILL>,
                 null,
                 4,
             );
@@ -103,7 +103,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
         if (givenData === "frontPageCoverImageData") {
             return JSON.stringify(
-                getStills().filter((still: Readonly<STILL>): boolean => still.IS_FRONT_COVER_IMAGE),
+                getStills().filter(
+                    (still: Readonly<STILL>): boolean => still.IS_FRONT_COVER_IMAGE,
+                ) as Immutable2DArray<STILL>,
                 null,
                 4,
             );
@@ -116,11 +118,19 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
     }
 }
 
-export function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery> = {}): string {
+function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery> = {}): string {
     const _default: ReturnType<typeof getDataToReturn> = "[]";
 
     try {
-        if ((givenData as string) in ["categorySessions", "sessionImages", "frontPageCoverImageData"]) {
+        if (
+            (
+                [
+                    "categorySessions",
+                    "sessionImages",
+                    "frontPageCoverImageData",
+                ] as ReadonlyArray<RequestOption>
+            ).includes(givenData)
+        ) {
             return getSpecificData(givenData, url_info);
         }
 

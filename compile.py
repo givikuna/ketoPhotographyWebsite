@@ -30,8 +30,5 @@ for lang in data:
             run(f"mv ./target/debug/{file['file'][2:-3]} ./")
     print("\n")
 
-<<<<<<< HEAD
 print("running prettier on the compiled javascript")
-=======
->>>>>>> main
 run("npm run format-code")

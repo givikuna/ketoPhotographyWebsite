@@ -149,9 +149,7 @@ function wantsFrontPageCoverImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return (
-            type_ === "frontPageCoverImageData" &&
-            "img" in url_info &&
-            lsse.isNumeric(String(url_info["img"]))
+            type_ === "frontPageCoverImage" && "img" in url_info && lsse.isNumeric(String(url_info["img"]))
         );
     } catch (e: unknown) {
         console.error(e);
@@ -187,6 +185,19 @@ function getFrontPageCoverImagePath(url_info: Readonly<ParsedUrlQuery>): fs.Path
     );
 }
 
+function getImage(img_UID: number): string {
+    const _default: ReturnType<typeof getImage> = "error.png";
+
+    try {
+        return getStills().filter((still: Readonly<STILL>): boolean =>
+            lsse.equals(lsse.str(still.UID), lsse.str(img_UID)),
+        )[0].NAME;
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
 function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
     const _default: ReturnType<typeof getPath> = undefined;
 
@@ -197,7 +208,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
         if (wantsIcon(url_info)) {
             return findPath(
                 ["public", "assets", type_],
-                `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`,
+                `${lsse.str(url_info["img"])}.${getIconExtension(url_info["img"] as string)}`,
             );
         }
 
@@ -206,7 +217,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
         }
 
         if (wantsAlbumImage(url_info)) {
-            return findPath(["img", "img"], url_info["img"] as string); // findPath(["img"]);
+            return findPath(["img", "img"], getImage(lsse.int(lsse.str(url_info["img"])))); // findPath(["img"]);
         }
 
         if (wantsAlbumCover(url_info)) {
