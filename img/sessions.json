@@ -3,84 +3,96 @@
         "UID": 1,
         "CUSTOMER_UID": 1,
         "CATEGORY_UID": 4,
-        "COVER_IMAGE_UID": 65,
-        "DESCRIPTION": ""
+        "COVER_STILL_UID": 65,
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 2,
         "CUSTOMER_UID": 2,
         "CATEGORY_UID": 3,
         "COVER_STILL_UID": 11,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 3,
         "CUSTOMER_UID": 2,
         "CATEGORY_UID": 1,
         "COVER_STILL_UID": 1,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 4,
         "CUSTOMER_UID": 3,
         "CATEGORY_UID": 6,
         "COVER_STILL_UID": 58,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 5,
         "CUSTOMER_UID": 1,
         "CATEGORY_UID": 2,
         "COVER_STILL_UID": 2,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 6,
         "CUSTOMER_UID": 2,
         "CATEGORY_UID": 3,
         "COVER_STILL_UID": 16,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 7,
         "CUSTOMER_UID": 2,
         "CATEGORY_UID": 5,
         "COVER_STILL_UID": 22,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 8,
         "CUSTOMER_UID": 3,
         "CATEGORY_UID": 3,
         "COVER_STILL_UID": 53,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 9,
         "CUSTOMER_UID": 3,
         "CATEGORY_UID": 3,
         "COVER_STILL_UID": 50,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 10,
         "CUSTOMER_UID": 1,
         "CATEGORY_UID": 6,
         "COVER_STILL_UID": 77,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 11,
         "CUSTOMER_UID": 2,
         "CATEGORY_UID": 4,
         "COVER_STILL_UID": 89,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     },
     {
         "UID": 12,
         "CUSTOMER_UID": 3,
         "CATEGORY_UID": 1,
         "COVER_STILL_UID": 7,
-        "DESCRIPTION": ""
+        "DESCRIPTION": "",
+        "SESSION_DATE": "some_date"
     }
 ]

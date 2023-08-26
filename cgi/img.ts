@@ -131,12 +131,16 @@ function wantsAlbumCover(url_info: Readonly<ParsedUrlQuery>): boolean {
     }
 }
 
-function wantsAlbumImage(url_info: Readonly<ParsedUrlQuery>): boolean {
-    const _default: ReturnType<typeof wantsAlbumImage> = false;
+function wantsImage(url_info: Readonly<ParsedUrlQuery>): boolean {
+    const _default: ReturnType<typeof wantsImage> = false;
 
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
-        return type_ === "album" && "img" in url_info && typeof url_info["img"] === "string";
+        return (
+            type_ === "img" &&
+            "img" in url_info &&
+            (typeof url_info["img"] === "string" || typeof url_info["img"] === "number")
+        );
     } catch (e: unknown) {
         console.error(e);
         return _default;
@@ -185,13 +189,23 @@ function getFrontPageCoverImagePath(url_info: Readonly<ParsedUrlQuery>): fs.Path
     );
 }
 
-function getImage(img_UID: number): string {
+function getImage(img_UID: string): string {
     const _default: ReturnType<typeof getImage> = "error.png";
 
     try {
-        return getStills().filter((still: Readonly<STILL>): boolean =>
-            lsse.equals(lsse.str(still.UID), lsse.str(img_UID)),
-        )[0].NAME;
+        const possibleStill: Readonly<STILL> | undefined = getStills().find(
+            (still: Readonly<STILL>): boolean => still.UID === lsse.int(img_UID),
+        );
+
+        if (
+            lsse.equalsAny(possibleStill, [[], {}, "", null, undefined]) ||
+            lsse.isBlank(possibleStill) ||
+            !possibleStill
+        ) {
+            throw new Error("the STILL was not found");
+        }
+
+        return possibleStill.NAME;
     } catch (e: unknown) {
         console.error(e);
         return _default;
@@ -216,8 +230,8 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
             return getFrontPageCoverImagePath(url_info);
         }
 
-        if (wantsAlbumImage(url_info)) {
-            return findPath(["img", "img"], getImage(lsse.int(lsse.str(url_info["img"])))); // findPath(["img"]);
+        if (wantsImage(url_info)) {
+            return findPath(["img", "img"], getImage(url_info["img"] as string)); // findPath(["img"]);
         }
 
         if (wantsAlbumCover(url_info)) {

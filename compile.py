@@ -14,6 +14,7 @@ run("python3 compilercleaner.py")
 print("collecting data for the compilation to begin...")
 run("ts-node buildCompilerFile")
 
+print("")
 
 with open("compile.json") as file:
     data: dict | list = json.load(file)

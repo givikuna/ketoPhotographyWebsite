@@ -142,6 +142,7 @@ var __spreadArray =
         return to.concat(ar || Array.prototype.slice.call(from));
     };
 var pages = [];
+var loadedGalleryAndSessionPages = [];
 var iterated = 0;
 var previousPage = "";
 function main(d, l, c) {
@@ -201,6 +202,9 @@ function main(d, l, c) {
                                         hideDiv("homepage-navbar-div");
                                     }
                                 }
+                            })
+                            .then(function () {
+                                addCategoriesAndSessionsAsPages(dynamiclink);
                             }),
                     ];
                 case 2:
@@ -218,6 +222,55 @@ function main(d, l, c) {
     });
 }
 // --------------------------------------------------------------------------------------- Build functions:
+function addCategoriesAndSessionsAsPages(dynamiclink) {
+    return __awaiter(this, void 0, void 0, function () {
+        var categories, sessions, i, i;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    return [4 /*yield*/, fetchCategories(dynamiclink)];
+                case 1:
+                    categories = _a.sent();
+                    return [4 /*yield*/, fetchSessions(dynamiclink)];
+                case 2:
+                    sessions = _a.sent();
+                    try {
+                        for (i = 0; i < categories.length; i++) {
+                            $("#app").append(
+                                $(/*HTML*/ "<div></div>")
+                                    .attr(
+                                        "id",
+                                        categories[i].NAME ? "album_".concat(categories[i].NAME) : "ERROR",
+                                    )
+                                    .addClass("albumPage")
+                                    .hide(),
+                            );
+                            pages.push("album_".concat(categories[i].NAME));
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    try {
+                        for (i = 0; i < categories.length; i++) {
+                            $("#app").append(
+                                $(/*HTML*/ "<div></div>")
+                                    .attr(
+                                        "id",
+                                        sessions[i].UID ? "gallery_".concat(sessions[i].UID) : "ERROR",
+                                    )
+                                    .addClass("galleryPage")
+                                    .hide(),
+                            );
+                            pages.push("gallery_".concat(sessions[i].UID));
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function buildApp(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
         var _default, data, _loop_1, i, i, e_2;
@@ -336,7 +389,6 @@ function buildPage(page, dynamiclink) {
                     return [4 /*yield*/, fetchCategories(dynamiclink)];
                 case 2:
                     categories = _b.sent();
-                    console.log(categories.length);
                     // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
                     for (i = 0; i < categories.length; i++) {
                         element =
@@ -678,22 +730,105 @@ function showDiv(div) {
 }
 function updateApp() {
     return __awaiter(this, void 0, void 0, function () {
-        var currentPage, i;
+        var currentPage, i, imageUIDs_1, imageElements, element, i, e_7;
+        var _this = this;
         return __generator(this, function (_a) {
-            try {
-                updateNavbar(true);
-                currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
-                for (i = 0; i < pages.length; i++) {
-                    if (currentPage === pages[i]) {
-                        showDiv(pages[i]);
-                    } else {
-                        hideDiv(pages[i]);
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    updateNavbar(true);
+                    currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
+                    for (i = 0; i < pages.length; i++) {
+                        if (currentPage === pages[i]) {
+                            showDiv(pages[i]);
+                        } else {
+                            hideDiv(pages[i]);
+                        }
                     }
-                }
-            } catch (e) {
-                console.error(e);
+                    if (
+                        !loadedGalleryAndSessionPages.includes(currentPage) &&
+                        !currentPage.startsWith("album_") &&
+                        !currentPage.startsWith("gallery_") &&
+                        !currentPage.split("").includes("_")
+                    ) {
+                        return [2 /*return*/];
+                    }
+                    return [
+                        4 /*yield*/,
+                        (function (_currentPage) {
+                            return __awaiter(_this, void 0, void 0, function () {
+                                var type_;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            type_ = _currentPage.split("_")[0];
+                                            if (!(type_ === "album")) return [3 /*break*/, 2];
+                                            return [
+                                                4 /*yield*/,
+                                                getCategorySessions(
+                                                    "@dynamiclink",
+                                                    _currentPage.split("_")[1],
+                                                ),
+                                            ];
+                                        case 1:
+                                            return [
+                                                2 /*return*/,
+                                                _a.sent().map(function (session) {
+                                                    return session.UID;
+                                                }),
+                                            ];
+                                        case 2:
+                                            return [
+                                                4 /*yield*/,
+                                                getSessionImages("@dynamiclink", _currentPage.split("_")[1]),
+                                            ];
+                                        case 3:
+                                            return [
+                                                2 /*return*/,
+                                                _a.sent().map(function (still) {
+                                                    return still.UID;
+                                                }),
+                                            ];
+                                    }
+                                });
+                            });
+                        })(currentPage),
+                    ];
+                case 1:
+                    imageUIDs_1 = _a.sent();
+                    imageElements = imageUIDs_1
+                        .map(function (uid) {
+                            var url = new URL("@dynamiclink:8092/");
+                            url.searchParams.set("type", "img");
+                            url.searchParams.set("img", uid.toString());
+                            return url.toString();
+                        })
+                        .map(function (url, i) {
+                            /* HTML */ return '\n                    <img\n                        id="'
+                                .concat(
+                                    imageUIDs_1[i],
+                                    '"\n                        class="albumImage"\n                        src="',
+                                )
+                                .concat(url, '"\n                    />\n                ');
+                        });
+                    element = "";
+                    for (i = 0; i < imageElements.length; i++) {
+                        if ((i + 1) % 3 === 0) {
+                            element += /* HTML */ " <br /> ";
+                        }
+                        element += imageElements[i];
+                    }
+                    console.log(element);
+                    $("#".concat(currentPage)).html(element);
+                    loadedGalleryAndSessionPages.push(currentPage);
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_7 = _a.sent();
+                    console.error(e_7);
+                    return [3 /*break*/, 3];
+                case 3:
+                    return [2 /*return*/];
             }
-            return [2 /*return*/];
         });
     });
 }
@@ -718,7 +853,7 @@ function changeLang(lang) {
 // --------------------------------------------------------------------------------------- Data fetching functions:
 function fetchComponent(component, dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, url, response, data, e_7;
+        var _default, url, response, data, e_8;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -739,8 +874,142 @@ function fetchComponent(component, dynamiclink) {
                     data = _a.sent();
                     return [2 /*return*/, data];
                 case 4:
-                    e_7 = _a.sent();
-                    console.error("Error:", e_7);
+                    e_8 = _a.sent();
+                    console.error("Error:", e_8);
+                    return [2 /*return*/, _default];
+                case 5:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function fetchSessions(dynamiclink) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _default, url, response, data, _a, _b, _c, _d, e_9;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _default = [
+                        {
+                            UID: 1,
+                            CUSTOMER_UID: 1,
+                            CATEGORY_UID: 4,
+                            COVER_STILL_UID: 65,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 2,
+                            CUSTOMER_UID: 2,
+                            CATEGORY_UID: 3,
+                            COVER_STILL_UID: 11,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 3,
+                            CUSTOMER_UID: 2,
+                            CATEGORY_UID: 1,
+                            COVER_STILL_UID: 1,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 4,
+                            CUSTOMER_UID: 3,
+                            CATEGORY_UID: 6,
+                            COVER_STILL_UID: 58,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 5,
+                            CUSTOMER_UID: 1,
+                            CATEGORY_UID: 2,
+                            COVER_STILL_UID: 2,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 6,
+                            CUSTOMER_UID: 2,
+                            CATEGORY_UID: 3,
+                            COVER_STILL_UID: 16,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 7,
+                            CUSTOMER_UID: 2,
+                            CATEGORY_UID: 5,
+                            COVER_STILL_UID: 22,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 8,
+                            CUSTOMER_UID: 3,
+                            CATEGORY_UID: 3,
+                            COVER_STILL_UID: 53,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 9,
+                            CUSTOMER_UID: 3,
+                            CATEGORY_UID: 3,
+                            COVER_STILL_UID: 50,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 10,
+                            CUSTOMER_UID: 1,
+                            CATEGORY_UID: 6,
+                            COVER_STILL_UID: 77,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 11,
+                            CUSTOMER_UID: 2,
+                            CATEGORY_UID: 4,
+                            COVER_STILL_UID: 89,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                        {
+                            UID: 12,
+                            CUSTOMER_UID: 3,
+                            CATEGORY_UID: 1,
+                            COVER_STILL_UID: 7,
+                            DESCRIPTION: "",
+                            SESSION_DATE: "some_date",
+                        },
+                    ];
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 4, , 5]);
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "sessions");
+                    return [4 /*yield*/, fetch(url)];
+                case 2:
+                    response = _e.sent();
+                    if (!response.ok) {
+                        throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
+                    }
+                    _b = (_a = JSON).parse;
+                    _d = (_c = JSON).stringify;
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
+                    if (typeof data === "string") {
+                        return [2 /*return*/, JSON.parse(data)];
+                    }
+                    return [2 /*return*/, data];
+                case 4:
+                    e_9 = _e.sent();
+                    console.error("An error occurred while fetching dynamic categories/albums data:", e_9);
                     return [2 /*return*/, _default];
                 case 5:
                     return [2 /*return*/];
@@ -750,7 +1019,7 @@ function fetchComponent(component, dynamiclink) {
 }
 function fetchCategories(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, url, response, data, _a, _b, _c, _d, e_8;
+        var _default, url, response, data, _a, _b, _c, _d, e_10;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -811,15 +1080,10 @@ function fetchCategories(dynamiclink) {
                     if (typeof data === "string") {
                         return [2 /*return*/, JSON.parse(data)];
                     }
-                    return [
-                        2 /*return*/,
-                        (function (_data) {
-                            return JSON.parse(_data);
-                        })(data),
-                    ];
+                    return [2 /*return*/, data];
                 case 4:
-                    e_8 = _e.sent();
-                    console.error("An error occurred while fetching dynamic categories/albums data:", e_8);
+                    e_10 = _e.sent();
+                    console.error("An error occurred while fetching dynamic categories/albums data:", e_10);
                     return [2 /*return*/, _default];
                 case 5:
                     return [2 /*return*/];
@@ -829,7 +1093,7 @@ function fetchCategories(dynamiclink) {
 }
 function getHomepageCoverStills(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, url, response, data, _a, _b, _c, _d, e_9;
+        var _default, url, response, data, _a, _b, _c, _d, e_11;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -852,10 +1116,10 @@ function getHomepageCoverStills(dynamiclink) {
                     data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
                     return [2 /*return*/, data];
                 case 4:
-                    e_9 = _e.sent();
+                    e_11 = _e.sent();
                     console.error(
                         "An error occurred while trying to fetch dynamic front page cover images data:",
-                        e_9,
+                        e_11,
                     );
                     return [2 /*return*/, _default];
                 case 5:
@@ -866,7 +1130,7 @@ function getHomepageCoverStills(dynamiclink) {
 }
 function getHomepageCoverImagesURLs(dynamiclink) {
     return __awaiter(this, void 0, void 0, function () {
-        var _default, _a, e_10;
+        var _default, _a, e_12;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -897,10 +1161,86 @@ function getHomepageCoverImagesURLs(dynamiclink) {
                         ]),
                     ];
                 case 3:
-                    e_10 = _b.sent();
-                    console.error(e_10);
+                    e_12 = _b.sent();
+                    console.error(e_12);
                     return [2 /*return*/, _default];
                 case 4:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getSessionImages(dynamiclink, session) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _default, url, response, data, _a, _b, _c, _d, e_13;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _default = [];
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 4, , 5]);
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "sessionImages");
+                    url.searchParams.set("session", session);
+                    return [4 /*yield*/, fetch(url)];
+                case 2:
+                    response = _e.sent();
+                    if (!response.ok) {
+                        throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
+                    }
+                    _b = (_a = JSON).parse;
+                    _d = (_c = JSON).stringify;
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
+                    if (typeof data === "string") {
+                        return [2 /*return*/, JSON.parse(data)];
+                    }
+                    return [2 /*return*/, data];
+                case 4:
+                    e_13 = _e.sent();
+                    console.error(e_13);
+                    return [2 /*return*/, _default];
+                case 5:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getCategorySessions(dynamiclink, category) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _default, url, response, data, _a, _b, _c, _d, e_14;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _default = [];
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 4, , 5]);
+                    url = new URL("".concat(dynamiclink, ":8094/"));
+                    url.searchParams.set("data", "categorySessions");
+                    url.searchParams.set("category", category);
+                    return [4 /*yield*/, fetch(url)];
+                case 2:
+                    response = _e.sent();
+                    if (!response.ok) {
+                        throw new Error("Error: ".concat(response.status, " ").concat(response.statusText));
+                    }
+                    _b = (_a = JSON).parse;
+                    _d = (_c = JSON).stringify;
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _b.apply(_a, [_d.apply(_c, [_e.sent()])]);
+                    if (typeof data === "string") {
+                        return [2 /*return*/, JSON.parse(data)];
+                    }
+                    return [2 /*return*/, data];
+                case 4:
+                    e_14 = _e.sent();
+                    console.error(e_14);
+                    return [2 /*return*/, _default];
+                case 5:
                     return [2 /*return*/];
             }
         });

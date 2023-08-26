@@ -108,11 +108,15 @@ function wantsAlbumCover(url_info) {
         return _default;
     }
 }
-function wantsAlbumImage(url_info) {
+function wantsImage(url_info) {
     var _default = false;
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
-        return type_ === "album" && "img" in url_info && typeof url_info["img"] === "string";
+        return (
+            type_ === "img" &&
+            "img" in url_info &&
+            (typeof url_info["img"] === "string" || typeof url_info["img"] === "number")
+        );
     } catch (e) {
         console.error(e);
         return _default;
@@ -155,9 +159,17 @@ function getFrontPageCoverImagePath(url_info) {
 function getImage(img_UID) {
     var _default = "error.png";
     try {
-        return (0, getImageData_1.getStills)().filter(function (still) {
-            return lsse.equals(lsse.str(still.UID), lsse.str(img_UID));
-        })[0].NAME;
+        var possibleStill = (0, getImageData_1.getStills)().find(function (still) {
+            return still.UID === lsse.int(img_UID);
+        });
+        if (
+            lsse.equalsAny(possibleStill, [[], {}, "", null, undefined]) ||
+            lsse.isBlank(possibleStill) ||
+            !possibleStill
+        ) {
+            throw new Error("the STILL was not found");
+        }
+        return possibleStill.NAME;
     } catch (e) {
         console.error(e);
         return _default;
@@ -176,8 +188,8 @@ function getPath(url_info) {
         if (wantsFrontPageCoverImage(url_info)) {
             return getFrontPageCoverImagePath(url_info);
         }
-        if (wantsAlbumImage(url_info)) {
-            return (0, findPath_1.findPath)(["img", "img"], getImage(lsse.int(lsse.str(url_info["img"])))); // findPath(["img"]);
+        if (wantsImage(url_info)) {
+            return (0, findPath_1.findPath)(["img", "img"], getImage(url_info["img"])); // findPath(["img"]);
         }
         if (wantsAlbumCover(url_info)) {
             return (0, findPath_1.findPath)(["img", "img"], getAlbumCoverImage(url_info));

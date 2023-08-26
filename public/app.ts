@@ -20,6 +20,15 @@ type STILL = {
     IS_FRONT_COVER_IMAGE: boolean;
 };
 
+type SESSION = {
+    UID: number;
+    CUSTOMER_UID: number;
+    CATEGORY_UID: number;
+    SESSION_DATE: string;
+    COVER_STILL_UID: number;
+    DESCRIPTION: string;
+};
+
 type FrontPageCoverImage = {
     img: string;
     extension: string;
@@ -34,6 +43,7 @@ type PageData = {
 };
 
 const pages: string[] = [];
+const loadedGalleryAndSessionPages: string[] = [];
 let iterated: number = 0;
 let previousPage: string = "";
 
@@ -84,6 +94,9 @@ async function main(
                         hideDiv("homepage-navbar-div");
                     }
                 }
+            })
+            .then((): void => {
+                addCategoriesAndSessionsAsPages(dynamiclink);
             });
 
         console.log("all loaded properly");
@@ -93,6 +106,41 @@ async function main(
 }
 
 // --------------------------------------------------------------------------------------- Build functions:
+
+async function addCategoriesAndSessionsAsPages(dynamiclink: string): Promise<void> {
+    const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
+    const sessions: Immutable2DArray<SESSION> = await fetchSessions(dynamiclink);
+
+    try {
+        for (let i: number = 0; i < categories.length; i++) {
+            $("#app").append(
+                $(/*HTML*/ `<div></div>`)
+                    .attr("id", categories[i].NAME ? `album_${categories[i].NAME}` : "ERROR")
+                    .addClass("albumPage")
+                    .hide(),
+            );
+
+            pages.push(`album_${categories[i].NAME}`);
+        }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+
+    try {
+        for (let i: number = 0; i < categories.length; i++) {
+            $("#app").append(
+                $(/*HTML*/ `<div></div>`)
+                    .attr("id", sessions[i].UID ? `gallery_${sessions[i].UID}` : "ERROR")
+                    .addClass("galleryPage")
+                    .hide(),
+            );
+
+            pages.push(`gallery_${sessions[i].UID}`);
+        }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
 
 async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
@@ -161,7 +209,6 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
                 );
                 */
                 const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
-                console.log(categories.length);
 
                 // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
                 for (let i: number = 0; i < categories.length; i++) {
@@ -537,6 +584,69 @@ async function updateApp(): Promise<void> {
                 hideDiv(pages[i]);
             }
         }
+
+        if (
+            !loadedGalleryAndSessionPages.includes(currentPage) &&
+            !currentPage.startsWith("album_") &&
+            !currentPage.startsWith("gallery_") &&
+            !currentPage.split("").includes("_")
+        ) {
+            return;
+        }
+
+        /*
+        const imageUIDs: ReadonlyArray<number> = (await getSessionImages("@dynamiclink")).map(
+            (still: Readonly<STILL>): number => still.UID,
+        );
+        */
+
+        const imageUIDs: ReadonlyArray<number> = await (async (
+            _currentPage: string,
+        ): Promise<ReadonlyArray<number>> => {
+            let type_: string = _currentPage.split("_")[0];
+            if (type_ === "album") {
+                return (await getCategorySessions("@dynamiclink", _currentPage.split("_")[1])).map(
+                    (session: Readonly<SESSION>): number => session.UID,
+                );
+            }
+
+            return (await getSessionImages("@dynamiclink", _currentPage.split("_")[1])).map(
+                (still: Readonly<STILL>): number => still.UID,
+            );
+        })(currentPage);
+
+        const imageElements: ReadonlyArray<string> = imageUIDs
+            .map((uid: number): string => {
+                const url: URL = new URL("@dynamiclink:8092/");
+                url.searchParams.set("type", "img");
+                url.searchParams.set("img", uid.toString());
+
+                return url.toString();
+            })
+            .map(
+                (url: string, i: number): string => /* HTML */ `
+                    <img
+                        id="${imageUIDs[i]}"
+                        class="albumImage"
+                        src="${url}"
+                    />
+                `,
+            );
+
+        let element: string = "";
+
+        for (let i: number = 0; i < imageElements.length; i++) {
+            if ((i + 1) % 3 === 0) {
+                element += /* HTML */ ` <br /> `;
+            }
+            element += imageElements[i];
+        }
+
+        console.log(element);
+
+        $(`#${currentPage}`).html(element);
+
+        loadedGalleryAndSessionPages.push(currentPage);
     } catch (e: unknown) {
         console.error(e);
     }
@@ -583,6 +693,131 @@ async function fetchComponent(component: string, dynamiclink: string): Promise<s
         return data;
     } catch (e: unknown) {
         console.error("Error:", e);
+        return _default;
+    }
+}
+
+async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESSION>> {
+    const _default: Unpromisify<ReturnType<typeof fetchSessions>> = [
+        {
+            UID: 1,
+            CUSTOMER_UID: 1,
+            CATEGORY_UID: 4,
+            COVER_STILL_UID: 65,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 2,
+            CUSTOMER_UID: 2,
+            CATEGORY_UID: 3,
+            COVER_STILL_UID: 11,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 3,
+            CUSTOMER_UID: 2,
+            CATEGORY_UID: 1,
+            COVER_STILL_UID: 1,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 4,
+            CUSTOMER_UID: 3,
+            CATEGORY_UID: 6,
+            COVER_STILL_UID: 58,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 5,
+            CUSTOMER_UID: 1,
+            CATEGORY_UID: 2,
+            COVER_STILL_UID: 2,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 6,
+            CUSTOMER_UID: 2,
+            CATEGORY_UID: 3,
+            COVER_STILL_UID: 16,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 7,
+            CUSTOMER_UID: 2,
+            CATEGORY_UID: 5,
+            COVER_STILL_UID: 22,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 8,
+            CUSTOMER_UID: 3,
+            CATEGORY_UID: 3,
+            COVER_STILL_UID: 53,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 9,
+            CUSTOMER_UID: 3,
+            CATEGORY_UID: 3,
+            COVER_STILL_UID: 50,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 10,
+            CUSTOMER_UID: 1,
+            CATEGORY_UID: 6,
+            COVER_STILL_UID: 77,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 11,
+            CUSTOMER_UID: 2,
+            CATEGORY_UID: 4,
+            COVER_STILL_UID: 89,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+        {
+            UID: 12,
+            CUSTOMER_UID: 3,
+            CATEGORY_UID: 1,
+            COVER_STILL_UID: 7,
+            DESCRIPTION: "",
+            SESSION_DATE: "some_date",
+        },
+    ] as const;
+
+    try {
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "sessions");
+
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<SESSION> = JSON.parse(
+            JSON.stringify(await response.json()),
+        ) as Immutable2DArray<SESSION>;
+
+        if (typeof data === "string") {
+            return JSON.parse(data);
+        }
+
+        return data;
+    } catch (e: unknown) {
+        console.error("An error occurred while fetching dynamic categories/albums data:", e);
         return _default;
     }
 }
@@ -645,9 +880,7 @@ async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CA
             return JSON.parse(data);
         }
 
-        return ((_data: string | Immutable2DArray<CATEGORY>): Immutable2DArray<CATEGORY> => {
-            return JSON.parse(_data as string) as Immutable2DArray<CATEGORY>;
-        })(data);
+        return data;
     } catch (e: unknown) {
         console.error("An error occurred while fetching dynamic categories/albums data:", e);
         return _default;
@@ -689,9 +922,71 @@ async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<Readonly
                 const url = new URL(`${dynamiclink}:8092/`);
                 url.searchParams.set("type", "frontPageCoverImage");
                 url.searchParams.set("img", `${i}`);
+
                 return url;
             }),
         );
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
+async function getSessionImages(dynamiclink: string, session: string): Promise<Immutable2DArray<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getSessionImages>> = [] as Immutable2DArray<STILL>;
+
+    try {
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "sessionImages");
+        url.searchParams.set("session", session);
+
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<STILL> = JSON.parse(
+            JSON.stringify(await response.json()),
+        ) as Immutable2DArray<STILL>;
+
+        if (typeof data === "string") {
+            return JSON.parse(data);
+        }
+
+        return data;
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
+}
+
+async function getCategorySessions(
+    dynamiclink: string,
+    category: string,
+): Promise<Immutable2DArray<SESSION>> {
+    const _default: Unpromisify<ReturnType<typeof getCategorySessions>> = [] as Immutable2DArray<SESSION>;
+
+    try {
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "categorySessions");
+        url.searchParams.set("category", category);
+
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<SESSION> = JSON.parse(
+            JSON.stringify(await response.json()),
+        ) as Immutable2DArray<SESSION>;
+
+        if (typeof data === "string") {
+            return JSON.parse(data);
+        }
+
+        return data;
     } catch (e: unknown) {
         console.error(e);
         return _default;
