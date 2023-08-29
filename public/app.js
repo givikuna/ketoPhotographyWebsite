@@ -237,7 +237,7 @@ function addCategoriesAndSessionsAsPages(dynamiclink) {
                     try {
                         for (i = 0; i < categories.length; i++) {
                             $("#app").append(
-                                $(/*HTML*/ "<div></div>")
+                                $(/* HTML */ "<div></div>")
                                     .attr(
                                         "id",
                                         categories[i].NAME ? "album_".concat(categories[i].NAME) : "ERROR",
@@ -251,13 +251,14 @@ function addCategoriesAndSessionsAsPages(dynamiclink) {
                         console.error(e);
                     }
                     try {
-                        for (i = 0; i < categories.length; i++) {
+                        for (i = 0; i < sessions.length; i++) {
                             $("#app").append(
-                                $(/*HTML*/ "<div></div>")
+                                $(/* HTML */ "<div></div>")
                                     .attr(
                                         "id",
                                         sessions[i].UID ? "gallery_".concat(sessions[i].UID) : "ERROR",
                                     )
+                                    .css("text-align", "center")
                                     .addClass("galleryPage")
                                     .hide(),
                             );
@@ -309,7 +310,7 @@ function buildApp(dynamiclink) {
                         return __generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0:
-                                    pageDiv = $(/*HTML*/ "<div></div>")
+                                    pageDiv = $(/* HTML */ "<div></div>")
                                         .attr("id", data[i].page ? data[i].page : "ERROR")
                                         .addClass(
                                             data[i].page && data[i].page.startsWith("album_")
@@ -409,7 +410,7 @@ function buildPage(page, dynamiclink) {
                                 .concat(i, '"\n                                id="')
                                 .concat(
                                     categories[i].NAME,
-                                    'AlbumCoverForHome"\n                            >\n                            <span id="',
+                                    'AlbumCoverForHome"\n                            />\n\n                            <span id="',
                                 )
                                 .concat(
                                     categories[i].NAME,
@@ -488,26 +489,30 @@ function updateNavbar(callingFromWindowSizeCheck) {
 }
 function buildHamburger(div, dynamiclink) {
     try {
-        var newNavbar = /*HTML*/ '\n            <div class="hamburger-button" onclick="hamburgerClick(\''
-            .concat(div, '\')" id="inside-')
-            .concat(
-                div,
-                '">\n                &#9776;\n            </div>\n            <!-- Hamburger Navbar -->\n            <div class="hamburger-navbar" id="hamburger-navbar-for-',
-            )
-            .concat(
-                div,
-                '">\n                <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">\n                    Home\n                </a>\n\n                <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">\n                    Contact\n                </a>\n\n                <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">\n                    About\n                </a>\n\n                <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">\n                    Pricing\n                </a>\n\n                <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">\n                    Blog\n                </a>\n\n                <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">\n                    Albums\n                </a>\n            </div>\n\n            <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-',
-            )
-            .concat(div, '">\n                <a href="#home">\n                    <img src="')
-            .concat(
-                dynamiclink,
-                ':8092/?type=logo" class="navbar-logo-phone" />\n                </a>\n            </div>\n        ',
-            );
+        var newNavbar =
+            /* HTML */ '\n            <div\n                class="hamburger-button"\n                onclick="hamburgerClick(\''
+                .concat(div, '\')"\n                id="inside-')
+                .concat(
+                    div,
+                    '"\n            >\n                &#9776;\n            </div>\n            <!-- Hamburger Navbar -->\n            <div\n                class="hamburger-navbar"\n                id="hamburger-navbar-for-',
+                )
+                .concat(
+                    div,
+                    '"\n            >\n                <a\n                    href="#home"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-home"\n                >\n                    Home\n                </a>\n\n                <a\n                    href="#contact"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-contact"\n                >\n                    Contact\n                </a>\n\n                <a\n                    href="#about"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-about"\n                >\n                    About\n                </a>\n\n                <a\n                    href="#pricing"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-pricing"\n                >\n                    Pricing\n                </a>\n\n                <a\n                    href="#blog"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-blog"\n                >\n                    Blog\n                </a>\n\n                <a\n                    href="#albums"\n                    class="hamburger-navbar-option"\n                    id="hamburger-navbar-option-albums"\n                >\n                    Albums\n                </a>\n            </div>\n\n            <div\n                class="navbar-logo-container"\n                id="hamburger-navbar-logo-container-for-',
+                )
+                .concat(
+                    div,
+                    '"\n            >\n                <a href="#home">\n                    <img\n                        src="',
+                )
+                .concat(
+                    dynamiclink,
+                    ':8092/?type=logo"\n                        class="navbar-logo-phone"\n                    />\n                </a>\n            </div>\n        ',
+                );
         $("#".concat(div)).append(newNavbar);
         $("#inside-hamburger-wrapper-for-".concat(div)).hide();
         if (div === "navbar-div-phone") {
             $("#".concat(div)).append(
-                /*HTML*/ "\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n                <br>\n            ",
+                /* HTML */ "\n                <br />\n                <br />\n                <br />\n                <br />\n                <br />\n                <br />\n            ",
             );
         }
     } catch (e) {
@@ -519,26 +524,26 @@ function makeFooter(dynamiclink) {
         $("#footer-div")
             .show()
             .append(
-                /*HTML*/ '\n            <footer>\n                <a href="https://www.facebook.com"><img src="'
+                /* HTML */ '\n                <footer>\n                    <a href="https://www.facebook.com">\n                        <img\n                            src="'
                     .concat(
                         dynamiclink,
-                        ':8092/?type=icons&img=facebook" alt="Facebook"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.flickr.com"><img src="',
+                        ':8092/?type=icons&img=facebook"\n                            alt="Facebook"\n                            class="SocialMediaIcon"\n                        />\n                    </a>\n                    <a href="https://www.flickr.com">\n                        <img\n                            src="',
                     )
                     .concat(
                         dynamiclink,
-                        ':8092/?type=icons&img=flickr" alt="Flickr"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.instagram.com"><img src="',
+                        ':8092/?type=icons&img=flickr"\n                            alt="Flickr"\n                            class="SocialMediaIcon"\n                        />\n                    </a>\n                    <a href="https://www.instagram.com">\n                        <img\n                            src="',
                     )
                     .concat(
                         dynamiclink,
-                        ':8092/?type=icons&img=instagram" alt="Instagram"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.pinterest.com"><img src="',
+                        ':8092/?type=icons&img=instagram"\n                            alt="Instagram"\n                            class="SocialMediaIcon"\n                        />\n                    </a>\n                    <a href="https://www.pinterest.com">\n                        <img\n                            src="',
                     )
                     .concat(
                         dynamiclink,
-                        ':8092/?type=icons&img=pinterest" alt="Pinterest"\n                        class="SocialMediaIcon"></a>\n                <a href="https://www.youtube.com"><img src="',
+                        ':8092/?type=icons&img=pinterest"\n                            alt="Pinterest"\n                            class="SocialMediaIcon"\n                        />\n                    </a>\n                    <a href="https://www.youtube.com">\n                        <img\n                            src="',
                     )
                     .concat(
                         dynamiclink,
-                        ':8092/?type=icons&img=youtube" alt="YouTube"\n                        class="SocialMediaIcon"></a>\n\n                <br>\n                <br>\n\n                <div>\n                    <p>\n                        <a href="#contact" class="contact-link">\n                            Contact Me\n                        </a>\n                    </p>\n                    <p>\n                    <a href="#home" class="contact-link">\n                        Home\n                    </a>\n                </p>\n                </div>\n            </footer>\n\n            <br>\n            <br>\n        ',
+                        ':8092/?type=icons&img=youtube"\n                            alt="YouTube"\n                            class="SocialMediaIcon"\n                        />\n                    </a>\n\n                    <br />\n                    <br />\n\n                    <div>\n                        <p>\n                            <a\n                                href="#contact"\n                                class="contact-link"\n                            >\n                                Contact Me\n                            </a>\n                        </p>\n                        <p>\n                            <a\n                                href="#home"\n                                class="contact-link"\n                            >\n                                Home\n                            </a>\n                        </p>\n                    </div>\n                </footer>\n\n                <br />\n                <br />\n            ',
                     ),
             );
     } catch (e) {
@@ -730,12 +735,11 @@ function showDiv(div) {
 }
 function updateApp() {
     return __awaiter(this, void 0, void 0, function () {
-        var currentPage, i, imageUIDs_1, imageElements, element, i, e_7;
-        var _this = this;
+        var currentPage, i, type_, e_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 5, , 6]);
                     updateNavbar(true);
                     currentPage = pages.length > 0 && pages.includes(getPage()) ? getPage() : "home";
                     for (i = 0; i < pages.length; i++) {
@@ -753,80 +757,109 @@ function updateApp() {
                     ) {
                         return [2 /*return*/];
                     }
+                    type_ = currentPage.split("_")[0];
+                    if (!(type_ === "album")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, buildAlbum("@@dynamiclink", currentPage.split("_")[1], currentPage)];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 2:
                     return [
                         4 /*yield*/,
-                        (function (_currentPage) {
-                            return __awaiter(_this, void 0, void 0, function () {
-                                var type_;
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0:
-                                            type_ = _currentPage.split("_")[0];
-                                            if (!(type_ === "album")) return [3 /*break*/, 2];
-                                            return [
-                                                4 /*yield*/,
-                                                getCategorySessions(
-                                                    "@dynamiclink",
-                                                    _currentPage.split("_")[1],
-                                                ),
-                                            ];
-                                        case 1:
-                                            return [
-                                                2 /*return*/,
-                                                _a.sent().map(function (session) {
-                                                    return session.UID;
-                                                }),
-                                            ];
-                                        case 2:
-                                            return [
-                                                4 /*yield*/,
-                                                getSessionImages("@dynamiclink", _currentPage.split("_")[1]),
-                                            ];
-                                        case 3:
-                                            return [
-                                                2 /*return*/,
-                                                _a.sent().map(function (still) {
-                                                    return still.UID;
-                                                }),
-                                            ];
-                                    }
-                                });
-                            });
-                        })(currentPage),
+                        buildGallery("@dynamiclink", currentPage.split("_")[1], currentPage),
                     ];
-                case 1:
-                    imageUIDs_1 = _a.sent();
-                    imageElements = imageUIDs_1
-                        .map(function (uid) {
-                            var url = new URL("@dynamiclink:8092/");
-                            url.searchParams.set("type", "img");
-                            url.searchParams.set("img", uid.toString());
-                            return url.toString();
-                        })
-                        .map(function (url, i) {
-                            /* HTML */ return '\n                    <img\n                        id="'
-                                .concat(
-                                    imageUIDs_1[i],
-                                    '"\n                        class="albumImage"\n                        src="',
-                                )
-                                .concat(url, '"\n                    />\n                ');
-                        });
-                    element = "";
-                    for (i = 0; i < imageElements.length; i++) {
-                        if ((i + 1) % 3 === 0) {
-                            element += /* HTML */ " <br /> ";
-                        }
-                        element += imageElements[i];
-                    }
-                    console.log(element);
-                    $("#".concat(currentPage)).html(element);
+                case 3:
+                    _a.sent();
+                    _a.label = 4;
+                case 4:
                     loadedGalleryAndSessionPages.push(currentPage);
-                    return [3 /*break*/, 3];
-                case 2:
+                    return [3 /*break*/, 6];
+                case 5:
                     e_7 = _a.sent();
                     console.error(e_7);
-                    return [3 /*break*/, 3];
-                case 3:
+                    return [3 /*break*/, 6];
+                case 6:
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function buildAlbum(dynamiclink, album, currentPage) {
+    return __awaiter(this, void 0, void 0, function () {
+        var imageUIDs;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    return [4 /*yield*/, getCategorySessions(dynamiclink, album)];
+                case 1:
+                    imageUIDs = _a.sent().map(function (session) {
+                        return session.UID;
+                    });
+                    $("#".concat(currentPage)).html(
+                        imageUIDs
+                            .map(function (uid) {
+                                var url = new URL("".concat(dynamiclink, ":8092/"));
+                                url.searchParams.set("type", "img");
+                                url.searchParams.set("img", uid.toString());
+                                return url.toString();
+                            })
+                            .map(function (url, i) {
+                                /* HTML */ return '\n                    <a href="#gallery_'
+                                    .concat(
+                                        imageUIDs[i],
+                                        '">\n                        <img\n                            id="',
+                                    )
+                                    .concat(
+                                        imageUIDs[i],
+                                        '"\n                            class="albumImage"\n                            src="',
+                                    )
+                                    .concat(
+                                        url,
+                                        '"\n                        />\n                    </a>\n                ',
+                                    );
+                            })
+                            .map(function (el, i) {
+                                if ((i + 1) % 3 === 0) {
+                                    return /* HTML */ "".concat(el, " <br />");
+                                }
+                                return el;
+                            })
+                            .join(""),
+                    );
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function buildGallery(dynamiclink, gallery, currentPage) {
+    return __awaiter(this, void 0, void 0, function () {
+        var imageUIDs;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    return [4 /*yield*/, getSessionImages(dynamiclink, gallery)];
+                case 1:
+                    imageUIDs = _a.sent().map(function (still) {
+                        return still.UID;
+                    });
+                    $("#".concat(currentPage)).html(
+                        imageUIDs
+                            .map(function (uid) {
+                                var url = new URL("".concat(dynamiclink, ":8092/"));
+                                url.searchParams.set("type", "img");
+                                url.searchParams.set("img", uid.toString());
+                                return url.toString();
+                            })
+                            .map(function (url, i) {
+                                /* HTML */ return '\n                    <img\n                        id="'
+                                    .concat(
+                                        imageUIDs[i],
+                                        '"\n                        class="albumImage"\n                        src="',
+                                    )
+                                    .concat(url, '"\n                    />\n                ');
+                            })
+                            .join(""),
+                    );
                     return [2 /*return*/];
             }
         });

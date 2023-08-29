@@ -55,7 +55,7 @@ function getSpecificData(givenData, url_info) {
         ) {
             var session_UID_1 = (function (session_uid) {
                 var sessionMatch = (0, getImageData_1.getSessions)().find(function (session) {
-                    return lsse.equals(lsse.str(session.UID), lsse.str(session_uid));
+                    return lsse.equals(session.UID, lsse.int(session_uid));
                 });
                 return typeof sessionMatch &&
                     sessionMatch !== undefined &&

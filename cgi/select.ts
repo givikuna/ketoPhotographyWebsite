@@ -80,8 +80,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         ) {
             const session_UID: number = ((session_uid: number | string): number => {
                 const sessionMatch: Readonly<SESSION> | undefined = getSessions().find(
-                    (session: Readonly<SESSION>): boolean =>
-                        lsse.equals(lsse.str(session.UID), lsse.str(session_uid)),
+                    (session: Readonly<SESSION>): boolean => {
+                        return lsse.equals(session.UID, lsse.int(session_uid));
+                    },
                 );
 
                 return typeof sessionMatch &&

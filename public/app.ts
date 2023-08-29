@@ -114,7 +114,7 @@ async function addCategoriesAndSessionsAsPages(dynamiclink: string): Promise<voi
     try {
         for (let i: number = 0; i < categories.length; i++) {
             $("#app").append(
-                $(/*HTML*/ `<div></div>`)
+                $(/* HTML */ `<div></div>`)
                     .attr("id", categories[i].NAME ? `album_${categories[i].NAME}` : "ERROR")
                     .addClass("albumPage")
                     .hide(),
@@ -127,10 +127,11 @@ async function addCategoriesAndSessionsAsPages(dynamiclink: string): Promise<voi
     }
 
     try {
-        for (let i: number = 0; i < categories.length; i++) {
+        for (let i: number = 0; i < sessions.length; i++) {
             $("#app").append(
-                $(/*HTML*/ `<div></div>`)
+                $(/* HTML */ `<div></div>`)
                     .attr("id", sessions[i].UID ? `gallery_${sessions[i].UID}` : "ERROR")
+                    .css("text-align", "center")
                     .addClass("galleryPage")
                     .hide(),
             );
@@ -161,7 +162,7 @@ async function buildApp(dynamiclink: string): Promise<boolean> {
         })(dynamiclink);
 
         for (let i: number = 0; i < data.length; i++) {
-            const pageDiv: JQuery<HTMLElement> = $(/*HTML*/ `<div></div>`)
+            const pageDiv: JQuery<HTMLElement> = $(/* HTML */ `<div></div>`)
                 .attr("id", data[i].page ? data[i].page : "ERROR")
                 .addClass(data[i].page && data[i].page.startsWith("album_") ? "albumPage" : "webPage");
 
@@ -212,7 +213,7 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
 
                 // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
                 for (let i: number = 0; i < categories.length; i++) {
-                    const element: string = /*HTML*/ `
+                    const element: string = /* HTML */ `
                         <div class="imageContainer">
                             <img
                                 src="${((_dynamiclink: string, category: string): string => {
@@ -226,7 +227,8 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
                                 class="albumCoverImage"
                                 alt="Image ${i}"
                                 id="${categories[i].NAME}AlbumCoverForHome"
-                            >
+                            />
+
                             <span id="${categories[i].NAME}AlbumCoverForHomeSpan">
                                 ${categories[i].NAME}
                             </span>
@@ -279,40 +281,77 @@ function updateNavbar(callingFromWindowSizeCheck: boolean = false): void {
 
 function buildHamburger(div: string, dynamiclink: string): void {
     try {
-        const newNavbar: string = /*HTML*/ `
-            <div class="hamburger-button" onclick="hamburgerClick('${div}')" id="inside-${div}">
+        const newNavbar: string = /* HTML */ `
+            <div
+                class="hamburger-button"
+                onclick="hamburgerClick('${div}')"
+                id="inside-${div}"
+            >
                 &#9776;
             </div>
             <!-- Hamburger Navbar -->
-            <div class="hamburger-navbar" id="hamburger-navbar-for-${div}">
-                <a href="#home" class="hamburger-navbar-option" id="hamburger-navbar-option-home">
+            <div
+                class="hamburger-navbar"
+                id="hamburger-navbar-for-${div}"
+            >
+                <a
+                    href="#home"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-home"
+                >
                     Home
                 </a>
 
-                <a href="#contact" class="hamburger-navbar-option" id="hamburger-navbar-option-contact">
+                <a
+                    href="#contact"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-contact"
+                >
                     Contact
                 </a>
 
-                <a href="#about" class="hamburger-navbar-option" id="hamburger-navbar-option-about">
+                <a
+                    href="#about"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-about"
+                >
                     About
                 </a>
 
-                <a href="#pricing" class="hamburger-navbar-option" id="hamburger-navbar-option-pricing">
+                <a
+                    href="#pricing"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-pricing"
+                >
                     Pricing
                 </a>
 
-                <a href="#blog" class="hamburger-navbar-option" id="hamburger-navbar-option-blog">
+                <a
+                    href="#blog"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-blog"
+                >
                     Blog
                 </a>
 
-                <a href="#albums" class="hamburger-navbar-option" id="hamburger-navbar-option-albums">
+                <a
+                    href="#albums"
+                    class="hamburger-navbar-option"
+                    id="hamburger-navbar-option-albums"
+                >
                     Albums
                 </a>
             </div>
 
-            <div class="navbar-logo-container" id="hamburger-navbar-logo-container-for-${div}">
+            <div
+                class="navbar-logo-container"
+                id="hamburger-navbar-logo-container-for-${div}"
+            >
                 <a href="#home">
-                    <img src="${dynamiclink}:8092/?type=logo" class="navbar-logo-phone" />
+                    <img
+                        src="${dynamiclink}:8092/?type=logo"
+                        class="navbar-logo-phone"
+                    />
                 </a>
             </div>
         `;
@@ -321,13 +360,13 @@ function buildHamburger(div: string, dynamiclink: string): void {
         $(`#inside-hamburger-wrapper-for-${div}`).hide();
 
         if (div === "navbar-div-phone") {
-            $(`#${div}`).append(/*HTML*/ `
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
+            $(`#${div}`).append(/* HTML */ `
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
             `);
         }
     } catch (e: unknown) {
@@ -337,39 +376,72 @@ function buildHamburger(div: string, dynamiclink: string): void {
 
 function makeFooter(dynamiclink: string): void {
     try {
-        $("#footer-div").show().append(/*HTML*/ `
-            <footer>
-                <a href="https://www.facebook.com"><img src="${dynamiclink}:8092/?type=icons&img=facebook" alt="Facebook"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.flickr.com"><img src="${dynamiclink}:8092/?type=icons&img=flickr" alt="Flickr"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.instagram.com"><img src="${dynamiclink}:8092/?type=icons&img=instagram" alt="Instagram"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.pinterest.com"><img src="${dynamiclink}:8092/?type=icons&img=pinterest" alt="Pinterest"
-                        class="SocialMediaIcon"></a>
-                <a href="https://www.youtube.com"><img src="${dynamiclink}:8092/?type=icons&img=youtube" alt="YouTube"
-                        class="SocialMediaIcon"></a>
-
-                <br>
-                <br>
-
-                <div>
-                    <p>
-                        <a href="#contact" class="contact-link">
-                            Contact Me
-                        </a>
-                    </p>
-                    <p>
-                    <a href="#home" class="contact-link">
-                        Home
+        $("#footer-div")
+            .show()
+            .append(/* HTML */ `
+                <footer>
+                    <a href="https://www.facebook.com">
+                        <img
+                            src="${dynamiclink}:8092/?type=icons&img=facebook"
+                            alt="Facebook"
+                            class="SocialMediaIcon"
+                        />
                     </a>
-                </p>
-                </div>
-            </footer>
+                    <a href="https://www.flickr.com">
+                        <img
+                            src="${dynamiclink}:8092/?type=icons&img=flickr"
+                            alt="Flickr"
+                            class="SocialMediaIcon"
+                        />
+                    </a>
+                    <a href="https://www.instagram.com">
+                        <img
+                            src="${dynamiclink}:8092/?type=icons&img=instagram"
+                            alt="Instagram"
+                            class="SocialMediaIcon"
+                        />
+                    </a>
+                    <a href="https://www.pinterest.com">
+                        <img
+                            src="${dynamiclink}:8092/?type=icons&img=pinterest"
+                            alt="Pinterest"
+                            class="SocialMediaIcon"
+                        />
+                    </a>
+                    <a href="https://www.youtube.com">
+                        <img
+                            src="${dynamiclink}:8092/?type=icons&img=youtube"
+                            alt="YouTube"
+                            class="SocialMediaIcon"
+                        />
+                    </a>
 
-            <br>
-            <br>
-        `);
+                    <br />
+                    <br />
+
+                    <div>
+                        <p>
+                            <a
+                                href="#contact"
+                                class="contact-link"
+                            >
+                                Contact Me
+                            </a>
+                        </p>
+                        <p>
+                            <a
+                                href="#home"
+                                class="contact-link"
+                            >
+                                Home
+                            </a>
+                        </p>
+                    </div>
+                </footer>
+
+                <br />
+                <br />
+            `);
     } catch (e: unknown) {
         console.error(e);
     }
@@ -600,24 +672,64 @@ async function updateApp(): Promise<void> {
         );
         */
 
-        const imageUIDs: ReadonlyArray<number> = await (async (
-            _currentPage: string,
-        ): Promise<ReadonlyArray<number>> => {
-            let type_: string = _currentPage.split("_")[0];
-            if (type_ === "album") {
-                return (await getCategorySessions("@dynamiclink", _currentPage.split("_")[1])).map(
-                    (session: Readonly<SESSION>): number => session.UID,
-                );
-            }
+        const type_: string = currentPage.split("_")[0];
 
-            return (await getSessionImages("@dynamiclink", _currentPage.split("_")[1])).map(
-                (still: Readonly<STILL>): number => still.UID,
-            );
-        })(currentPage);
+        if (type_ === "album") {
+            await buildAlbum("@@dynamiclink", currentPage.split("_")[1], currentPage);
+        } else {
+            await buildGallery("@dynamiclink", currentPage.split("_")[1], currentPage);
+        }
 
-        const imageElements: ReadonlyArray<string> = imageUIDs
+        loadedGalleryAndSessionPages.push(currentPage);
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+async function buildAlbum(dynamiclink: string, album: string, currentPage: string) {
+    const imageUIDs: ReadonlyArray<number> = (await getCategorySessions(dynamiclink, album)).map(
+        (session: Readonly<SESSION>): number => session.UID,
+    );
+
+    $(`#${currentPage}`).html(
+        imageUIDs
             .map((uid: number): string => {
-                const url: URL = new URL("@dynamiclink:8092/");
+                const url: URL = new URL(`${dynamiclink}:8092/`);
+                url.searchParams.set("type", "img");
+                url.searchParams.set("img", uid.toString());
+
+                return url.toString();
+            })
+            .map(
+                (url: string, i: number): string => /* HTML */ `
+                    <a href="#gallery_${imageUIDs[i]}">
+                        <img
+                            id="${imageUIDs[i]}"
+                            class="albumImage"
+                            src="${url}"
+                        />
+                    </a>
+                `,
+            )
+            .map((el: string, i: number) => {
+                if ((i + 1) % 3 === 0) {
+                    return /* HTML */ `${el} <br />`;
+                }
+                return el;
+            })
+            .join(""),
+    );
+}
+
+async function buildGallery(dynamiclink: string, gallery: string, currentPage: string) {
+    const imageUIDs: ReadonlyArray<number> = (await getSessionImages(dynamiclink, gallery)).map(
+        (still: Readonly<STILL>): number => still.UID,
+    );
+
+    $(`#${currentPage}`).html(
+        imageUIDs
+            .map((uid: number): string => {
+                const url: URL = new URL(`${dynamiclink}:8092/`);
                 url.searchParams.set("type", "img");
                 url.searchParams.set("img", uid.toString());
 
@@ -631,25 +743,9 @@ async function updateApp(): Promise<void> {
                         src="${url}"
                     />
                 `,
-            );
-
-        let element: string = "";
-
-        for (let i: number = 0; i < imageElements.length; i++) {
-            if ((i + 1) % 3 === 0) {
-                element += /* HTML */ ` <br /> `;
-            }
-            element += imageElements[i];
-        }
-
-        console.log(element);
-
-        $(`#${currentPage}`).html(element);
-
-        loadedGalleryAndSessionPages.push(currentPage);
-    } catch (e: unknown) {
-        console.error(e);
-    }
+            )
+            .join(""),
+    );
 }
 
 function getLang(lang: string): string {
