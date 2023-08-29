@@ -42,6 +42,15 @@ type PageData = {
     components: string[] | Immutable2DArray<string>;
 };
 
+type FixedArray<T, N extends number> = {
+    0: T;
+    length: N;
+} & ReadonlyArray<T>;
+
+type URLParams = {
+    [key: string]: string;
+};
+
 const pages: string[] = [];
 const loadedGalleryAndSessionPages: string[] = [];
 let iterated: number = 0;
@@ -78,7 +87,7 @@ async function main(
             })
             .then(updateApp)
             .then((): void => {
-                const navbars: ReadonlyArray<string> = ["navbar-div-phone", "homepage-navbar-div-phone"];
+                const navbars: FixedArray<string, 2> = ["navbar-div-phone", "homepage-navbar-div-phone"];
 
                 for (let i: number = 0; i < navbars.length; i++) {
                     let _: void = buildHamburger(navbars[i], dynamiclink);
@@ -281,7 +290,7 @@ function updateNavbar(callingFromWindowSizeCheck: boolean = false): void {
 
 function buildHamburger(div: string, dynamiclink: string): void {
     try {
-        const newNavbar: string = /* HTML */ `
+        $(`#${div}`).append(/* HTML */ `
             <div
                 class="hamburger-button"
                 onclick="hamburgerClick('${div}')"
@@ -354,9 +363,8 @@ function buildHamburger(div: string, dynamiclink: string): void {
                     />
                 </a>
             </div>
-        `;
+        `);
 
-        $(`#${div}`).append(newNavbar);
         $(`#inside-hamburger-wrapper-for-${div}`).hide();
 
         if (div === "navbar-div-phone") {
@@ -637,11 +645,25 @@ function inPhoneMode(): boolean {
 }
 
 function hideDiv(div: string): JQuery<HTMLElement> {
-    return $(`#${div}`).hide();
+    const _default: ReturnType<typeof hideDiv> = $();
+
+    try {
+        return $(`#${div}`).hide();
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
 }
 
 function showDiv(div: string): JQuery<HTMLElement> {
-    return $(`#${div}`).show();
+    const _default: ReturnType<typeof showDiv> = $();
+
+    try {
+        return $(`#${div}`).show();
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
 }
 async function updateApp(): Promise<void> {
     try {
@@ -675,7 +697,7 @@ async function updateApp(): Promise<void> {
         const type_: string = currentPage.split("_")[0];
 
         if (type_ === "album") {
-            await buildAlbum("@@dynamiclink", currentPage.split("_")[1], currentPage);
+            await buildAlbum("@dynamiclink", currentPage.split("_")[1], currentPage);
         } else {
             await buildGallery("@dynamiclink", currentPage.split("_")[1], currentPage);
         }
@@ -686,66 +708,79 @@ async function updateApp(): Promise<void> {
     }
 }
 
-async function buildAlbum(dynamiclink: string, album: string, currentPage: string) {
-    const imageUIDs: ReadonlyArray<number> = (await getCategorySessions(dynamiclink, album)).map(
-        (session: Readonly<SESSION>): number => session.UID,
-    );
-
-    $(`#${currentPage}`).html(
-        imageUIDs
-            .map((uid: number): string => {
-                const url: URL = new URL(`${dynamiclink}:8092/`);
-                url.searchParams.set("type", "img");
-                url.searchParams.set("img", uid.toString());
-
-                return url.toString();
-            })
-            .map(
-                (url: string, i: number): string => /* HTML */ `
-                    <a href="#gallery_${imageUIDs[i]}">
-                        <img
-                            id="${imageUIDs[i]}"
-                            class="albumImage"
-                            src="${url}"
-                        />
-                    </a>
-                `,
-            )
-            .map((el: string, i: number) => {
-                if ((i + 1) % 3 === 0) {
-                    return /* HTML */ `${el} <br />`;
-                }
-                return el;
-            })
-            .join(""),
-    );
+async function buildAlbum(dynamiclink: string, album: string, currentPage: string): Promise<void> {
+    try {
+        $(`#${currentPage}`).html(
+            (await getCategorySessions(dynamiclink, album))
+                .map((session: Readonly<SESSION>): number => session.UID)
+                .map(
+                    (uid: number, i: number): string => /* HTML */ `
+                        <a href="#gallery_${uid}">
+                            <img
+                                id="${uid}"
+                                class="albumImage"
+                                src="${createURL(`${dynamiclink}:8092/`, {
+                                    type: "img",
+                                    img: uid.toString(),
+                                }).toString()}"
+                            />
+                        </a>
+                    `,
+                )
+                .map((el: string, i: number) => {
+                    if ((i + 1) % 3 === 0) {
+                        return /* HTML */ `${el} <br />`;
+                    }
+                    return el;
+                })
+                .join(""),
+        );
+    } catch (e: unknown) {
+        console.error(e);
+    }
 }
 
-async function buildGallery(dynamiclink: string, gallery: string, currentPage: string) {
-    const imageUIDs: ReadonlyArray<number> = (await getSessionImages(dynamiclink, gallery)).map(
-        (still: Readonly<STILL>): number => still.UID,
-    );
+async function buildGallery(dynamiclink: string, gallery: string, currentPage: string): Promise<void> {
+    try {
+        $(`#${currentPage}`).html(
+            (await getSessionImages(dynamiclink, gallery))
+                .map((still: Readonly<STILL>): number => still.UID)
+                .map(
+                    (uid: number, i: number) => /* HTML */ `
+                        <img
+                            id="${uid}"
+                            class="albumImage"
+                            src="${createURL(`${dynamiclink}:8092/`, {
+                                type: "img",
+                                img: uid.toString(),
+                            }).toString()}"
+                        />
+                    `,
+                )
+                .join(""),
+        );
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
 
-    $(`#${currentPage}`).html(
-        imageUIDs
-            .map((uid: number): string => {
-                const url: URL = new URL(`${dynamiclink}:8092/`);
-                url.searchParams.set("type", "img");
-                url.searchParams.set("img", uid.toString());
+function createURL(link: string, params: URLParams): URL | string {
+    const _default: ReturnType<typeof createURL> = "";
 
-                return url.toString();
-            })
-            .map(
-                (url: string, i: number): string => /* HTML */ `
-                    <img
-                        id="${imageUIDs[i]}"
-                        class="albumImage"
-                        src="${url}"
-                    />
-                `,
-            )
-            .join(""),
-    );
+    try {
+        const url: URL = new URL(`${link}`);
+
+        for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+                url.searchParams.set(key, params[key]);
+            }
+        }
+
+        return url;
+    } catch (e: unknown) {
+        console.error(e);
+        return _default;
+    }
 }
 
 function getLang(lang: string): string {
@@ -1064,9 +1099,12 @@ async function getCategorySessions(
     const _default: Unpromisify<ReturnType<typeof getCategorySessions>> = [] as Immutable2DArray<SESSION>;
 
     try {
+        console.log(dynamiclink);
         const url: URL = new URL(`${dynamiclink}:8094/`);
         url.searchParams.set("data", "categorySessions");
         url.searchParams.set("category", category);
+
+        console.log(url.toString());
 
         const response: Readonly<Response> = await fetch(url);
 
