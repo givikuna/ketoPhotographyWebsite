@@ -19,10 +19,10 @@ body {
 }
 
 .albumImage {
-    max-width: 30%;
-    max-height: 40vh;
+    max-width: 95%;
+    max-height: 95%;
     margin-bottom: 10px;
-    border-radius: 30px;
+    border-radius: 10px;
     filter: brightness(1.2) blur(0.05px);
     transition: all 0.3s ease;
     -webkit-filter: brightness(1.2) blur(0.05px);
@@ -30,6 +30,10 @@ body {
     -moz-transition: all 0.3s ease;
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
 }
 
 .albumImage:hover {
@@ -43,20 +47,62 @@ body {
 }
 
 .albumCoverImage {
-    filter: brightness(0.9) blur(0.05px) opacity(0%);
-    -webkit-filter: brightness(0.9) blur(0.05px) opacity(0%);
+    filter: brightness(0.9) blur(0.05px) opacity(90%);
+    -webkit-filter: brightness(0.9) blur(0.05px) opacity(90%);
 }
 
 .inAlbumImages {
     text-align: center;
 }
 
-#album-gallery {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-    flex-wrap: wrap;
+.sessionContainer {
+    position: relative;
+    display: inline-block; /* or display: inline; */
+    vertical-align: top; /* This will align the DIVs at the top */
+}
+
+.sessionImage {
+    max-width: 100%; /* Adjust this value as needed */
+    max-height: 40vh;
+    margin-bottom: 10px;
+    border-radius: 30px;
+    filter: brightness(1.2) blur(0.05px);
+    transition: all 0.3s ease;
+    -webkit-filter: brightness(1.2) blur(0.05px);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+
+.sessionImage:hover {
+    transform: scale(1.01);
+    filter: brightness(1.2) blur(0px);
+    -webkit-filter: brightness(1.2) blur(0px);
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    -o-transform: scale(1.01);
+}
+
+.sessionContainer span {
+    font-family: "Old Standard TT", serif;
+    font-size: 32px;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    filter: brightness(1.2);
+    color: white;
+    top: 50%;
+    left: 50%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -webkit-filter: brightness(1.2);
 }
 
 .imageContainer {
@@ -82,6 +128,14 @@ body {
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     -webkit-filter: brightness(1.2);
+}
+
+#album-gallery {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 #album-gallery img {
@@ -111,6 +165,46 @@ body {
 }
 
 #album-gallery img:hover {
+    transform: scale(1.01);
+    filter: blur(0px) grayscale(0%) brightness(1);
+    -webkit-filter: blur(0px) grayscale(0%) brightness(1);
+}
+
+#albums-gallery-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+#albums-gallery-container img {
+    width: 500px;
+    /*calc(33.33%-10px):;
+    */
+    height: 100%px;
+    margin: 5px;
+    border-radius: 10px;
+    transition:
+        transform 0.3s ease,
+        filter 0.6s ease;
+    filter: blur(0.1px) grayscale(10%) brightness(0.9);
+    -webkit-filter: blur(0.1px) grayscale(10%) brightness(0.9);
+    -webkit-transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+    -moz-transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+    -ms-transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+    -o-transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+#albums-gallery-container img:hover {
     transform: scale(1.01);
     filter: blur(0px) grayscale(0%) brightness(1);
     -webkit-filter: blur(0px) grayscale(0%) brightness(1);
@@ -319,6 +413,10 @@ footer p {
 
 footer p a {
     transition: transform 0.2s;
+    -webkit-transition: transform 0.2s;
+    -moz-transition: transform 0.2s;
+    -ms-transition: transform 0.2s;
+    -o-transition: transform 0.2s;
 }
 
 footer p a:hover {

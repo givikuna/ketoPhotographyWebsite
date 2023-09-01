@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
+        "target": "ES6",
         "strict": true,
         "module": "CommonJS",
         "forceConsistentCasingInFileNames": true,

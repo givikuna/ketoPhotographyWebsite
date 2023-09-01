@@ -42,17 +42,29 @@ type PageData = {
     components: string[] | Immutable2DArray<string>;
 };
 
-type FixedArray<T, N extends number> = {
-    0: T;
-    length: N;
-} & ReadonlyArray<T>;
+type FixedArray<T, N extends number, A extends T[] = []> = A["length"] extends N
+    ? A
+    : FixedArray<T, N, [...A, T]>;
 
 type URLParams = {
     [key: string]: string;
 };
 
+type SelectRequestOption =
+    | "categorySessions"
+    | "sessionImages"
+    | "languages"
+    | "pages"
+    | "albumData"
+    | "categories"
+    | "stills"
+    | "sessions"
+    | "frontPageCoverImageData"
+    | "categoryImages";
+
 const pages: string[] = [];
 const loadedGalleryAndSessionPages: string[] = [];
+const builtAlbums: string[] = [];
 let iterated: number = 0;
 let previousPage: string = "";
 
@@ -70,6 +82,8 @@ async function main(
 
         changeLang(language);
         updateNavbar();
+
+        $(`#back-to-albums-div`).toggle();
 
         let _: void = await buildNavBar(dynamiclink)
             .then((): void => {
@@ -125,6 +139,7 @@ async function addCategoriesAndSessionsAsPages(dynamiclink: string): Promise<voi
             $("#app").append(
                 $(/* HTML */ `<div></div>`)
                     .attr("id", categories[i].NAME ? `album_${categories[i].NAME}` : "ERROR")
+                    .css("text-align", "center")
                     .addClass("albumPage")
                     .hide(),
             );
@@ -238,7 +253,10 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
                                 id="${categories[i].NAME}AlbumCoverForHome"
                             />
 
-                            <span id="${categories[i].NAME}AlbumCoverForHomeSpan">
+                            <span
+                                id="${categories[i].NAME}AlbumCoverForHomeSpan"
+                                onclick="window.location.href='#album_${categories[i].NAME}'"
+                            >
                                 ${categories[i].NAME}
                             </span>
                         </div>
@@ -246,9 +264,78 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
 
                     $("#album-gallery").append(element);
                 }
-
+                break;
+            case "albums":
+                await buildAlbumsPage(dynamiclink);
                 break;
         }
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+async function buildAlbumsPage(dynamiclink: string): Promise<void> {
+    try {
+        console.log("made it to buildAlbumsPage");
+
+        $("#albums").html(/* HTML */ `
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+        `);
+
+        const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
+
+        $("#albums").append(
+            $("<div>", {
+                id: "albums-gallery-container",
+            }),
+        );
+
+        // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
+        for (let i: number = 0; i < categories.length; i++) {
+            const element: string = /* HTML */ `
+                <div class="imageContainer">
+                    <img
+                        src="${((_dynamiclink: string, category: string): string => {
+                            let url: URL = new URL(`${_dynamiclink}:8092/`);
+                            url.searchParams.set("type", "cover");
+                            url.searchParams.set("album", category);
+
+                            return url.toString();
+                        })(dynamiclink, categories[i].NAME)}"
+                        onclick="window.location.href='#album_${categories[i].NAME}'"
+                        class="albumCoverImage"
+                        alt="Image ${i}"
+                        id="${categories[i].NAME}AlbumCoverForAlbums"
+                    />
+
+                    <span
+                        id="${categories[i].NAME}AlbumCoverForAlbumsSpan"
+                        onclick="window.location.href='#album_${categories[i].NAME}'"
+                    >
+                        ${categories[i].NAME}
+                    </span>
+                </div>
+            `;
+
+            $("#albums-gallery-container").append(element);
+        }
+
+        $("#albums").append(/* HTML */ `
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+        `);
     } catch (e: unknown) {
         console.error(e);
     }
@@ -479,6 +566,199 @@ async function buildComponent(component: string, dynamiclink: string): Promise<J
     }
 }
 
+async function buildAlbum(dynamiclink: string, album: string, currentPage: string): Promise<void> {
+    try {
+        if (builtAlbums.includes(album)) {
+            return;
+        }
+
+        const arrayOfComponents: string[] = (
+            (await getCategoryStills(dynamiclink, album)) as Immutable2DArray<STILL>
+        ).map(
+            (still: Readonly<STILL>): string => /* HTML */ `
+                <img
+                    id="still_${still.UID as number}"
+                    src="${String(
+                        createURL(`${dynamiclink}:8092/`, {
+                            type: "img",
+                            img: (still.UID as number).toString(),
+                        } as URLParams),
+                    )}"
+                    class="albumImage"
+                />
+            `,
+        );
+
+        const componentArray: FixedArray<string[], 2> = [
+            arrayOfComponents.slice(0, Math.ceil(arrayOfComponents.length / 2)),
+            arrayOfComponents.slice(Math.ceil(arrayOfComponents.length / 2)),
+        ];
+
+        for (let i: number = 0; i < componentArray.length; i++) {
+            $(`#${currentPage}`).append(
+                $("<div>", {
+                    class: `within-div-${i + 1}`,
+                    id: `${currentPage}-within-div-${i + 1}`,
+                })
+                    .html(componentArray[i].join(/* HTML */ `<br />`))
+                    .css({
+                        flex: "1",
+                        padding: "0px",
+                        margin: "3px 2px",
+                    }),
+            );
+        }
+
+        $(`#${currentPage}`).css({
+            display: "flex",
+            marginLeft: "10px",
+            marginRight: "10px",
+        });
+
+        builtAlbums.push(album);
+        // $(`#${currentPage}`).html("");
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+/*
+
+async function buildAlbum(dynamiclink: string, album: string, currentPage: string): Promise<void> {
+    try {
+        $(`#${currentPage}`).html(
+            ((await getCategorySessions(dynamiclink, album)) as Immutable2DArray<SESSION>)
+                .map(
+                    (session: Readonly<SESSION>): string => `
+                        <div class="sessionContainer">
+                            <img
+                                id="session_${session.UID as number}"
+                                src="${createURL(`${dynamiclink}:8092/`, {
+                                    type: "img",
+                                    img: (session.UID as number).toString(),
+                                } as URLParams).toString()}"
+                                class="sessionImage"
+                                onclick="sessionClicked('${session.UID}')"
+                            />
+
+                            <span id="SessionNameSpan"> ${session.SESSION_DATE as string} </span>
+
+                            <div id="session_${session.UID as number}-flyout-menu">
+                                <!-- / -->
+                            </div>
+                        </div>
+                    `,
+                )
+                .join(""),
+        );
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+*/
+
+/*
+
+async function sessionClicked(sessionUID: string): Promise<void> {
+    // window.location.href = `#gallery_${(session.UID as number).toString()}`;
+
+    try {
+        if (getPage().split("_")[0] !== "album") {
+            return;
+        }
+
+        const dynamiclink: string = "@dynamiclink";
+
+        const session: Readonly<SESSION> | undefined = (
+            (await fetchSessions(dynamiclink)) satisfies Immutable2DArray<SESSION>
+        ).find((session_: Readonly<SESSION>): boolean => session_.UID === parseInt(sessionUID));
+
+        if (session == null || !session || session == undefined || typeof session !== "object") {
+            return;
+        }
+
+        const stills: Immutable2DArray<STILL> = await (async (
+            dynamiclink_: string,
+            uid: number,
+        ): Promise<Immutable2DArray<STILL>> => {
+            const m_stills: Immutable2DArray<STILL> = (await getSessionImages(
+                dynamiclink_,
+                uid,
+            )) as Immutable2DArray<STILL>;
+
+            if (m_stills.length <= 4) {
+                return m_stills;
+            }
+
+            return m_stills.slice(0, 4);
+        })(dynamiclink, session.UID);
+
+
+        const sessionUIDs: ReadonlyArray<number> = (
+            await getCategorySessions(dynamiclink, getPage().split("_")[1])
+        ).map((session_: Readonly<SESSION>): number => session_.UID);
+
+        const previousSessionUID: number = ((
+            sessionUIDs_: ReadonlyArray<number>,
+            sessionUID_: number,
+        ): number => {
+            const index: number = sessionUIDs_.findIndex((val: number): boolean => val === sessionUID_);
+
+            if (index === -1 || index > sessionUIDs_.length || index === 0) {
+                return -1;
+            }
+
+            return sessionUIDs_[index - 1];
+        })(sessionUIDs, parseInt(sessionUID));
+
+        const followingSessionUID: number = ((
+            sessionUIDs_: ReadonlyArray<number>,
+            sessionUID_: number,
+        ): number => {
+            const index: number = sessionUIDs_.findIndex((val: number): boolean => val === sessionUID_);
+
+            if (index === -1 || index + 1 === sessionUIDs_.length || index > sessionUIDs_.length) {
+                return -1;
+            }
+
+            return sessionUIDs_[index + 1];
+        })(sessionUIDs, parseInt(sessionUID));
+
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+*/
+
+/*
+
+async function buildGallery(dynamiclink: string, gallery: number, currentPage: string): Promise<void> {
+    try {
+        $(`#${currentPage}`).html(
+            ((await getSessionImages(dynamiclink, gallery)) as Immutable2DArray<STILL>)
+                .map(
+                    (still: Readonly<STILL>): string => `
+                        <img
+                            id="${still.UID as number}"
+                            src="${createURL(`${dynamiclink}:8092/`, {
+                                type: "img",
+                                img: (still.UID as number).toString(),
+                            } as URLParams).toString()}"
+                            class="albumImage"
+                        />
+                    `,
+                )
+                .join(""),
+        );
+    } catch (e: unknown) {
+        console.error(e);
+    }
+}
+
+*/
+
 // --------------------------------------------------------------------------------------- Event functions:
 
 function hashchange(): void {
@@ -685,8 +965,12 @@ async function updateApp(): Promise<void> {
             !currentPage.startsWith("gallery_") &&
             !currentPage.split("").includes("_")
         ) {
+            hideDiv("back-to-albums-div");
+
             return;
         }
+
+        showDiv("back-to-albums-div");
 
         /*
         const imageUIDs: ReadonlyArray<number> = (await getSessionImages("@dynamiclink")).map(
@@ -696,10 +980,14 @@ async function updateApp(): Promise<void> {
 
         const type_: string = currentPage.split("_")[0];
 
+        if (builtAlbums.includes(currentPage.split("_")[1])) {
+            return;
+        }
+
         if (type_ === "album") {
             await buildAlbum("@dynamiclink", currentPage.split("_")[1], currentPage);
         } else {
-            await buildGallery("@dynamiclink", currentPage.split("_")[1], currentPage);
+            // await buildGallery("@dynamiclink", parseInt(currentPage.split("_")[1]), currentPage);
         }
 
         loadedGalleryAndSessionPages.push(currentPage);
@@ -708,64 +996,8 @@ async function updateApp(): Promise<void> {
     }
 }
 
-async function buildAlbum(dynamiclink: string, album: string, currentPage: string): Promise<void> {
-    try {
-        $(`#${currentPage}`).html(
-            (await getCategorySessions(dynamiclink, album))
-                .map((session: Readonly<SESSION>): number => session.UID)
-                .map(
-                    (uid: number, i: number): string => /* HTML */ `
-                        <a href="#gallery_${uid}">
-                            <img
-                                id="${uid}"
-                                class="albumImage"
-                                src="${createURL(`${dynamiclink}:8092/`, {
-                                    type: "img",
-                                    img: uid.toString(),
-                                }).toString()}"
-                            />
-                        </a>
-                    `,
-                )
-                .map((el: string, i: number) => {
-                    if ((i + 1) % 3 === 0) {
-                        return /* HTML */ `${el} <br />`;
-                    }
-                    return el;
-                })
-                .join(""),
-        );
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-async function buildGallery(dynamiclink: string, gallery: string, currentPage: string): Promise<void> {
-    try {
-        $(`#${currentPage}`).html(
-            (await getSessionImages(dynamiclink, gallery))
-                .map((still: Readonly<STILL>): number => still.UID)
-                .map(
-                    (uid: number, i: number) => /* HTML */ `
-                        <img
-                            id="${uid}"
-                            class="albumImage"
-                            src="${createURL(`${dynamiclink}:8092/`, {
-                                type: "img",
-                                img: uid.toString(),
-                            }).toString()}"
-                        />
-                    `,
-                )
-                .join(""),
-        );
-    } catch (e: unknown) {
-        console.error(e);
-    }
-}
-
-function createURL(link: string, params: URLParams): URL | string {
-    const _default: ReturnType<typeof createURL> = "";
+function createURL(link: string, params: URLParams): URL | undefined {
+    const _default: ReturnType<typeof createURL> = undefined;
 
     try {
         const url: URL = new URL(`${link}`);
@@ -829,108 +1061,11 @@ async function fetchComponent(component: string, dynamiclink: string): Promise<s
 }
 
 async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESSION>> {
-    const _default: Unpromisify<ReturnType<typeof fetchSessions>> = [
-        {
-            UID: 1,
-            CUSTOMER_UID: 1,
-            CATEGORY_UID: 4,
-            COVER_STILL_UID: 65,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 2,
-            CUSTOMER_UID: 2,
-            CATEGORY_UID: 3,
-            COVER_STILL_UID: 11,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 3,
-            CUSTOMER_UID: 2,
-            CATEGORY_UID: 1,
-            COVER_STILL_UID: 1,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 4,
-            CUSTOMER_UID: 3,
-            CATEGORY_UID: 6,
-            COVER_STILL_UID: 58,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 5,
-            CUSTOMER_UID: 1,
-            CATEGORY_UID: 2,
-            COVER_STILL_UID: 2,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 6,
-            CUSTOMER_UID: 2,
-            CATEGORY_UID: 3,
-            COVER_STILL_UID: 16,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 7,
-            CUSTOMER_UID: 2,
-            CATEGORY_UID: 5,
-            COVER_STILL_UID: 22,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 8,
-            CUSTOMER_UID: 3,
-            CATEGORY_UID: 3,
-            COVER_STILL_UID: 53,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 9,
-            CUSTOMER_UID: 3,
-            CATEGORY_UID: 3,
-            COVER_STILL_UID: 50,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 10,
-            CUSTOMER_UID: 1,
-            CATEGORY_UID: 6,
-            COVER_STILL_UID: 77,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 11,
-            CUSTOMER_UID: 2,
-            CATEGORY_UID: 4,
-            COVER_STILL_UID: 89,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-        {
-            UID: 12,
-            CUSTOMER_UID: 3,
-            CATEGORY_UID: 1,
-            COVER_STILL_UID: 7,
-            DESCRIPTION: "",
-            SESSION_DATE: "some_date",
-        },
-    ] as const;
+    const _default: Unpromisify<ReturnType<typeof fetchSessions>> = [] as Immutable2DArray<SESSION>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "sessions");
+        url.searchParams.set("data", "sessions" satisfies SelectRequestOption);
 
         const response: Readonly<Response> = await fetch(url);
 
@@ -953,49 +1088,43 @@ async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESS
     }
 }
 
+async function getCategoryStills(
+    dynamiclink: string,
+    category: string | number,
+): Promise<Immutable2DArray<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] as Immutable2DArray<STILL>;
+    try {
+        const url: URL = new URL(`${dynamiclink}:8094/`);
+        url.searchParams.set("data", "categoryImages" satisfies SelectRequestOption);
+        url.searchParams.set("category", String(category));
+
+        const response: Readonly<Response> = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: Immutable2DArray<STILL> = JSON.parse(
+            JSON.stringify(await response.json()),
+        ) as Immutable2DArray<STILL>;
+
+        if (typeof data === "string") {
+            return JSON.parse(data);
+        }
+
+        return data;
+    } catch (e: unknown) {
+        console.error("An error occurred while fetching dynamic categories/albums data:", e);
+        return _default;
+    }
+}
+
 async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CATEGORY>> {
-    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [
-        {
-            UID: 1,
-            NAME: "newborns",
-            COVER_STILL_UID: 48,
-            DESCRIPTION: "",
-        },
-        {
-            UID: 2,
-            NAME: "families",
-            COVER_STILL_UID: 2,
-            DESCRIPTION: "",
-        },
-        {
-            UID: 3,
-            NAME: "advertisements",
-            COVER_STILL_UID: 83,
-            DESCRIPTION: "",
-        },
-        {
-            UID: 4,
-            NAME: "portraits",
-            COVER_STILL_UID: 76,
-            DESCRIPTION: "",
-        },
-        {
-            UID: 5,
-            NAME: "weddings",
-            COVER_STILL_UID: 22,
-            DESCRIPTION: "",
-        },
-        {
-            UID: 6,
-            NAME: "business",
-            COVER_STILL_UID: 82,
-            DESCRIPTION: "",
-        },
-    ] as const;
+    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] as Immutable2DArray<CATEGORY>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "categories");
+        url.searchParams.set("data", "categories" satisfies SelectRequestOption);
 
         const response: Readonly<Response> = await fetch(url);
 
@@ -1023,7 +1152,7 @@ async function getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DA
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "frontPageCoverImageData");
+        url.searchParams.set("data", "frontPageCoverImageData" satisfies SelectRequestOption);
 
         const response: Readonly<Response> = await fetch(url);
 
@@ -1063,13 +1192,13 @@ async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<Readonly
     }
 }
 
-async function getSessionImages(dynamiclink: string, session: string): Promise<Immutable2DArray<STILL>> {
+async function getSessionImages(dynamiclink: string, sessionUID: number): Promise<Immutable2DArray<STILL>> {
     const _default: Unpromisify<ReturnType<typeof getSessionImages>> = [] as Immutable2DArray<STILL>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "sessionImages");
-        url.searchParams.set("session", session);
+        url.searchParams.set("data", "sessionImages" satisfies SelectRequestOption);
+        url.searchParams.set("session", sessionUID.toString());
 
         const response: Readonly<Response> = await fetch(url);
 
@@ -1099,12 +1228,9 @@ async function getCategorySessions(
     const _default: Unpromisify<ReturnType<typeof getCategorySessions>> = [] as Immutable2DArray<SESSION>;
 
     try {
-        console.log(dynamiclink);
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "categorySessions");
+        url.searchParams.set("data", "categorySessions" satisfies SelectRequestOption);
         url.searchParams.set("category", category);
-
-        console.log(url.toString());
 
         const response: Readonly<Response> = await fetch(url);
 
@@ -1175,7 +1301,7 @@ async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
-        url.searchParams.set("data", "pages");
+        url.searchParams.set("data", "pages" satisfies SelectRequestOption);
 
         const response: Readonly<Response> = await fetch(url);
 

@@ -11,7 +11,7 @@ var app = express();
 var filename = "select";
 var port = (0, portServer_1.getPort)(filename); // 8094
 function getSpecificData(givenData, url_info) {
-    var _default = "";
+    var _default = "[]";
     try {
         var write = "";
         if (
@@ -49,9 +49,77 @@ function getSpecificData(givenData, url_info) {
             );
         }
         if (
+            givenData === "categoryImages" &&
+            "category" in url_info &&
+            ["number", "string"].includes(typeof url_info["category"])
+        ) {
+            var categories = (0, getImageData_1.getCategories)();
+            var category_UID_2 = (function (category_data, _categories) {
+                var _a;
+                if (typeof category_data !== "string" && typeof category_data !== "number") {
+                    return 0;
+                }
+                if (
+                    typeof category_data === "number" &&
+                    category_data <= (0, getImageData_1.getCategories)().length
+                ) {
+                    return category_data;
+                }
+                if (
+                    typeof category_data === "string" &&
+                    lsse.isNumeric(category_data) &&
+                    _categories
+                        .map(function (category) {
+                            return category.UID;
+                        })
+                        .includes(lsse.int(category_data))
+                ) {
+                    return lsse.int(category_data);
+                }
+                if (
+                    typeof category_data === "string" &&
+                    !lsse.isNumeric(category_data) &&
+                    _categories
+                        .map(function (category) {
+                            return category.NAME;
+                        })
+                        .includes(category_data)
+                ) {
+                    return (_a = _categories.find(function (category) {
+                        return category.NAME === category_data;
+                    })) === null || _a === void 0
+                        ? void 0
+                        : _a.UID;
+                }
+                return 0;
+            })(url_info["category"], categories);
+            if (
+                [0, 1].includes(category_UID_2) ||
+                categories.filter(function (category) {
+                    return category.UID === category_UID_2;
+                }).length < 1
+            ) {
+                throw new Error("category was unable to be found");
+            }
+            var sessionUIDs_1 = (0, getImageData_1.getSessions)()
+                .filter(function (session) {
+                    return session.CATEGORY_UID === category_UID_2;
+                })
+                .map(function (session) {
+                    return session.UID;
+                });
+            return JSON.stringify(
+                (0, getImageData_1.getStills)().filter(function (still) {
+                    return sessionUIDs_1.includes(still.SESSION_UID);
+                }),
+                null,
+                4,
+            );
+        }
+        if (
             givenData === "sessionImages" &&
             "session" in url_info &&
-            (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")
+            ["number", "string"].includes(typeof url_info["session"])
         ) {
             var session_UID_1 = (function (session_uid) {
                 var sessionMatch = (0, getImageData_1.getSessions)().find(function (session) {
@@ -93,7 +161,11 @@ function getDataToReturn(givenData, url_info) {
     }
     var _default = "[]";
     try {
-        if (["categorySessions", "sessionImages", "frontPageCoverImageData"].includes(givenData)) {
+        if (
+            ["categorySessions", "sessionImages", "frontPageCoverImageData", "categoryImages"].includes(
+                givenData,
+            )
+        ) {
             return getSpecificData(givenData, url_info);
         }
         var write = "";

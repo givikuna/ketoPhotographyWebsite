@@ -25,10 +25,11 @@ type RequestOption =
     | "categories"
     | "stills"
     | "sessions"
-    | "frontPageCoverImageData";
+    | "frontPageCoverImageData"
+    | "categoryImages";
 
 function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>): string {
-    const _default: ReturnType<typeof getSpecificData> = "";
+    const _default: ReturnType<typeof getSpecificData> = "[]";
 
     try {
         let write: string = "";
@@ -74,9 +75,75 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         }
 
         if (
+            givenData === "categoryImages" &&
+            "category" in url_info &&
+            ["number", "string"].includes(typeof url_info["category"])
+        ) {
+            const categories: Immutable2DArray<CATEGORY> = getCategories();
+
+            const category_UID: number = ((
+                category_data: string | string[] | undefined | number,
+                _categories: Immutable2DArray<CATEGORY>,
+            ): number => {
+                if (typeof category_data !== "string" && typeof category_data !== "number") {
+                    return 0;
+                }
+
+                if (typeof category_data === "number" && category_data <= getCategories().length) {
+                    return category_data;
+                }
+
+                if (
+                    typeof category_data === "string" &&
+                    lsse.isNumeric(category_data) &&
+                    _categories
+                        .map((category: Readonly<CATEGORY>): number => category.UID)
+                        .includes(lsse.int(category_data))
+                ) {
+                    return lsse.int(category_data);
+                }
+
+                if (
+                    typeof category_data === "string" &&
+                    !lsse.isNumeric(category_data) &&
+                    _categories
+                        .map((category: Readonly<CATEGORY>): string => category.NAME)
+                        .includes(category_data as string)
+                ) {
+                    return _categories.find(
+                        (category: Readonly<CATEGORY>): boolean =>
+                            category.NAME === (category_data as string),
+                    )?.UID as number;
+                }
+
+                return 0;
+            })(url_info["category"], categories);
+
+            if (
+                [0, 1].includes(category_UID) ||
+                categories.filter((category: Readonly<CATEGORY>): boolean => category.UID === category_UID)
+                    .length < 1
+            ) {
+                throw new Error("category was unable to be found");
+            }
+
+            const sessionUIDs: ReadonlyArray<number> = getSessions()
+                .filter((session: Readonly<SESSION>): boolean => session.CATEGORY_UID === category_UID)
+                .map((session: Readonly<SESSION>): number => session.UID);
+
+            return JSON.stringify(
+                getStills().filter((still: Readonly<STILL>): boolean =>
+                    sessionUIDs.includes(still.SESSION_UID),
+                ),
+                null,
+                4,
+            );
+        }
+
+        if (
             givenData === "sessionImages" &&
             "session" in url_info &&
-            (typeof url_info["session"] === "number" || typeof url_info["session"] === "string")
+            ["number", "string"].includes(typeof url_info["session"])
         ) {
             const session_UID: number = ((session_uid: number | string): number => {
                 const sessionMatch: Readonly<SESSION> | undefined = getSessions().find(
@@ -91,7 +158,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                     "UID" in sessionMatch
                     ? lsse.int(sessionMatch.UID)
                     : 0;
-            })(url_info["session"]);
+            })(url_info["session"] as string);
 
             return JSON.stringify(
                 getStills().filter((still: Readonly<STILL>): boolean =>
@@ -129,6 +196,7 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                     "categorySessions",
                     "sessionImages",
                     "frontPageCoverImageData",
+                    "categoryImages",
                 ] as ReadonlyArray<RequestOption>
             ).includes(givenData)
         ) {
@@ -201,6 +269,7 @@ app.get(
             }
 
             const url_info: Readonly<ParsedUrlQuery> = url.parse(req.url as string, true).query;
+
             if (!("data" in url_info) || typeof url_info["data"] !== "string") {
                 return w("");
             }
