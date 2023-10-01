@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getEmail = exports.getLangs = exports.getLang = exports.replaceData = void 0;
 var fs = require("fs");
-var lsse = require("lsse");
 var dynamicLinkGetter_1 = require("./dynamicLinkGetter");
 var findPath_1 = require("./findPath");
 function replaceData(data, url_info) {
@@ -35,7 +34,7 @@ function getLang(url_info) {
         return "lang" in url_info &&
             typeof url_info["lang"] === "string" &&
             getLangs().includes(url_info["lang"])
-            ? lsse.str(url_info["lang"])
+            ? String(url_info["lang"])
             : "en";
     } catch (e) {
         console.error(e);
@@ -65,7 +64,9 @@ function getEmail(data) {
     try {
         var fpath = (0, findPath_1.findPath)("arr" in data ? data.arr : [], "file" in data ? data.file : "");
         if (fs.existsSync(fpath)) {
-            return lsse.supertrim(String(fs.readFileSync(fpath)));
+            return String(fs.readFileSync(fpath))
+                .replace(/\r?\n|\r/g, "")
+                .trim();
         }
         throw new Error("contact email not found");
     } catch (e) {

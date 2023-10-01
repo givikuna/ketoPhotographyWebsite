@@ -1,7 +1,6 @@
 import * as url from "url";
 import * as fs from "fs";
 import * as http from "http";
-import * as lsse from "lsse";
 import { ParsedUrlQuery } from "querystring";
 
 import { findPath } from "./modules/findPath";
@@ -31,7 +30,11 @@ function getPath(url_info: Readonly<ParsedUrlQuery>, requestsLibrary: boolean): 
             return findPath(["public", "lib"], `${url_info["type"]}.${getSourceFileExtension(url_info)}`);
         }
 
-        return findPath(["public"], `app.${getSourceFileExtension(url_info)}`) as Readonly<fs.PathLike>;
+        return (
+            "type" in url_info && String(url_info["type"]) === "script"
+                ? findPath(["dist"], "index.js")
+                : findPath(["public"], "app.css")
+        ) as Readonly<fs.PathLike>;
     } catch (e: unknown) {
         console.error(e);
         return _default;
@@ -60,7 +63,7 @@ const server: http.Server<typeof http.IncomingMessage, typeof http.ServerRespons
 
             return w(
                 fs.existsSync(fpath)
-                    ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, lsse.str(getDynLink())))
+                    ? String(fs.readFileSync(fpath, "utf-8").replace(/@dynamiclink/g, getDynLink() as string))
                     : "",
             );
         } catch (e: unknown) {

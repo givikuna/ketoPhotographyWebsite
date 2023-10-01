@@ -7,7 +7,7 @@
         "compile": "python3 compile.py",
         "build": "python3 build.py",
         "start": "npm run compile-ui && npm run format-code && pm2 start pm2.config.js",
-        "compile-ui": "tsc ./public/app.ts",
+        "compile-ui": "webpack",
         "stop": "pm2 stop all",
         "list": "pm2 list",
         "save": "pm2 save",
@@ -36,9 +36,17 @@
     "devDependencies": {
         "@types/jquery": "^3.5.16",
         "@types/node": "^20.4.2",
+        "@types/webpack-env": "^1.18.1",
+        "css-loader": "^6.8.1",
+        "html-loader": "^4.2.0",
         "prettier": "^3.0.1",
         "prettier-plugin-sql": "^0.15.1",
-        "typescript": "^5.1.6"
+        "style-loader": "^3.3.3",
+        "ts-loader": "^9.4.4",
+        "typescript": "^5.1.6",
+        "webpack": "^5.88.2",
+        "webpack-bundle-analyzer": "^4.9.1",
+        "webpack-cli": "^5.1.4"
     },
     "dependencies": {
         "@types/express": "^4.17.17",

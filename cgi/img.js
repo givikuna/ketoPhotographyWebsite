@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var url = require("url");
 var fs = require("fs");
-var lsse = require("lsse");
 var findPath_1 = require("./modules/findPath");
 var portServer_1 = require("./modules/portServer");
 var getImageData_1 = require("./modules/getImageData");
+var extension_1 = require("./extensions/extension");
 var app = express();
 var filename = "img";
 var port = (0, portServer_1.getPort)(filename); // 8092
@@ -70,17 +70,15 @@ function getAlbumCoverImage(url_info) {
             throw new Error("wrong data given to album cover image getter function");
         }
         return (0, getImageData_1.getStills)().filter(function (still) {
-            return lsse.equals(
-                lsse.int(still.UID),
-                lsse.int(
-                    (0, getImageData_1.getCategories)().map(function (category) {
-                        return category.COVER_STILL_UID;
-                    })[
-                        (0, getImageData_1.getCategories)().findIndex(function (category) {
-                            return lsse.equals(category.NAME, String(url_info["album"]));
-                        })
-                    ],
-                ),
+            return (
+                still.UID ==
+                (0, getImageData_1.getCategories)().map(function (category) {
+                    return category.COVER_STILL_UID;
+                })[
+                    (0, getImageData_1.getCategories)().findIndex(function (category) {
+                        return category.NAME == String(url_info["album"]);
+                    })
+                ]
             );
         })[0].NAME;
     } catch (e) {
@@ -127,7 +125,9 @@ function wantsFrontPageCoverImage(url_info) {
     try {
         var type_ = "type" in url_info ? url_info["type"] : "";
         return (
-            type_ === "frontPageCoverImage" && "img" in url_info && lsse.isNumeric(String(url_info["img"]))
+            type_ === "frontPageCoverImage" &&
+            "img" in url_info &&
+            /^[-+]?\d+(\.\d+)?$/.test(String(url_info["img"])) // checks if the string is numeric
         );
     } catch (e) {
         console.error(e);
@@ -149,10 +149,14 @@ function getFrontPageCoverImagePath(url_info) {
     }
     return (0, findPath_1.findPath)(
         ["img", "img"],
-        lsse.str(
+        String(
             (0, getImageData_1.getStills)().filter(function (still) {
                 return still.IS_FRONT_COVER_IMAGE;
-            })["img" in url_info && lsse.isNumeric(url_info["img"]) ? lsse.int(url_info["img"]) : 0].NAME,
+            })[
+                "img" in url_info && /^[-+]?\d+(\.\d+)?$/.test(url_info["img"]) // checks if the string is numeric
+                    ? parseInt(url_info["img"])
+                    : 0
+            ].NAME,
         ),
     );
 }
@@ -160,12 +164,15 @@ function getImage(img_UID) {
     var _default = "error.png";
     try {
         var possibleStill = (0, getImageData_1.getStills)().find(function (still) {
-            return still.UID === lsse.int(img_UID);
+            return still.UID === parseInt(img_UID);
         });
         if (
-            lsse.equalsAny(possibleStill, [[], {}, "", null, undefined]) ||
-            lsse.isBlank(possibleStill) ||
-            !possibleStill
+            [[], {}, "", null, undefined].includes(possibleStill) ||
+            !possibleStill ||
+            possibleStill == undefined ||
+            possibleStill == null ||
+            [0, -1].includes(Object.keys(possibleStill).length) ||
+            (0, extension_1.isBlank)(possibleStill)
         ) {
             throw new Error("the STILL was not found");
         }
@@ -182,7 +189,7 @@ function getPath(url_info) {
         if (wantsIcon(url_info)) {
             return (0, findPath_1.findPath)(
                 ["public", "assets", type_],
-                "".concat(lsse.str(url_info["img"]), ".").concat(getIconExtension(url_info["img"])),
+                "".concat(url_info["img"], ".").concat(getIconExtension(url_info["img"])),
             );
         }
         if (wantsFrontPageCoverImage(url_info)) {

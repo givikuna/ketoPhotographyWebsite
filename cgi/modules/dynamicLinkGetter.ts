@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import * as lsse from "lsse";
 
 import { findPath } from "./findPath";
 
@@ -10,7 +9,11 @@ export function getDynLink(): fs.PathLike {
         const fpath: Readonly<fs.PathLike> = findPath(["public", "data"], "dynamicLink.txt");
 
         if (fs.existsSync(fpath)) {
-            return lsse.supertrim(fs.readFileSync(fpath).toString());
+            return fs
+                .readFileSync(fpath)
+                .toString()
+                .replace(/\r?\n|\r/g, "")
+                .trim();
         }
 
         throw new Error("dynamic link not found");

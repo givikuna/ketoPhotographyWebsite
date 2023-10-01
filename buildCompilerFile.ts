@@ -1,20 +1,20 @@
 import * as fs from "fs";
 import * as prettier from "prettier";
 
-import { getFileExtension } from "./cgi/extensions/syntax";
-import { Immutable2DArray, Unarray, Unreadonly } from "./cgi/types/types";
-
-type LanguageToCompile = {
-    type_: string;
-    command: string;
-    files: LanguageFile[];
-};
+import { getFileExtension } from "./cgi/extensions/extension";
+import { Immutable2DArray, Unarray, Unreadonly } from "./types/types";
 
 type LanguageFile = {
     dir: string;
     file: string;
     filename: string;
     compilesTo: string;
+};
+
+type LanguageToCompile = {
+    type_: string;
+    command: string;
+    files: LanguageFile[];
 };
 
 type CompilerIgnore = {

@@ -1,16 +1,16 @@
 import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
-import * as lsse from "lsse";
 // import * as subProcess from "child_process";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { SocialMediaIcon, Immutable2DArray, STILL, CATEGORY } from "./types/types";
+import { SocialMediaIcon, Immutable2DArray, STILL, CATEGORY } from "../types/types";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
 import { getCategories, getStills } from "./modules/getImageData";
+import { isBlank } from "./extensions/extension";
 
 const app: express.Application = express();
 
@@ -85,21 +85,18 @@ function getAlbumCoverImage(url_info: Readonly<ParsedUrlQuery>): string {
             throw new Error("wrong data given to album cover image getter function");
         }
 
-        return getStills().filter((still: STILL): boolean =>
-            lsse.equals(
-                lsse.int(still.UID),
-                lsse.int(
-                    (
-                        getCategories().map(
-                            (category: CATEGORY): number => category.COVER_STILL_UID,
-                        ) as ReadonlyArray<number>
-                    )[
-                        getCategories().findIndex((category: CATEGORY): boolean =>
-                            lsse.equals(category.NAME, String(url_info["album"])),
-                        )
-                    ],
-                ),
-            ),
+        return getStills().filter(
+            (still: STILL): boolean =>
+                still.UID ==
+                (
+                    getCategories().map(
+                        (category: CATEGORY): number => category.COVER_STILL_UID,
+                    ) as ReadonlyArray<number>
+                )[
+                    getCategories().findIndex(
+                        (category: CATEGORY): boolean => category.NAME == String(url_info["album"]),
+                    )
+                ],
         )[0].NAME;
     } catch (e: unknown) {
         console.error(e);
@@ -153,7 +150,9 @@ function wantsFrontPageCoverImage(url_info: Readonly<ParsedUrlQuery>): boolean {
     try {
         const type_: string = "type" in url_info ? (url_info["type"] as string) : "";
         return (
-            type_ === "frontPageCoverImage" && "img" in url_info && lsse.isNumeric(String(url_info["img"]))
+            type_ === "frontPageCoverImage" &&
+            "img" in url_info &&
+            /^[-+]?\d+(\.\d+)?$/.test(String(url_info["img"])) // checks if the string is numeric
         );
     } catch (e: unknown) {
         console.error(e);
@@ -179,10 +178,10 @@ function getFrontPageCoverImagePath(url_info: Readonly<ParsedUrlQuery>): fs.Path
 
     return findPath(
         ["img", "img"],
-        lsse.str(
+        String(
             getStills().filter((still: Readonly<STILL>): boolean => still.IS_FRONT_COVER_IMAGE)[
-                "img" in url_info && lsse.isNumeric(url_info["img"] as string)
-                    ? lsse.int(url_info["img"] as string)
+                "img" in url_info && /^[-+]?\d+(\.\d+)?$/.test(url_info["img"] as string) // checks if the string is numeric
+                    ? parseInt(url_info["img"] as string)
                     : 0
             ].NAME,
         ),
@@ -194,13 +193,16 @@ function getImage(img_UID: string): string {
 
     try {
         const possibleStill: Readonly<STILL> | undefined = getStills().find(
-            (still: Readonly<STILL>): boolean => still.UID === lsse.int(img_UID),
+            (still: Readonly<STILL>): boolean => still.UID === parseInt(img_UID),
         );
 
         if (
-            lsse.equalsAny(possibleStill, [[], {}, "", null, undefined]) ||
-            lsse.isBlank(possibleStill) ||
-            !possibleStill
+            [[], {}, "", null, undefined].includes(possibleStill) ||
+            !possibleStill ||
+            possibleStill == undefined ||
+            possibleStill == null ||
+            [0, -1].includes(Object.keys(possibleStill).length) ||
+            isBlank(possibleStill)
         ) {
             throw new Error("the STILL was not found");
         }
@@ -222,7 +224,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | undefined {
         if (wantsIcon(url_info)) {
             return findPath(
                 ["public", "assets", type_],
-                `${lsse.str(url_info["img"])}.${getIconExtension(url_info["img"] as string)}`,
+                `${url_info["img"]}.${getIconExtension(url_info["img"] as string)}`,
             );
         }
 

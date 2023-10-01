@@ -1,15 +1,15 @@
 import * as express from "express";
 import * as url from "url";
 import * as fs from "fs";
-import * as lsse from "lsse";
 
 import { ParsedUrlQuery } from "querystring";
-import { CATEGORY, SESSION, Immutable2DArray, STILL } from "./types/types";
+import { CATEGORY, SESSION, Immutable2DArray, STILL } from "../types/types";
 import { IncomingMessage, ServerResponse } from "http";
 
 import { getPort } from "./modules/portServer";
 import { findPath } from "./modules/findPath";
 import { getStills, getCategories, getSessions } from "./modules/getImageData";
+import { isJSON } from "./extensions/extension";
 
 const app: express.Application = express();
 
@@ -40,17 +40,17 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             (typeof url_info["category"] === "string" || typeof url_info["category"] === "number")
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
-                const categoryDataType: string = typeof categoryData;
                 const categories: Immutable2DArray<CATEGORY> = getCategories();
 
-                if (categoryDataType === "string") {
+                if (typeof categoryData === "string") {
                     const assumedCategory: undefined | Readonly<CATEGORY> = categories.find(
-                        (category: Readonly<CATEGORY>): boolean => lsse.equals(category.NAME, categoryData),
+                        (category: Readonly<CATEGORY>): boolean =>
+                            category.NAME.toString() == categoryData.toString(),
                     );
 
                     if (
                         assumedCategory &&
-                        !lsse.equalsAny(assumedCategory, [null, undefined, "", [], {}]) &&
+                        [null, undefined, "", [], {}].includes(assumedCategory) &&
                         typeof assumedCategory !== "undefined" &&
                         "UID" in assumedCategory
                     ) {
@@ -58,16 +58,17 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                     }
                 }
 
-                if (categoryDataType === "number") {
-                    return lsse.int(categoryData);
+                if (typeof categoryData === "number") {
+                    return Math.floor(categoryData as number);
                 }
 
                 return 0;
             })(url_info["category"]);
 
             return JSON.stringify(
-                getSessions().filter((session: Readonly<SESSION>): boolean =>
-                    lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID)),
+                getSessions().filter(
+                    (session: Readonly<SESSION>): boolean =>
+                        String(session.CATEGORY_UID) == String(category_UID),
                 ) as Immutable2DArray<SESSION>,
                 null,
                 4,
@@ -95,17 +96,17 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
                 if (
                     typeof category_data === "string" &&
-                    lsse.isNumeric(category_data) &&
+                    /^[-+]?\d+(\.\d+)?$/.test(category_data) && // checks if the string is numeric
                     _categories
                         .map((category: Readonly<CATEGORY>): number => category.UID)
-                        .includes(lsse.int(category_data))
+                        .includes(parseInt(category_data))
                 ) {
-                    return lsse.int(category_data);
+                    return parseInt(category_data);
                 }
 
                 if (
                     typeof category_data === "string" &&
-                    !lsse.isNumeric(category_data) &&
+                    !/^[-+]?\d+(\.\d+)?$/.test(category_data) && // checks if the string is NOT numeric
                     _categories
                         .map((category: Readonly<CATEGORY>): string => category.NAME)
                         .includes(category_data as string)
@@ -148,7 +149,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             const session_UID: number = ((session_uid: number | string): number => {
                 const sessionMatch: Readonly<SESSION> | undefined = getSessions().find(
                     (session: Readonly<SESSION>): boolean => {
-                        return lsse.equals(session.UID, lsse.int(session_uid));
+                        return session.UID == parseInt(String(session_uid));
                     },
                 );
 
@@ -156,13 +157,13 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                     sessionMatch !== undefined &&
                     sessionMatch !== null &&
                     "UID" in sessionMatch
-                    ? lsse.int(sessionMatch.UID)
+                    ? sessionMatch.UID
                     : 0;
             })(url_info["session"] as string);
 
             return JSON.stringify(
-                getStills().filter((still: Readonly<STILL>): boolean =>
-                    lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID)),
+                getStills().filter(
+                    (still: Readonly<STILL>): boolean => String(still.SESSION_UID) == String(session_UID),
                 ) as Immutable2DArray<STILL>,
                 null,
                 4,
@@ -207,7 +208,7 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         let pathArray: string[] = [];
         let dataFile: string = "";
 
-        switch (lsse.lower(givenData)) {
+        switch (givenData.toLocaleLowerCase()) {
             case "languages":
                 throw new Error("languages can't be requested just yet");
             case "albumData":
@@ -240,10 +241,10 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             flag: "r",
         });
 
-        if (lsse.isJSON(dataAsString)) {
+        if (isJSON(dataAsString)) {
             write = JSON.stringify(dataAsString, null, 4);
         } else {
-            write = lsse.str(dataAsString);
+            write = JSON.stringify(dataAsString);
         }
 
         return write;

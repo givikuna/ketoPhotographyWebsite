@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var url = require("url");
 var fs = require("fs");
-var lsse = require("lsse");
 var portServer_1 = require("./modules/portServer");
 var findPath_1 = require("./modules/findPath");
 var getImageData_1 = require("./modules/getImageData");
+var extension_1 = require("./extensions/extension");
 var app = express();
 var filename = "select";
 var port = (0, portServer_1.getPort)(filename); // 8094
@@ -20,29 +20,28 @@ function getSpecificData(givenData, url_info) {
             (typeof url_info["category"] === "string" || typeof url_info["category"] === "number")
         ) {
             var category_UID_1 = (function (categoryData) {
-                var categoryDataType = typeof categoryData;
                 var categories = (0, getImageData_1.getCategories)();
-                if (categoryDataType === "string") {
+                if (typeof categoryData === "string") {
                     var assumedCategory = categories.find(function (category) {
-                        return lsse.equals(category.NAME, categoryData);
+                        return category.NAME.toString() == categoryData.toString();
                     });
                     if (
                         assumedCategory &&
-                        !lsse.equalsAny(assumedCategory, [null, undefined, "", [], {}]) &&
+                        [null, undefined, "", [], {}].includes(assumedCategory) &&
                         typeof assumedCategory !== "undefined" &&
                         "UID" in assumedCategory
                     ) {
                         return assumedCategory.UID;
                     }
                 }
-                if (categoryDataType === "number") {
-                    return lsse.int(categoryData);
+                if (typeof categoryData === "number") {
+                    return Math.floor(categoryData);
                 }
                 return 0;
             })(url_info["category"]);
             return JSON.stringify(
                 (0, getImageData_1.getSessions)().filter(function (session) {
-                    return lsse.equals(lsse.str(session.CATEGORY_UID), lsse.str(category_UID_1));
+                    return String(session.CATEGORY_UID) == String(category_UID_1);
                 }),
                 null,
                 4,
@@ -67,18 +66,18 @@ function getSpecificData(givenData, url_info) {
                 }
                 if (
                     typeof category_data === "string" &&
-                    lsse.isNumeric(category_data) &&
+                    /^[-+]?\d+(\.\d+)?$/.test(category_data) && // checks if the string is numeric
                     _categories
                         .map(function (category) {
                             return category.UID;
                         })
-                        .includes(lsse.int(category_data))
+                        .includes(parseInt(category_data))
                 ) {
-                    return lsse.int(category_data);
+                    return parseInt(category_data);
                 }
                 if (
                     typeof category_data === "string" &&
-                    !lsse.isNumeric(category_data) &&
+                    !/^[-+]?\d+(\.\d+)?$/.test(category_data) && // checks if the string is NOT numeric
                     _categories
                         .map(function (category) {
                             return category.NAME;
@@ -123,18 +122,18 @@ function getSpecificData(givenData, url_info) {
         ) {
             var session_UID_1 = (function (session_uid) {
                 var sessionMatch = (0, getImageData_1.getSessions)().find(function (session) {
-                    return lsse.equals(session.UID, lsse.int(session_uid));
+                    return session.UID == parseInt(String(session_uid));
                 });
                 return typeof sessionMatch &&
                     sessionMatch !== undefined &&
                     sessionMatch !== null &&
                     "UID" in sessionMatch
-                    ? lsse.int(sessionMatch.UID)
+                    ? sessionMatch.UID
                     : 0;
             })(url_info["session"]);
             return JSON.stringify(
                 (0, getImageData_1.getStills)().filter(function (still) {
-                    return lsse.equals(lsse.str(still.SESSION_UID), lsse.str(session_UID_1));
+                    return String(still.SESSION_UID) == String(session_UID_1);
                 }),
                 null,
                 4,
@@ -171,7 +170,7 @@ function getDataToReturn(givenData, url_info) {
         var write = "";
         var pathArray = [];
         var dataFile = "";
-        switch (lsse.lower(givenData)) {
+        switch (givenData.toLocaleLowerCase()) {
             case "languages":
                 throw new Error("languages can't be requested just yet");
             case "albumData":
@@ -202,10 +201,10 @@ function getDataToReturn(givenData, url_info) {
             encoding: "utf8",
             flag: "r",
         });
-        if (lsse.isJSON(dataAsString)) {
+        if ((0, extension_1.isJSON)(dataAsString)) {
             write = JSON.stringify(dataAsString, null, 4);
         } else {
-            write = lsse.str(dataAsString);
+            write = JSON.stringify(dataAsString);
         }
         return write;
     } catch (e) {

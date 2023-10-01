@@ -1,4 +1,4 @@
-export function isBlank(input: Readonly<unknown>): boolean {
+export function isBlank(input: any): boolean {
     return !input || input == null || input == "" || input == undefined;
 }
 

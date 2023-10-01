@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var url = require("url");
 var fs = require("fs");
 var http = require("http");
-var lsse = require("lsse");
 var findPath_1 = require("./modules/findPath");
 var portServer_1 = require("./modules/portServer");
 var dynamicLinkGetter_1 = require("./modules/dynamicLinkGetter");
@@ -28,7 +27,9 @@ function getPath(url_info, requestsLibrary) {
                 "".concat(url_info["type"], ".").concat(getSourceFileExtension(url_info)),
             );
         }
-        return (0, findPath_1.findPath)(["public"], "app.".concat(getSourceFileExtension(url_info)));
+        return "type" in url_info && String(url_info["type"]) === "script"
+            ? (0, findPath_1.findPath)(["dist"], "index.js")
+            : (0, findPath_1.findPath)(["public"], "app.css");
     } catch (e) {
         console.error(e);
         return _default;
@@ -55,7 +56,7 @@ var server = http.createServer(function (req, res) {
                 ? String(
                       fs
                           .readFileSync(fpath, "utf-8")
-                          .replace(/@dynamiclink/g, lsse.str((0, dynamicLinkGetter_1.getDynLink)())),
+                          .replace(/@dynamiclink/g, (0, dynamicLinkGetter_1.getDynLink)()),
                   )
                 : "",
         );

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { CATEGORY, SESSION, STILL, Immutable2DArray } from "../types/types";
+import { CATEGORY, SESSION, STILL, Immutable2DArray } from "../../types/types";
 import { findPath } from "./findPath";
 
 export function getStills(): Immutable2DArray<STILL> {

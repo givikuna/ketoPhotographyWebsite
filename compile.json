@@ -16,9 +16,9 @@
             },
             {
                 "dir": "cgi/extensions/",
-                "file": "./cgi/extensions/syntax.ts",
-                "filename": "syntax.ts",
-                "compilesTo": "./cgi/extensions/syntax.js"
+                "file": "./cgi/extensions/extension.ts",
+                "filename": "extension.ts",
+                "compilesTo": "./cgi/extensions/extension.js"
             },
             { "dir": "cgi/", "file": "./cgi/img.ts", "filename": "img.ts", "compilesTo": "./cgi/img.js" },
             {
@@ -71,16 +71,10 @@
             },
             { "dir": "cgi/", "file": "./cgi/src.ts", "filename": "src.ts", "compilesTo": "./cgi/src.js" },
             {
-                "dir": "cgi/types/",
-                "file": "./cgi/types/types.ts",
+                "dir": "types/",
+                "file": "./types/types.ts",
                 "filename": "types.ts",
-                "compilesTo": "./cgi/types/types.js"
-            },
-            {
-                "dir": "public/",
-                "file": "./public/app.ts",
-                "filename": "app.ts",
-                "compilesTo": "./public/app.js"
+                "compilesTo": "./types/types.js"
             }
         ]
     },

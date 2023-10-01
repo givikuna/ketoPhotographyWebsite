@@ -6,19 +6,6 @@ export type SocialMediaIcon = {
     extension: "png" | "jpg" | "jpeg";
 };
 
-export type Language = {
-    lang: string;
-    display: string;
-};
-
-export type Page = {
-    type: "page";
-    page: string;
-    display: string;
-    subpages: Page[];
-    components: string[];
-};
-
 export type WelcomeImage = {
     img: string;
     extension: ImageExtension;
@@ -85,3 +72,49 @@ export type Immutable3DArray<T> = Readonly<Readonly<Readonly<T>[]>[]>;
 export type ImmutableArray<T> = ReadonlyArray<T | ImmutableArray<T>>;
 
 export type Unarray<T> = T extends (infer U)[] ? U : T;
+
+export type FixedArray<T, N extends number, A extends T[] = []> = A["length"] extends N
+    ? A
+    : FixedArray<T, N, [...A, T]>;
+
+export type SelectRequestOption =
+    | "categorySessions"
+    | "sessionImages"
+    | "languages"
+    | "pages"
+    | "albumData"
+    | "categories"
+    | "stills"
+    | "sessions"
+    | "frontPageCoverImageData"
+    | "categoryImages";
+
+export type Page = {
+    html: string;
+    pageName: string;
+};
+
+export type WebsiteLanguage = "en" | "ru" | "ge";
+
+export type Language = {
+    lang: string;
+    display: string;
+};
+
+export type OnloadData = {
+    dynamiclink: string;
+    language: WebsiteLanguage;
+    contactEmail: string;
+};
+
+export type AsyncFunction = (...args: any[]) => Promise<void>;
+
+export type PageInformation = {
+    pageName: string;
+    get: (...args: any[]) => Page;
+    onload: AsyncFunction;
+};
+
+export type URLParams = {
+    [key: string]: string;
+};

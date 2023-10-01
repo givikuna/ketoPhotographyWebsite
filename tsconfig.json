@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "target": "ES2022",
         "strict": true,
         "module": "CommonJS",
         "forceConsistentCasingInFileNames": true,
@@ -29,12 +29,12 @@
         "cgi/select.ts",
         "cgi/serve.ts",
         "cgi/src.ts",
-        "cgi/types/types.ts",
+        "types/types.ts",
         "cgi/modules/dynamicLinkGetter.ts",
         "cgi/modules/findPath.ts",
         "cgi/modules/portServer.ts",
         "cgi/modules/replaceData.ts",
-        "cgi/extensions/syntax.ts",
+        "cgi/extensions/extension.ts",
         "cgi/constants/constants.ts"
     ]
 }

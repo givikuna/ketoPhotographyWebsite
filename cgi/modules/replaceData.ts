@@ -1,11 +1,10 @@
 import * as fs from "fs";
-import * as lsse from "lsse";
 
 import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
 
 import { ParsedUrlQuery } from "querystring";
-import { Language, Immutable2DArray } from "../types/types";
+import { Language, Immutable2DArray } from "../../types/types";
 
 export function replaceData(
     data: string,
@@ -39,7 +38,7 @@ export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
         return "lang" in url_info &&
             typeof url_info["lang"] === "string" &&
             getLangs().includes(url_info["lang"])
-            ? lsse.str(url_info["lang"])
+            ? String(url_info["lang"])
             : "en";
     } catch (e: unknown) {
         console.error(e);
@@ -78,7 +77,9 @@ export function getEmail(data: Readonly<JSON | object>): string {
         );
 
         if (fs.existsSync(fpath)) {
-            return lsse.supertrim(String(fs.readFileSync(fpath)));
+            return String(fs.readFileSync(fpath))
+                .replace(/\r?\n|\r/g, "")
+                .trim();
         }
 
         throw new Error("contact email not found");

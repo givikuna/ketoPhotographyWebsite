@@ -42,7 +42,6 @@ public/lib/.DS_Store
 public/components/.DS_Store
 tests/.DS_Store
 public/dist
-dist
 cgi/dist
 cgi/constants/dist
 cgi/extensions/dist
