@@ -4,7 +4,7 @@ import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
 
 import { ParsedUrlQuery } from "querystring";
-import { Language, Immutable2DArray } from "../../types/types";
+import { Language, Immutable2DArray } from "../../../types/types";
 
 export function replaceData(
     data: string,

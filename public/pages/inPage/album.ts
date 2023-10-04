@@ -1,4 +1,4 @@
-import { Page, Immutable2DArray, STILL, URLParams } from "../../../types/types";
+import { Page, STILL, URLParams } from "../../../types/types";
 
 import { getCategoryStills } from "../../api";
 
@@ -16,7 +16,7 @@ export function html(): Page {
 export async function onload(dynamiclink: string, album: string): Promise<void> {
     try {
         const componentArray: ReadonlyArray<ReadonlyArray<string>> = splitArrayIntoParts(
-            ((await getCategoryStills(dynamiclink, album)) as Immutable2DArray<STILL>).map(
+            ((await getCategoryStills(dynamiclink, album)) as Readonly<Readonly<STILL>[]>).map(
                 (still: Readonly<STILL>): string => /* HTML */ `
                     <img
                         id="still_${still.UID as number}"
@@ -46,9 +46,7 @@ export async function onload(dynamiclink: string, album: string): Promise<void> 
             })(),
         ) as string[][];
 
-        if (document.getElementById(`album_${album}`) != null) {
-            $(`#app`).append($(/* HTML */ `<div></div>`).attr("id", `album_${album}`));
-        }
+        $(`#app`).append($(/* HTML */ `<div></div>`).attr("id", `album_${album}`));
 
         for (let i: number = 0; i < componentArray.length; i++) {
             $(`#album_${album}`).append(

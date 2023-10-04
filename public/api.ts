@@ -1,18 +1,13 @@
-import {
-    Immutable2DArray,
-    Unpromisify,
-    CATEGORY,
-    SelectRequestOption,
-    STILL,
-    URLParams,
-} from "../types/types";
+import { Unpromisify, CATEGORY, SelectRequestOption, STILL, URLParams } from "../types/types";
 
 import { createURL } from "./extension";
 
 const filename: string = "./api.ts";
 
-export async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CATEGORY>> {
-    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] as Immutable2DArray<CATEGORY>;
+export async function fetchCategories(dynamiclink: string): Promise<Readonly<Array<Readonly<CATEGORY>>>> {
+    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] satisfies Readonly<
+        Readonly<CATEGORY>[]
+    >;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -24,9 +19,9 @@ export async function fetchCategories(dynamiclink: string): Promise<Immutable2DA
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<CATEGORY> = JSON.parse(
+        const data: Readonly<Readonly<CATEGORY>[]> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<CATEGORY>;
+        ) satisfies Readonly<Readonly<CATEGORY>[]>;
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -35,7 +30,7 @@ export async function fetchCategories(dynamiclink: string): Promise<Immutable2DA
         return data;
     } catch (e: unknown) {
         console.error(
-            `Error at fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CATEGORY>> in ${filename}`,
+            `Error at fetchCategories(dynamiclink: string): Promise<Readonly<Readonly<CATEGORY>[]>> in ${filename}`,
             e,
         );
         return _default;
@@ -45,8 +40,10 @@ export async function fetchCategories(dynamiclink: string): Promise<Immutable2DA
 export async function getCategoryStills(
     dynamiclink: string,
     category: string | number,
-): Promise<Immutable2DArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] as Immutable2DArray<STILL>;
+): Promise<Readonly<Readonly<STILL>[]>> {
+    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] satisfies Readonly<
+        Readonly<STILL>[]
+    >;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -59,9 +56,9 @@ export async function getCategoryStills(
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<STILL> = JSON.parse(
+        const data: Readonly<Readonly<STILL>[]> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<STILL>;
+        ) satisfies Readonly<Readonly<STILL>[]>;
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -70,7 +67,7 @@ export async function getCategoryStills(
         return data;
     } catch (e: unknown) {
         console.error(
-            `Error at getCategoryStills(dynamiclink: string, category: string | number): Promise<Immutable2DArray<STILL>> in ${filename}`,
+            `Error at getCategoryStills(dynamiclink: string, category: string | number): Promise<Readonly<Readonly<STILL>[]>> in ${filename}`,
             e,
         );
         return _default;
@@ -92,14 +89,6 @@ export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<R
                     } satisfies URLParams) as URL,
             ),
         );
-
-        /*
-            const url = new URL(`${dynamiclink}:8092/`);
-            url.searchParams.set("type", "frontPageCoverImage");
-            url.searchParams.set("img", `${i}`);
-
-            return url;
-        */
     } catch (e: unknown) {
         console.error(
             `Error at getHomepageCoverImagesURLs(dynamiclink: string): Promise<ReadonlyArray<URL>> in ${filename}`,
@@ -109,8 +98,10 @@ export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<R
     }
 }
 
-export async function getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [];
+export async function getHomepageCoverStills(dynamiclink: string): Promise<Readonly<Readonly<STILL>[]>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [] satisfies Readonly<
+        Readonly<STILL>[]
+    >;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -122,14 +113,14 @@ export async function getHomepageCoverStills(dynamiclink: string): Promise<Immut
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<STILL> = JSON.parse(
-            JSON.stringify((await response.json()) as Immutable2DArray<STILL>),
+        const data: Readonly<Readonly<STILL>[]> = JSON.parse(
+            JSON.stringify((await response.json()) as Readonly<Readonly<STILL>[]>),
         );
 
         return data;
     } catch (e: unknown) {
         console.error(
-            `Error at getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DArray<STILL>> in ${filename}`,
+            `Error at getHomepageCoverStills(dynamiclink: string): Promise<Readonly<Readonly<STILL>[]>> in ${filename}`,
             e,
         );
         return _default;

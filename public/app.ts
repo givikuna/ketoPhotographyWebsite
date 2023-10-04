@@ -56,6 +56,8 @@ const pages: Readonly<Readonly<PageInformation>[]> = [
     },
 ];
 
+export const loadedCategories: Array<CATEGORY> = [] as Array<CATEGORY>;
+
 async function main(
     d: string = "ketojibladze.com",
     l: string = "en",
@@ -88,6 +90,16 @@ async function main(
                 contactEmail: c,
             } satisfies OnloadData);
         });
+
+        if (getPage().split("").includes("_") && getPage().split("_")[0] === "album") {
+            albumComponent.onload(d, getPage().split("_")[1]);
+
+            loadedCategories.push(
+                (await fetchCategories(d)).filter(
+                    (category: CATEGORY): boolean => category.NAME === getPage().split("_")[1],
+                )[0] satisfies Readonly<CATEGORY>,
+            );
+        }
 
         $(`#${getPage()}`).show();
 
@@ -279,7 +291,7 @@ async function needsToLoadNewAlbum(albumName: string): Promise<boolean> {
 
     try {
         return (
-            getPage().split("_")[0] === "album_" &&
+            getPage().split("_")[0] === "album" &&
             (
                 (await fetchCategories("@dynamiclink")).map(
                     (category: Readonly<CATEGORY>): string => category.NAME,
@@ -294,19 +306,31 @@ async function needsToLoadNewAlbum(albumName: string): Promise<boolean> {
 
 async function hashchangeEvent(): Promise<void> {
     try {
-        console.log(getPage());
+        if (await needsToLoadNewAlbum(getPage().split("_")[1])) {
+            albumComponent.onload("@dynamiclink", getPage().split("_")[1]);
 
-        const pageNames: ReadonlyArray<string> = pages.map((page: PageInformation): string => page.pageName);
+            loadedCategories.push(
+                (await fetchCategories("@dynamiclink")).filter(
+                    (category: CATEGORY): boolean => category.NAME === getPage().split("_")[1],
+                )[0] satisfies Readonly<CATEGORY>,
+            );
+        }
+
+        const pageNames: ReadonlyArray<string> =
+            loadedCategories.length > 0
+                ? [
+                      ...pages.map((page: Readonly<PageInformation>): string => page.pageName),
+                      ...(loadedCategories satisfies ReadonlyArray<CATEGORY>).map(
+                          (category: CATEGORY): string => `album_${category.NAME}`,
+                      ),
+                  ]
+                : pages.map((page: PageInformation): string => page.pageName);
 
         if (pageNames.includes(getPage())) {
             pageNames.forEach((el: string): void => {
                 $(`#${el}`).hide();
                 if (el === getPage()) $(`#${el}`).show();
             });
-        }
-
-        if (await needsToLoadNewAlbum(getPage().split("_")[1])) {
-            albumComponent.onload("@dynamiclink", getPage().split("_")[1]);
         }
 
         updateNavbar();

@@ -1,4 +1,4 @@
-import { Page, OnloadData, CATEGORY, Immutable2DArray } from "../../types/types";
+import { Page, OnloadData, CATEGORY } from "../../types/types";
 import { fetchCategories } from "../api";
 
 const filename: string = "./pages/albums.ts";
@@ -24,7 +24,7 @@ export async function onload(data: OnloadData): Promise<void> {
             <br />
         `);
 
-        const categories: Immutable2DArray<CATEGORY> = await fetchCategories(data.dynamiclink);
+        const categories: Readonly<Readonly<CATEGORY>[]> = await fetchCategories(data.dynamiclink);
 
         $("#albums").append(
             $("<div>", {
