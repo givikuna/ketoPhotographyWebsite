@@ -234,14 +234,17 @@ function changeNavbarForSmallDisplays(): void {
             $("#homepage-navbar-div-phone").show();
             $("#homepagenavbar-container").hide();
             $("homepage-navbar-div").show();
+
             $("#homepage-navbar-div").css("height", "200px").css("margin-top", "100px");
         } else {
             $("#navbar-div-phone").show();
             $("#homepage-navbar-div-phone").hide();
             $("#homepagenavbar-container").hide();
             $("#homepage-navbar-div").hide();
+
             $("#app").css("margin-top", "100px");
         }
+
         $("#homepage-navbar-logo-container").hide();
     } catch (e: unknown) {
         console.error(`Error in changeNavbarForSmallDisplays(): void in ${filename}`, e);
@@ -271,9 +274,7 @@ async function nextHomepageImage(): Promise<void> {
 
         const homepage_navbar_div: HTMLDivElement | null = document.querySelector("#homepage-navbar-div");
 
-        if (homepage_navbar_div == null) {
-            return;
-        }
+        if (homepage_navbar_div == null) return;
 
         if (iterated === images.length) {
             iterated = 0;
@@ -299,7 +300,7 @@ async function needsToLoadNewAlbum(albumName: string): Promise<boolean> {
             ).includes(albumName)
         );
     } catch (e: unknown) {
-        console.error(`Error at needsToLoadNewAlbum(): boolean in ${filename}`, e);
+        console.error(`Error at needsToLoadNewAlbum(): Promise<boolean> in ${filename}`, e);
         return _default;
     }
 }
@@ -335,7 +336,7 @@ async function hashchangeEvent(): Promise<void> {
 
         updateNavbar();
     } catch (e: unknown) {
-        console.error(`Error at hashchangeEvent(): void ${filename}`, e);
+        console.error(`Error at hashchangeEvent(): Promise<void> ${filename}`, e);
     }
 }
 
