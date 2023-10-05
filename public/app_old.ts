@@ -1,5 +1,4 @@
 import {
-    Immutable2DArray,
     Unpromisify,
     CATEGORY,
     STILL,
@@ -13,8 +12,8 @@ type PageData = {
     type: string;
     page: string;
     display: string;
-    subpages: (PageData[] | Immutable2DArray<PageData>) | (string[] | Immutable2DArray<string>);
-    components: string[] | Immutable2DArray<string>;
+    subpages: (PageData[] | Readonly<Readonly<PageData>[]>) | (string[] | ReadonlyArray<string>);
+    components: string[] | ReadonlyArray<string>;
 };
 
 const pages: string[] = [];
@@ -88,8 +87,8 @@ async function main(
 // --------------------------------------------------------------------------------------- Build functions:
 
 async function addCategoriesAndSessionsAsPages(dynamiclink: string): Promise<void> {
-    const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
-    const sessions: Immutable2DArray<SESSION> = await fetchSessions(dynamiclink);
+    const categories: Readonly<Readonly<CATEGORY>[]> = await fetchCategories(dynamiclink);
+    const sessions: Readonly<Readonly<SESSION>[]> = await fetchSessions(dynamiclink);
 
     try {
         for (let i: number = 0; i < categories.length; i++) {
@@ -128,12 +127,12 @@ async function buildApp(dynamiclink: string): Promise<boolean> {
     const _default: Unpromisify<ReturnType<typeof buildApp>> = false;
 
     try {
-        const data: Immutable2DArray<PageData> = await (async (
+        const data: Readonly<Readonly<PageData>[]> = await (async (
             _dynamiclink: string,
-        ): Promise<Immutable2DArray<PageData>> => {
-            const _data: Immutable2DArray<PageData> = (await getPages(
-                _dynamiclink,
-            )) as Immutable2DArray<PageData>;
+        ): Promise<Readonly<Readonly<PageData>[]>> => {
+            const _data: Readonly<Readonly<PageData>[]> = (await getPages(_dynamiclink)) as Readonly<
+                Readonly<PageData>[]
+            >;
 
             if (typeof _data === "string") {
                 return JSON.parse(_data);
@@ -190,7 +189,7 @@ async function buildPage(page: string, dynamiclink: string): Promise<void> {
                     ),
                 );
                 */
-                const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
+                const categories: Readonly<Readonly<CATEGORY>[]> = await fetchCategories(dynamiclink);
 
                 // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
                 for (let i: number = 0; i < categories.length; i++) {
@@ -245,7 +244,7 @@ async function buildAlbumsPage(dynamiclink: string): Promise<void> {
             <br />
         `);
 
-        const categories: Immutable2DArray<CATEGORY> = await fetchCategories(dynamiclink);
+        const categories: Readonly<Readonly<CATEGORY>[]> = await fetchCategories(dynamiclink);
 
         $("#albums").append(
             $("<div>", {
@@ -554,7 +553,7 @@ async function buildAlbum(dynamiclink: string, album: string, currentPage: strin
         }
 
         const componentArray: ReadonlyArray<ReadonlyArray<string>> = splitArrayIntoParts(
-            ((await getCategoryStills(dynamiclink, album)) as Immutable2DArray<STILL>).map(
+            ((await getCategoryStills(dynamiclink, album)) as Readonly<Readonly<STILL>[]>).map(
                 (still: Readonly<STILL>): string => /* HTML */ `
                     <img
                         id="still_${still.UID as number}"
@@ -1053,8 +1052,8 @@ async function fetchComponent(component: string, dynamiclink: string): Promise<s
     }
 }
 
-async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESSION>> {
-    const _default: Unpromisify<ReturnType<typeof fetchSessions>> = [] as Immutable2DArray<SESSION>;
+async function fetchSessions(dynamiclink: string): Promise<Readonly<Readonly<SESSION>[]>> {
+    const _default: Unpromisify<ReturnType<typeof fetchSessions>> = [] as Readonly<Readonly<SESSION>[]>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -1066,9 +1065,9 @@ async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESS
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<SESSION> = JSON.parse(
+        const data: Readonly<Readonly<SESSION>[]> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<SESSION>;
+        ) satisfies Readonly<SESSION>[];
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -1084,8 +1083,10 @@ async function fetchSessions(dynamiclink: string): Promise<Immutable2DArray<SESS
 async function getCategoryStills(
     dynamiclink: string,
     category: string | number,
-): Promise<Immutable2DArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] as Immutable2DArray<STILL>;
+): Promise<Readonly<Readonly<STILL>[]>> {
+    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] satisfies Readonly<
+        Readonly<STILL>[]
+    >;
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
         url.searchParams.set("data", "categoryImages" satisfies SelectRequestOption);
@@ -1097,9 +1098,9 @@ async function getCategoryStills(
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<STILL> = JSON.parse(
+        const data: Readonly<STILL>[] = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<STILL>;
+        ) as Readonly<STILL>[];
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -1112,8 +1113,8 @@ async function getCategoryStills(
     }
 }
 
-async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CATEGORY>> {
-    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] as Immutable2DArray<CATEGORY>;
+async function fetchCategories(dynamiclink: string): Promise<Readonly<CATEGORY>[]> {
+    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [];
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -1125,9 +1126,9 @@ async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CA
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<CATEGORY> = JSON.parse(
+        const data: Readonly<CATEGORY>[] = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<CATEGORY>;
+        ) as Readonly<CATEGORY>[];
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -1140,7 +1141,7 @@ async function fetchCategories(dynamiclink: string): Promise<Immutable2DArray<CA
     }
 }
 
-async function getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DArray<STILL>> {
+async function getHomepageCoverStills(dynamiclink: string): Promise<Readonly<Readonly<STILL>[]>> {
     const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [];
 
     try {
@@ -1153,8 +1154,8 @@ async function getHomepageCoverStills(dynamiclink: string): Promise<Immutable2DA
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<STILL> = JSON.parse(
-            JSON.stringify((await response.json()) as Immutable2DArray<STILL>),
+        const data: ReadonlyArray<STILL> = JSON.parse(
+            JSON.stringify((await response.json()) as ReadonlyArray<STILL>),
         );
 
         return data;
@@ -1185,8 +1186,8 @@ async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<Readonly
     }
 }
 
-async function getSessionImages(dynamiclink: string, sessionUID: number): Promise<Immutable2DArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getSessionImages>> = [] as Immutable2DArray<STILL>;
+async function getSessionImages(dynamiclink: string, sessionUID: number): Promise<ReadonlyArray<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getSessionImages>> = [] as ReadonlyArray<STILL>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -1199,9 +1200,9 @@ async function getSessionImages(dynamiclink: string, sessionUID: number): Promis
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<STILL> = JSON.parse(
+        const data: ReadonlyArray<STILL> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<STILL>;
+        ) as ReadonlyArray<STILL>;
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -1214,11 +1215,8 @@ async function getSessionImages(dynamiclink: string, sessionUID: number): Promis
     }
 }
 
-async function getCategorySessions(
-    dynamiclink: string,
-    category: string,
-): Promise<Immutable2DArray<SESSION>> {
-    const _default: Unpromisify<ReturnType<typeof getCategorySessions>> = [] as Immutable2DArray<SESSION>;
+async function getCategorySessions(dynamiclink: string, category: string): Promise<ReadonlyArray<SESSION>> {
+    const _default: Unpromisify<ReturnType<typeof getCategorySessions>> = [] as ReadonlyArray<SESSION>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -1231,9 +1229,9 @@ async function getCategorySessions(
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<SESSION> = JSON.parse(
+        const data: ReadonlyArray<SESSION> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) as Immutable2DArray<SESSION>;
+        ) as ReadonlyArray<SESSION>;
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -1246,7 +1244,7 @@ async function getCategorySessions(
     }
 }
 
-async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>> {
+async function getPages(dynamiclink: string): Promise<ReadonlyArray<PageData>> {
     const _default: Unpromisify<ReturnType<typeof getPages>> = [
         {
             type: "page",
@@ -1302,7 +1300,7 @@ async function getPages(dynamiclink: string): Promise<Immutable2DArray<PageData>
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Immutable2DArray<PageData> = (await response.json()) as Immutable2DArray<PageData>;
+        const data: ReadonlyArray<PageData> = (await response.json()) as ReadonlyArray<PageData>;
         return data;
     } catch (error: unknown) {
         console.error("An error occurred while fetching dynamic page information data:", error);

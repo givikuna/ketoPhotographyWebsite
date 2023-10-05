@@ -3,7 +3,7 @@ import * as url from "url";
 import * as fs from "fs";
 
 import { ParsedUrlQuery } from "querystring";
-import { CATEGORY, SESSION, Immutable2DArray, STILL } from "../types/types";
+import { CATEGORY, SESSION, STILL } from "../../types/types";
 import { IncomingMessage, ServerResponse } from "http";
 
 import { getPort } from "./modules/portServer";
@@ -40,7 +40,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             (typeof url_info["category"] === "string" || typeof url_info["category"] === "number")
         ) {
             const category_UID: number = ((categoryData: number | string): number => {
-                const categories: Immutable2DArray<CATEGORY> = getCategories();
+                const categories: ReadonlyArray<CATEGORY> = getCategories();
 
                 if (typeof categoryData === "string") {
                     const assumedCategory: undefined | Readonly<CATEGORY> = categories.find(
@@ -69,7 +69,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
                 getSessions().filter(
                     (session: Readonly<SESSION>): boolean =>
                         String(session.CATEGORY_UID) == String(category_UID),
-                ) as Immutable2DArray<SESSION>,
+                ) as ReadonlyArray<SESSION>,
                 null,
                 4,
             );
@@ -80,11 +80,11 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             "category" in url_info &&
             ["number", "string"].includes(typeof url_info["category"])
         ) {
-            const categories: Immutable2DArray<CATEGORY> = getCategories();
+            const categories: ReadonlyArray<CATEGORY> = getCategories();
 
             const category_UID: number = ((
                 category_data: string | string[] | undefined | number,
-                _categories: Immutable2DArray<CATEGORY>,
+                _categories: ReadonlyArray<CATEGORY>,
             ): number => {
                 if (typeof category_data !== "string" && typeof category_data !== "number") {
                     return 0;
@@ -122,8 +122,9 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
 
             if (
                 [0, 1].includes(category_UID) ||
-                categories.filter((category: Readonly<CATEGORY>): boolean => category.UID === category_UID)
-                    .length < 1
+                categories.filter((category: Readonly<CATEGORY>): boolean => {
+                    return category.UID === category_UID;
+                }).length < 1
             ) {
                 throw new Error("category was unable to be found");
             }
@@ -164,7 +165,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             return JSON.stringify(
                 getStills().filter(
                     (still: Readonly<STILL>): boolean => String(still.SESSION_UID) == String(session_UID),
-                ) as Immutable2DArray<STILL>,
+                ) as ReadonlyArray<STILL>,
                 null,
                 4,
             );
@@ -174,7 +175,7 @@ function getSpecificData(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
             return JSON.stringify(
                 getStills().filter(
                     (still: Readonly<STILL>): boolean => still.IS_FRONT_COVER_IMAGE,
-                ) as Immutable2DArray<STILL>,
+                ) as ReadonlyArray<STILL>,
                 null,
                 4,
             );

@@ -1,4 +1,4 @@
-import { Page, OnloadData, Immutable2DArray, CATEGORY } from "../../types/types";
+import { Page, OnloadData, CATEGORY } from "../../types/types";
 import { fetchCategories } from "../api";
 
 const filename: string = "./pages/home.ts";
@@ -28,7 +28,7 @@ export function html(): Page {
 
 export async function onload(data: OnloadData): Promise<void> {
     try {
-        const categories: Immutable2DArray<CATEGORY> = await fetchCategories(data.dynamiclink);
+        const categories: ReadonlyArray<CATEGORY> = await fetchCategories(data.dynamiclink);
 
         for (let i: number = 0; i < categories.length; i++) {
             const element: string = /* HTML */ `

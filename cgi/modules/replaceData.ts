@@ -4,7 +4,7 @@ import { getDynLink } from "./dynamicLinkGetter";
 import { findPath } from "./findPath";
 
 import { ParsedUrlQuery } from "querystring";
-import { Language, Immutable2DArray } from "../../../types/types";
+import { Language } from "../../../types/types";
 
 export function replaceData(
     data: string,
@@ -46,13 +46,13 @@ export function getLang(url_info: Readonly<ParsedUrlQuery | JSON>): string {
     }
 }
 
-export function getLangs(): Immutable2DArray<string> {
+export function getLangs(): ReadonlyArray<string> {
     const _default: Readonly<ReturnType<typeof getLangs>> = [];
 
     try {
-        const data: Immutable2DArray<Language> = JSON.parse(
+        const data: ReadonlyArray<Language> = JSON.parse(
             String(fs.readFileSync(findPath(["public", "data"], "languages.json"))),
-        ) as Immutable2DArray<Language>;
+        ) as ReadonlyArray<Language>;
 
         const langs: string[] = [];
 
@@ -60,7 +60,7 @@ export function getLangs(): Immutable2DArray<string> {
             langs.push(data[i].lang);
         }
 
-        return langs as Immutable2DArray<string>;
+        return langs as ReadonlyArray<string>;
     } catch (e: unknown) {
         console.error(e);
         return _default;
@@ -72,7 +72,7 @@ export function getEmail(data: Readonly<JSON | object>): string {
 
     try {
         const fpath: fs.PathLike = findPath(
-            "arr" in data ? (data.arr as Immutable2DArray<string>) : [],
+            "arr" in data ? (data.arr as ReadonlyArray<string>) : [],
             "file" in data ? (data.file as string) : "",
         );
 

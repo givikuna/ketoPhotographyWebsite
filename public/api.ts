@@ -4,7 +4,7 @@ import { createURL } from "./extension";
 
 const filename: string = "./api.ts";
 
-export async function fetchCategories(dynamiclink: string): Promise<Readonly<Array<Readonly<CATEGORY>>>> {
+export async function fetchCategories(dynamiclink: string): Promise<ReadonlyArray<CATEGORY>> {
     const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] satisfies Readonly<
         Readonly<CATEGORY>[]
     >;
@@ -19,9 +19,9 @@ export async function fetchCategories(dynamiclink: string): Promise<Readonly<Arr
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Readonly<Readonly<CATEGORY>[]> = JSON.parse(
+        const data: ReadonlyArray<CATEGORY> = JSON.parse(
             JSON.stringify(await response.json()),
-        ) satisfies Readonly<Readonly<CATEGORY>[]>;
+        ) satisfies ReadonlyArray<CATEGORY>;
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -40,10 +40,8 @@ export async function fetchCategories(dynamiclink: string): Promise<Readonly<Arr
 export async function getCategoryStills(
     dynamiclink: string,
     category: string | number,
-): Promise<Readonly<Readonly<STILL>[]>> {
-    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] satisfies Readonly<
-        Readonly<STILL>[]
-    >;
+): Promise<ReadonlyArray<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] satisfies ReadonlyArray<STILL>;
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -56,9 +54,7 @@ export async function getCategoryStills(
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Readonly<Readonly<STILL>[]> = JSON.parse(
-            JSON.stringify(await response.json()),
-        ) satisfies Readonly<Readonly<STILL>[]>;
+        const data: ReadonlyArray<STILL> = JSON.parse(JSON.stringify(await response.json()));
 
         if (typeof data === "string") {
             return JSON.parse(data);
@@ -75,7 +71,8 @@ export async function getCategoryStills(
 }
 
 export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<ReadonlyArray<URL>> {
-    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImagesURLs>> = [];
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImagesURLs>> =
+        [] satisfies ReadonlyArray<URL>;
 
     try {
         return ((arr: ReadonlyArray<URL>): ReadonlyArray<URL> => {
@@ -98,7 +95,7 @@ export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<R
     }
 }
 
-export async function getHomepageCoverStills(dynamiclink: string): Promise<Readonly<Readonly<STILL>[]>> {
+export async function getHomepageCoverStills(dynamiclink: string): Promise<ReadonlyArray<STILL>> {
     const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [] satisfies Readonly<
         Readonly<STILL>[]
     >;
@@ -114,7 +111,7 @@ export async function getHomepageCoverStills(dynamiclink: string): Promise<Reado
         }
 
         const data: Readonly<Readonly<STILL>[]> = JSON.parse(
-            JSON.stringify((await response.json()) as Readonly<Readonly<STILL>[]>),
+            JSON.stringify((await response.json()) as ReadonlyArray<STILL>),
         );
 
         return data;

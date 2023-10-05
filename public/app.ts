@@ -84,9 +84,7 @@ async function main(
 
             await page.onload({
                 dynamiclink: d,
-                language: ((l_: string): string => (l_ === "eng" ? l_ : languagize(l_)))(
-                    l,
-                ) as WebsiteLanguage,
+                language: (l === "en" ? l : languagize(l)) as WebsiteLanguage,
                 contactEmail: c,
             } satisfies OnloadData);
         });

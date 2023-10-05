@@ -24,7 +24,7 @@ export async function onload(data: OnloadData): Promise<void> {
             <br />
         `);
 
-        const categories: Readonly<Readonly<CATEGORY>[]> = await fetchCategories(data.dynamiclink);
+        const categories: ReadonlyArray<CATEGORY> = await fetchCategories(data.dynamiclink);
 
         $("#albums").append(
             $("<div>", {

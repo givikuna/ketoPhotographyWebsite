@@ -5,7 +5,7 @@ import * as fs from "fs";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { SocialMediaIcon, Immutable2DArray, STILL, CATEGORY } from "../types/types";
+import { SocialMediaIcon, STILL, CATEGORY } from "../../types/types";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
@@ -17,7 +17,7 @@ const app: express.Application = express();
 const filename: string = "img";
 const port: number = getPort(filename); // 8092
 
-function getIcons(): Immutable2DArray<SocialMediaIcon> | Readonly<unknown> {
+function getIcons(): ReadonlyArray<SocialMediaIcon> | Readonly<unknown> {
     const _default: ReturnType<typeof getIcons> = [
         {
             icon: "facebook",
@@ -47,7 +47,7 @@ function getIcons(): Immutable2DArray<SocialMediaIcon> | Readonly<unknown> {
     ] as const;
 
     try {
-        return require("../public/assets/icons/icons.json") as Immutable2DArray<SocialMediaIcon>;
+        return require("../public/assets/icons/icons.json") as ReadonlyArray<SocialMediaIcon>;
     } catch (e: unknown) {
         console.error(e);
         return _default;
@@ -58,7 +58,7 @@ function getIconExtension(icon: string): string {
     const _default: ReturnType<typeof getIconExtension> = "png";
 
     try {
-        const icons: SocialMediaIcon[] | unknown = getIcons();
+        const icons: ReadonlyArray<SocialMediaIcon> | unknown = getIcons();
 
         if (!Array.isArray(icons)) {
             throw new Error("Icons couldn't be fetched");
