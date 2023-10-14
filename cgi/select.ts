@@ -3,7 +3,7 @@ import * as url from "url";
 import * as fs from "fs";
 
 import { ParsedUrlQuery } from "querystring";
-import { CATEGORY, SESSION, STILL } from "../../types/types";
+import { CATEGORY, SESSION, STILL } from "../types/types";
 import { IncomingMessage, ServerResponse } from "http";
 
 import { getPort } from "./modules/portServer";
@@ -209,7 +209,7 @@ function getDataToReturn(givenData: RequestOption, url_info: Readonly<ParsedUrlQ
         let pathArray: string[] = [];
         let dataFile: string = "";
 
-        switch (givenData.toLocaleLowerCase()) {
+        switch (givenData.toLowerCase()) {
             case "languages":
                 throw new Error("languages can't be requested just yet");
             case "albumData":

@@ -5,7 +5,7 @@ import * as fs from "fs";
 
 import { ParsedUrlQuery } from "querystring";
 import { IncomingMessage, ServerResponse } from "http";
-import { SocialMediaIcon, STILL, CATEGORY } from "../../types/types";
+import { SocialMediaIcon, STILL, CATEGORY } from "../types/types";
 
 import { findPath } from "./modules/findPath";
 import { getPort } from "./modules/portServer";
