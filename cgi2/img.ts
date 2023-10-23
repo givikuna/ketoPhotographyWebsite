@@ -1,3 +1,5 @@
+import { to_vec } from "../types/classes";
+
 import * as fs from "fs";
 import * as url from "url";
 import * as lsse from "lsse";
@@ -101,20 +103,22 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | string | und
                 findPath(
                     ["img", "img"],
                     String(
-                        getStills().filter(
-                            (still: STILL): boolean =>
-                                still.UID ==
-                                (
-                                    getCategories().map(
-                                        (category: CATEGORY): number => category.COVER_STILL_UID,
-                                    ) as ReadonlyArray<number>
-                                )[
-                                    getCategories().findIndex(
-                                        (category: CATEGORY): boolean =>
-                                            category.NAME == String(info["album"]),
-                                    )
-                                ],
-                        )[0].NAME,
+                        getStills()
+                            .filter(
+                                (still: STILL): boolean =>
+                                    still.UID ==
+                                    getCategories()
+                                        .map((category: CATEGORY): number => category.COVER_STILL_UID)
+                                        .at(
+                                            getCategories()
+                                                .unwrap()
+                                                .findIndex(
+                                                    (category: CATEGORY): boolean =>
+                                                        category.NAME == String(info["album"]),
+                                                ),
+                                        ),
+                            )
+                            .at(0).NAME,
                     ),
                 ),
         },

@@ -1,13 +1,12 @@
 import { Unpromisify, CATEGORY, SelectRequestOption, STILL, URLParams } from "../types/types";
+import { Vec, to_vec } from "../types/classes";
 
 import { createURL } from "./extension";
 
 const filename: string = "./api.ts";
 
-export async function fetchCategories(dynamiclink: string): Promise<ReadonlyArray<CATEGORY>> {
-    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = [] satisfies Readonly<
-        Readonly<CATEGORY>[]
-    >;
+export async function fetchCategories(dynamiclink: string): Promise<Vec<CATEGORY>> {
+    const _default: Unpromisify<ReturnType<typeof fetchCategories>> = new Vec([]);
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -24,10 +23,10 @@ export async function fetchCategories(dynamiclink: string): Promise<ReadonlyArra
         ) satisfies ReadonlyArray<CATEGORY>;
 
         if (typeof data === "string") {
-            return JSON.parse(data);
+            return new Vec(JSON.parse(data));
         }
 
-        return data;
+        return new Vec(data as CATEGORY[]);
     } catch (e: unknown) {
         console.error(
             `Error at fetchCategories(dynamiclink: string): Promise<Readonly<Readonly<CATEGORY>[]>> in ${filename}`,
@@ -37,11 +36,8 @@ export async function fetchCategories(dynamiclink: string): Promise<ReadonlyArra
     }
 }
 
-export async function getCategoryStills(
-    dynamiclink: string,
-    category: string | number,
-): Promise<ReadonlyArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = [] satisfies ReadonlyArray<STILL>;
+export async function getCategoryStills(dynamiclink: string, category: string | number): Promise<Vec<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getCategoryStills>> = new Vec([]);
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -57,10 +53,10 @@ export async function getCategoryStills(
         const data: ReadonlyArray<STILL> = JSON.parse(JSON.stringify(await response.json()));
 
         if (typeof data === "string") {
-            return JSON.parse(data);
+            return new Vec(JSON.parse(data));
         }
 
-        return data;
+        return new Vec(data as STILL[]);
     } catch (e: unknown) {
         console.error(
             `Error at getCategoryStills(dynamiclink: string, category: string | number): Promise<Readonly<Readonly<STILL>[]>> in ${filename}`,
@@ -70,21 +66,22 @@ export async function getCategoryStills(
     }
 }
 
-export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<ReadonlyArray<URL>> {
-    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImagesURLs>> =
-        [] satisfies ReadonlyArray<URL>;
+export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<Vec<URL>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverImagesURLs>> = new Vec([]);
 
     try {
-        return ((arr: ReadonlyArray<URL>): ReadonlyArray<URL> => {
-            return arr.length < 2 ? arr : [arr[arr.length - 1], ...arr.slice(1, arr.length - 1), arr[0]];
-        })(
-            (await getHomepageCoverStills(dynamiclink)).map(
-                (_: Readonly<STILL>, i: number): URL =>
-                    createURL(`${dynamiclink}:8092/`, {
-                        type: "frontPageCoverImage",
-                        img: i.toString(),
-                    } satisfies URLParams) as URL,
-            ),
+        return to_vec(
+            ((arr: ReadonlyArray<URL>): ReadonlyArray<URL> => {
+                return arr.length < 2 ? arr : [arr[arr.length - 1], ...arr.slice(1, arr.length - 1), arr[0]];
+            })(
+                (await getHomepageCoverStills(dynamiclink)).unwrap().map(
+                    (_: Readonly<STILL>, i: number): URL =>
+                        createURL(`${dynamiclink}:8092/`, {
+                            type: "frontPageCoverImage",
+                            img: i.toString(),
+                        } satisfies URLParams) as URL,
+                ),
+            ) as URL[],
         );
     } catch (e: unknown) {
         console.error(
@@ -95,10 +92,8 @@ export async function getHomepageCoverImagesURLs(dynamiclink: string): Promise<R
     }
 }
 
-export async function getHomepageCoverStills(dynamiclink: string): Promise<ReadonlyArray<STILL>> {
-    const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = [] satisfies Readonly<
-        Readonly<STILL>[]
-    >;
+export async function getHomepageCoverStills(dynamiclink: string): Promise<Vec<STILL>> {
+    const _default: Unpromisify<ReturnType<typeof getHomepageCoverStills>> = new Vec([]);
 
     try {
         const url: URL = new URL(`${dynamiclink}:8094/`);
@@ -110,11 +105,11 @@ export async function getHomepageCoverStills(dynamiclink: string): Promise<Reado
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: Readonly<Readonly<STILL>[]> = JSON.parse(
+        const data: ReadonlyArray<STILL> = JSON.parse(
             JSON.stringify((await response.json()) as ReadonlyArray<STILL>),
         );
 
-        return data;
+        return new Vec(data as STILL[]);
     } catch (e: unknown) {
         console.error(
             `Error at getHomepageCoverStills(dynamiclink: string): Promise<Readonly<Readonly<STILL>[]>> in ${filename}`,
