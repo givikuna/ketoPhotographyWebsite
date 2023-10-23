@@ -1,4 +1,5 @@
 import { Page, OnloadData, CATEGORY } from "../../types/types";
+import { Vec } from "../../types/classes";
 import { fetchCategories } from "../api";
 
 const filename: string = "./pages/albums.ts";
@@ -24,7 +25,7 @@ export async function onload(data: OnloadData): Promise<void> {
             <br />
         `);
 
-        const categories: ReadonlyArray<CATEGORY> = await fetchCategories(data.dynamiclink);
+        const categories: Vec<CATEGORY> = await fetchCategories(data.dynamiclink);
 
         $("#albums").append(
             $("<div>", {
@@ -33,7 +34,7 @@ export async function onload(data: OnloadData): Promise<void> {
         );
 
         // ${dynamiclink}:8092/?type=cover&album=${categories[i].NAME}
-        for (let i: number = 0; i < categories.length; i++) {
+        for (let i: number = 0; i < categories.len().unwrap(); i++) {
             const element: string = /* HTML */ `
                 <div class="imageContainer">
                     <img
