@@ -20,25 +20,29 @@ type RouteFunction = (
     res: ServerResponse<IncomingMessage>,
 ) => ServerResponse<IncomingMessage>;
 
+type Route = {
+    route: RouteFunction;
+};
+
 type APIRoute = {
-    img: RouteFunction;
-    serve: RouteFunction;
-    select: RouteFunction;
-    src: RouteFunction;
+    img: Route;
+    serve: Route;
+    select: Route;
+    src: Route;
 };
 
 const routes: APIRoute = {
-    img: img.route,
-    serve: serve.route,
-    select: select.route,
-    src: src.route,
+    img: img,
+    serve: serve,
+    select: select,
+    src: src,
 };
 
-app.get("/" satisfies PossibleRoute, routes["serve"]);
-app.get("/serve" satisfies PossibleRoute, routes["serve"]);
-app.get("/img" satisfies PossibleRoute, routes["img"]);
-app.get("/select" satisfies PossibleRoute, routes["select"]);
-app.get("/src" satisfies PossibleRoute, routes["select"]);
+app.get("/" satisfies PossibleRoute, routes["serve"].route);
+app.get("/serve" satisfies PossibleRoute, routes["serve"].route);
+app.get("/img" satisfies PossibleRoute, routes["img"].route);
+app.get("/select" satisfies PossibleRoute, routes["select"].route);
+app.get("/src" satisfies PossibleRoute, routes["select"].route);
 
 app.listen(port, (): void => {
     console.log(`Application is being hosted on port :${port}`);

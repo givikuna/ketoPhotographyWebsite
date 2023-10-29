@@ -1,5 +1,4 @@
 import { Page, OnloadData, CATEGORY } from "../../types/types";
-import { Vec } from "../../types/classes";
 import { fetchCategories } from "../api";
 
 const filename: string = "./pages/home.ts";
@@ -29,9 +28,9 @@ export function html(): Page {
 
 export async function onload(data: OnloadData): Promise<void> {
     try {
-        const categories: Vec<CATEGORY> = await fetchCategories(data.dynamiclink);
+        const categories: ReadonlyArray<CATEGORY> = await fetchCategories(data.dynamiclink);
 
-        for (let i: number = 0; i < categories.len().unwrap(); i++) {
+        for (let i: number = 0; i < categories.length; i++) {
             const element: string = /* HTML */ `
                 <div class="imageContainer">
                     <img

@@ -1,8 +1,6 @@
 import * as url from "url";
-import * as lsse from "lsse";
 import * as fs from "fs";
 
-import { Vec } from "../types/classes";
 import { findPath } from "./modules/findPath";
 import { isJSON } from "./modules/isJSON";
 import { getCategories, getSessions, getStills } from "./modules/db";
@@ -42,7 +40,7 @@ function getCategoryUID(categoryData: string | number): number {
     return 0;
 }
 
-function getCategorySessions(url_info: Readonly<ParsedUrlQuery>): Vec<SESSION> {
+function getCategorySessions(url_info: Readonly<ParsedUrlQuery>): ReadonlyArray<SESSION> {
     const UID: number = getCategoryUID(String(url_info["category"]));
 
     return getSessions().filter(
@@ -50,29 +48,26 @@ function getCategorySessions(url_info: Readonly<ParsedUrlQuery>): Vec<SESSION> {
     );
 }
 
-function getCategoryImages(url_info: Readonly<ParsedUrlQuery>): Vec<STILL> {
+function getCategoryImages(url_info: Readonly<ParsedUrlQuery>): ReadonlyArray<STILL> {
     const UID: number = getCategoryUID(String(url_info["category"]));
 
     if (
         [0, 1].includes(UID) ||
-        getCategories()
-            .filter((category: Readonly<CATEGORY>): boolean => {
-                return category.UID === UID || String(category.UID) == String(UID);
-            })
-            .len()
-            .unwrap() < 1
+        getCategories().filter((category: Readonly<CATEGORY>): boolean => {
+            return category.UID === UID || String(category.UID) == String(UID);
+        }).length < 1
     ) {
         throw new Error("category was unable to be found");
     }
 
-    const sessionUIDs: Vec<number> = getSessions()
+    const sessionUIDs: ReadonlyArray<number> = getSessions()
         .filter((session: Readonly<SESSION>): boolean => session.CATEGORY_UID === UID)
         .map((session: Readonly<SESSION>): number => session.UID);
 
     return getStills().filter((still: Readonly<STILL>): boolean => sessionUIDs.includes(still.SESSION_UID));
 }
 
-function getSessionImages(url_info: Readonly<ParsedUrlQuery>): Vec<STILL> {
+function getSessionImages(url_info: Readonly<ParsedUrlQuery>): ReadonlyArray<STILL> {
     const UID: number = ((session_uid: number | string): number => {
         const sessionMatch: Readonly<SESSION> | undefined = getSessions().find(
             (session: Readonly<SESSION>): boolean => {
@@ -110,52 +105,59 @@ function selectData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>
                 ] as ReadonlyArray<RequestOption>
             ).includes(givenData)
         ) {
-            return ((
-                data: RequestOption,
-                info: Readonly<ParsedUrlQuery>,
-            ): Vec<CATEGORY> | Vec<STILL> | Vec<SESSION> => {
-                const functor: ReadonlyArray<{
-                    dataType: RequestOption;
-                    check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption) => boolean;
-                    get: (info_: Readonly<ParsedUrlQuery>) => Vec<CATEGORY> | Vec<STILL> | Vec<SESSION>;
-                }> = [
-                    {
-                        dataType: "categoryImages",
-                        check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
-                            data_ === "categoryImages" &&
-                            "category" in info_ &&
-                            ["number", "string"].includes(typeof info_["category"]),
-                        get: getCategoryImages,
-                    },
-                    {
-                        dataType: "categorySessions",
-                        check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
-                            data_ === "categorySessions" &&
-                            "category" in info_ &&
-                            (typeof info_["category"] === "string" || typeof info_["category"] === "number"),
-                        get: getCategorySessions,
-                    },
-                    {
-                        dataType: "sessionImages",
-                        check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
-                            data_ === "sessionImages" &&
-                            "session" in info_ &&
-                            ["number", "string"].includes(typeof info_["session"]),
-                        get: getSessionImages,
-                    },
-                    {
-                        dataType: "frontPageCoverImageData",
-                        // @ts-ignore
-                        check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
-                            data_ === "frontPageCoverImageData",
-                        get: getFrontPageCoverImageData,
-                    },
-                ];
+            return JSON.stringify(
+                ((
+                    data: RequestOption,
+                    info: Readonly<ParsedUrlQuery>,
+                ): ReadonlyArray<CATEGORY> | ReadonlyArray<STILL> | ReadonlyArray<SESSION> => {
+                    const functor: ReadonlyArray<{
+                        dataType: RequestOption;
+                        check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption) => boolean;
+                        get: (
+                            info_: Readonly<ParsedUrlQuery>,
+                        ) => ReadonlyArray<CATEGORY> | ReadonlyArray<STILL> | ReadonlyArray<SESSION>;
+                    }> = [
+                        {
+                            dataType: "categoryImages",
+                            check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
+                                data_ === "categoryImages" &&
+                                "category" in info_ &&
+                                ["number", "string"].includes(typeof info_["category"]),
+                            get: getCategoryImages,
+                        },
+                        {
+                            dataType: "categorySessions",
+                            check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
+                                data_ === "categorySessions" &&
+                                "category" in info_ &&
+                                (typeof info_["category"] === "string" ||
+                                    typeof info_["category"] === "number"),
+                            get: getCategorySessions,
+                        },
+                        {
+                            dataType: "sessionImages",
+                            check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
+                                data_ === "sessionImages" &&
+                                "session" in info_ &&
+                                ["number", "string"].includes(typeof info_["session"]),
+                            get: getSessionImages,
+                        },
+                        {
+                            dataType: "frontPageCoverImageData",
+                            // @ts-ignore
+                            check: (info_: Readonly<ParsedUrlQuery>, data_: RequestOption): boolean =>
+                                data_ === "frontPageCoverImageData",
+                            get: getFrontPageCoverImageData,
+                        },
+                    ];
 
-                return functor.filter((el): boolean => el.check(info, data)).length > 0
-                    ? functor.filter((el): boolean => el.check(info, data))[0].get(url_info)
-                    : new Vec([]);
-            })(givenData, url_info).to_string();
+                    return functor.filter((el): boolean => el.check(info, data)).length > 0
+                        ? functor.filter((el): boolean => el.check(info, data))[0].get(url_info)
+                        : [];
+                })(givenData, url_info),
+                null,
+                4,
+            );
         }
 
         return ((data: string): string => {
@@ -182,7 +184,7 @@ function selectData(givenData: RequestOption, url_info: Readonly<ParsedUrlQuery>
                     flag: "r",
                 }),
             );
-        })(lsse.lower(givenData));
+        })(givenData.toLowerCase());
     } catch (e: unknown) {
         console.error(e);
         return _default;

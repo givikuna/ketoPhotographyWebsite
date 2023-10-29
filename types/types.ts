@@ -1,4 +1,3 @@
-import { Str } from "./classes";
 import { PathLike } from "fs";
 
 export type SocialMediaIcon = {
@@ -105,7 +104,7 @@ export type OnloadData = {
 export type AsyncFunction = (...args: any[]) => Promise<void>;
 
 export type PageInformation = {
-    pageName: Str;
+    pageName: string;
     get: (...args: any[]) => Page;
     onload: AsyncFunction;
 };

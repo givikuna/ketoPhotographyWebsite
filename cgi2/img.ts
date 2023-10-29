@@ -103,22 +103,18 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | string | und
                 findPath(
                     ["img", "img"],
                     String(
-                        getStills()
-                            .filter(
-                                (still: STILL): boolean =>
-                                    still.UID ==
-                                    getCategories()
-                                        .map((category: CATEGORY): number => category.COVER_STILL_UID)
-                                        .at(
-                                            getCategories()
-                                                .unwrap()
-                                                .findIndex(
-                                                    (category: CATEGORY): boolean =>
-                                                        category.NAME == String(info["album"]),
-                                                ),
+                        getStills().filter(
+                            (still: STILL): boolean =>
+                                still.UID ==
+                                getCategories()
+                                    .map((category: CATEGORY): number => category.COVER_STILL_UID)
+                                    .at(
+                                        getCategories().findIndex(
+                                            (category: CATEGORY): boolean =>
+                                                category.NAME == String(info["album"]),
                                         ),
-                            )
-                            .at(0).NAME,
+                                    ),
+                        )[0].NAME,
                     ),
                 ),
         },
@@ -131,7 +127,7 @@ function getPath(url_info: Readonly<ParsedUrlQuery>): fs.PathLike | string | und
         },
     ];
 
-    return imageFunctor.filter((el) => el.check(url_info)).length > 0
+    return imageFunctor.filter((el): boolean => el.check(url_info)).length > 0
         ? imageFunctor.filter((el): boolean => el.check(url_info))[0].get(url_info)
         : undefined;
 }

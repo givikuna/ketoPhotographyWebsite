@@ -44,7 +44,7 @@ export async function onload(dynamiclink: string, album: string): Promise<void> 
                     return 1; // Anything less
                 }
             })(),
-        ) as string[][];
+        ) satisfies string[][];
 
         $(`#app`).append($(/* HTML */ `<div></div>`).attr("id", `album_${album}`));
 

@@ -16,7 +16,6 @@ import * as albumComponent from "./pages/inPage/album";
 import "./events";
 
 import { FixedArray, PageInformation, OnloadData, WebsiteLanguage, CATEGORY } from "../types/types";
-import { Str, Vec } from "../types/classes";
 import { getHomepageCoverImagesURLs, fetchCategories } from "./api";
 import { Unpromisify } from "../types/types";
 
@@ -24,40 +23,40 @@ const filename: string = "./app.ts";
 
 let iterated: number = 0;
 
-const pages: Vec<PageInformation> = new Vec([
+const pages: ReadonlyArray<PageInformation> = [
     {
-        pageName: new Str("home"),
+        pageName: "home",
         get: homeComponent.html,
         onload: homeComponent.onload,
     },
     {
-        pageName: new Str("contact"),
+        pageName: "contact",
         get: contactComponent.html,
         onload: contactComponent.onload,
     },
     {
-        pageName: new Str("about"),
+        pageName: "about",
         get: aboutComponent.html,
         onload: aboutComponent.onload,
     },
     {
-        pageName: new Str("pricing"),
+        pageName: "pricing",
         get: pricingComponent.html,
         onload: pricingComponent.onload,
     },
     {
-        pageName: new Str("albums"),
+        pageName: "albums",
         get: albumsComponent.html,
         onload: albumsComponent.onload,
     },
     {
-        pageName: new Str("blog"),
+        pageName: "blog",
         get: blogComponent.html,
         onload: blogComponent.onload,
     },
-]);
+];
 
-export const loadedCategories: Vec<CATEGORY> = new Vec([]) satisfies Vec<CATEGORY>;
+export const loadedCategories: CATEGORY[] = [];
 
 async function main(
     d: string = "ketojibladze.com",
@@ -74,11 +73,11 @@ async function main(
         $("#navbar-div-phone").html(hamburgerNavbarComponent.html(d));
         $("#homepage-navbar-div-phone").html(homepageHamburgerNavbarComponent.html(d));
 
-        pages.unwrap().forEach(async (page: PageInformation): Promise<void> => {
+        pages.forEach(async (page: PageInformation): Promise<void> => {
             $("#app").append(
                 $(/* HTML */ `<div></div>`)
-                    .attr("id", page.pageName.unwrap() ? page.pageName.unwrap() : "ERROR")
-                    .addClass(page.pageName && page.pageName.starts_with("album_") ? "albumPage" : "webPage")
+                    .attr("id", page.pageName ? page.pageName : "ERROR")
+                    .addClass(page.pageName && page.pageName.startsWith("album_") ? "albumPage" : "webPage")
                     .html(page.get().html)
                     .hide(),
             );
@@ -267,7 +266,7 @@ function toggleCurrentHamburgerNavbar(currentNavbarID: string): void {
 
 async function nextHomepageImage(): Promise<void> {
     try {
-        const images: Vec<string> = (await getHomepageCoverImagesURLs("@dynamiclink")).map(
+        const images: ReadonlyArray<string> = (await getHomepageCoverImagesURLs("@dynamiclink")).map(
             (url: URL): string => url.toString(),
         );
 
@@ -275,7 +274,7 @@ async function nextHomepageImage(): Promise<void> {
 
         if (homepage_navbar_div == null) return;
 
-        if (iterated === images.len().unwrap()) {
+        if (iterated === images.length) {
             iterated = 0;
             homepage_navbar_div.style.backgroundImage = `url(${images[iterated++]})`;
         } else {
@@ -294,7 +293,7 @@ async function needsToLoadNewAlbum(albumName: string): Promise<boolean> {
             getPage().split("_")[0] === "album" &&
             (await fetchCategories("@dynamiclink"))
                 .map((category: Readonly<CATEGORY>): string => category.NAME)
-                .mem(albumName)
+                .includes(albumName)
         );
     } catch (e: unknown) {
         console.error(`Error at needsToLoadNewAlbum(): Promise<boolean> in ${filename}`, e);
@@ -314,21 +313,18 @@ async function hashchangeEvent(): Promise<void> {
             );
         }
 
-        const pageNames: Vec<string> = new Vec(
-            loadedCategories.len().unwrap() > 0
+        const pageNames: ReadonlyArray<string> =
+            loadedCategories.length > 0
                 ? [
-                      ...pages
-                          .map((page: Readonly<PageInformation>): string => page.pageName.clone().unwrap())
-                          .unwrap(),
-                      ...(loadedCategories.unwrap() satisfies ReadonlyArray<CATEGORY>).map(
+                      ...pages.map((page: Readonly<PageInformation>): string => page.pageName),
+                      ...(loadedCategories satisfies ReadonlyArray<CATEGORY>).map(
                           (category: CATEGORY): string => `album_${category.NAME}`,
                       ),
                   ]
-                : pages.map((page: PageInformation): string => page.pageName.clone().unwrap()).unwrap(),
-        );
+                : pages.map((page: PageInformation): string => page.pageName);
 
-        if (pageNames.mem(getPage())) {
-            pageNames.unwrap().forEach((el: string): void => {
+        if (pageNames.includes(getPage())) {
+            pageNames.forEach((el: string): void => {
                 $(`#${el}`).hide();
                 if (el === getPage()) $(`#${el}`).show();
             });
